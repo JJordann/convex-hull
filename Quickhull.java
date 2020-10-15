@@ -51,7 +51,8 @@ public class Quickhull {
     } // convexHull
 
 
-    public static Point[] convexHull(ArrayList<Point> points) {
+    public static Point[] convexHull(Point[] points0) {
+        ArrayList<Point> points = new ArrayList<Point>(Arrays.asList(points0));
         hull = new HashSet<Point>();
 
         int leftmost  = 0;
@@ -74,15 +75,4 @@ public class Quickhull {
         return hull.toArray(new Point[hull.size()]);
     }
 
-
-    public static void main(String[] args) {
-
-        ArrayList<Point> points = new ArrayList<Point>(Arrays.asList(Testing.testSet4()));
-
-        Point[] hull = convexHull(points);
-
-        Util.printSet(hull);
-
-    } // main
-    
 }

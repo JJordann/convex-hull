@@ -18,23 +18,24 @@ public class DivideAndConquer {
         Point[] leftPoints  = Arrays.copyOfRange(points, 0, points.length / 2);
         Point[] rightPoints = Arrays.copyOfRange(points, points.length / 2, points.length);
 
-        System.out.println("left/right:");
-        Util.printSet(leftPoints);
-        Util.printSet(rightPoints);
-
         Point[] leftHull = convexHull(leftPoints);
         Point[] rightHull = convexHull(rightPoints);
-
-        System.out.println("hulls:");
-        Util.printSet(leftHull);
-        Util.printSet(rightHull);
-
 
         return merge(leftHull, rightHull);
     } // convexHull
 
 
     public static Point[] merge(Point[] leftHalf, Point[] rightHalf) {
+
+        List<Point> merged = new LinkedList<Point>();
+
+        if(leftHalf == null) {
+            return GrahamScan.convexHull(rightHalf);
+        }
+
+        if(rightHalf == null) {
+            return GrahamScan.convexHull(leftHalf);
+        }
 
         int rightmostA = 0;
         int leftmostB  = 0;
@@ -92,8 +93,6 @@ public class DivideAndConquer {
 
         int lowerA = currentA;
         int lowerB = currentB;
-
-        List<Point> merged = new LinkedList<Point>();
 
         for(int i = upperA; i != lowerA; i = (i + 1) % leftHalf.length) {
             merged.add(leftHalf[i]);
