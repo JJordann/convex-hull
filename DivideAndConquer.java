@@ -18,7 +18,7 @@ public class DivideAndConquer {
         Point[] leftPoints  = Arrays.copyOfRange(points, 0, points.length / 2);
         Point[] rightPoints = Arrays.copyOfRange(points, points.length / 2, points.length);
 
-        Point[] leftHull = convexHull(leftPoints);
+        Point[] leftHull  = convexHull(leftPoints);
         Point[] rightHull = convexHull(rightPoints);
 
         return merge(leftHull, rightHull);

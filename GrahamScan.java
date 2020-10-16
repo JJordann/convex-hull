@@ -49,8 +49,7 @@ public class GrahamScan {
         // odstrani vse kolinearne tocke
         int prunedLength = 1;
         for(int i = 1; i < points.length; i++) {
-            while((i < points.length - 1) && 
-                  Util.orientation(p0, points[i], points[i + 1]) == 0) {
+            while((i < points.length - 1) && Util.orientation(p0, points[i], points[i + 1]) == 0) {
                 i++;
             }
             points[prunedLength] = points[i];
@@ -76,5 +75,79 @@ public class GrahamScan {
 
         Point[] hull = new Point[s.size()];
         return s.toArray(hull);
+    } // grahamScan
+
+    public static Point[] convexHull_Array(Point[] points) {
+
+        int lowestIndex = 0;
+        int y_min = points[lowestIndex].y;
+
+        for(int i = 0; i < points.length; i++) {
+            if(points[i].y < y_min) {
+                lowestIndex = i;
+                y_min = points[i].y;
+            }
+            else if(points[i].y == y_min) {
+                if(points[i].x < points[lowestIndex].x) {
+                    lowestIndex = i;
+                    y_min = points[i].y;
+                }
+            }
+        }
+
+        Point tmp = points[lowestIndex];
+        points[lowestIndex] = points[0];
+        points[0] = tmp;
+
+        Point p0 = points[0];
+        Comparator<Point> angleComparator = new Comparator<Point>() {
+            public int compare(Point p, Point q) {
+                int angle = Util.orientation(p0, p, q);
+                if(angle == 0) {
+                    if(p0.distance(q) >= p0.distance(p)) 
+                        return -1;
+                    else
+                        return 1;
+                }
+                else {
+                    if(angle == -1)
+                        return -1;
+                    else  
+                        return 1;
+                }
+            }
+        };
+
+        Arrays.sort(points, angleComparator);
+
+
+        // odstrani vse kolinearne tocke
+        int prunedLength = 1;
+        for(int i = 1; i < points.length; i++) {
+            while((i < points.length - 1) && Util.orientation(p0, points[i], points[i + 1]) == 0) {
+                i++;
+            }
+            points[prunedLength] = points[i];
+            prunedLength++;
+        }
+
+        if(prunedLength < 3) 
+            return null;
+
+
+        Point[] hull = new Point[points.length + 1];
+        hull[0] = points[0];
+        hull[1] = points[1];
+        hull[2] = points[2];
+        int hullSize = 3;
+
+        for(int i = 3; i < prunedLength; i++) {
+            while(hullSize >= 2 && Util.orientation(hull[hullSize - 2], hull[hullSize - 1], points[i]) != -1) {
+                hullSize--;
+            }
+            hull[hullSize++] = points[i];
+        }
+
+        return Arrays.copyOf(hull, hullSize);
     } // grahamScan
 }

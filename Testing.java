@@ -49,12 +49,22 @@ public class Testing {
         return points;
     }
 
+    public static void runAll(Point[] points) {
+        Util.printSet(GrahamScan.convexHull(points.clone()));
+        Util.printSet(GrahamScan.convexHull_Array(points.clone()));
+        Util.printSet(Jarvis.convexHull(points.clone()));
+        Util.printSet(DivideAndConquer.convexHull(points.clone()));
+        Util.printSet(Quickhull.convexHull(points.clone()));
+        Util.printSet(MonotoneChain.convexHull(points.clone()));
+    }
+
     public static void main(String[] args) {
 
-        Util.printSet(GrahamScan.convexHull(testSet3()));
-        Util.printSet(Jarvis.convexHull(testSet3()));
-        Util.printSet(DivideAndConquer.convexHull(testSet3()));
-        Util.printSet(Quickhull.convexHull(testSet3()));
+        Point[] points = testSet2();
+
+        runAll(points);
+
+
 
     } // main
     

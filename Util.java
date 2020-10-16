@@ -38,19 +38,4 @@ public class Util {
         return second;
     }
 
-    //public static int side(Point p1, Point p2, Point p) {
-
-    //    int angle = (p.y - p1.y) * (p2.x - p1.x) -
-    //                (p2.y - p1.y) * (p.x - p1.x);
-
-    //    if(angle > 0) 
-    //        return 1;
-    //    if (angle < 0)
-    //        return -1;
-    //    return 0;
-    //}
-
-
-
-
 }

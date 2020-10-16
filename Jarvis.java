@@ -1,4 +1,4 @@
-import java.util.*;
+import java.util.ArrayList;
 
 // Jarvis march a.k.a Gift Wrapping
 public class Jarvis {
@@ -8,12 +8,18 @@ public class Jarvis {
             return null;
         }
 
-        List<Point> hull = new LinkedList<Point>();
+        ArrayList<Point> hull = new ArrayList<Point>();
 
         int lowestIndex = 0;
         for(int i = 1; i < points.length; i++) {
-            if(points[i].y < points[lowestIndex].y)
+            if(points[i].y < points[lowestIndex].y) {
                 lowestIndex = i;
+            }
+            else if(points[i].y == points[lowestIndex].y) {
+                if(points[i].x < points[lowestIndex].x) {
+                    lowestIndex = i;
+                }
+            }
         }
 
         int currentPoint = lowestIndex;
