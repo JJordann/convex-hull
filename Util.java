@@ -38,4 +38,15 @@ public class Util {
         return second;
     }
 
+    public static void printQueue(PriorityQueue<Point> q) {
+        //System.out.println("Priority queue: ");
+        //Point p = null;
+        //while((p = q.poll()) != null) {
+            //System.out.print(p + " ");
+        //}
+        //System.out.println();
+
+        q.forEach(System.out::println);
+    }
+
 }

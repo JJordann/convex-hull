@@ -49,18 +49,62 @@ public class Testing {
         return points;
     }
 
+    public static Point[] testSet4() {
+        Point[] points = new Point[17];
+
+        points[0] = new Point(0, 0);
+        points[1] = new Point(1, -4);
+        points[2] = new Point(-1, -5);
+        points[3] = new Point(-5, -3);
+        points[4] = new Point(-3, -1);
+        points[5] = new Point(-1, -3);
+        points[6] = new Point(-2, -2);
+        points[7] = new Point(-1, -1);
+        points[8] = new Point(-2, -1);
+        points[9] = new Point(-1, 1);
+        points[10] = new Point(-5, 0);
+        points[11] = new Point(-3, -5);
+        points[12] = new Point(1, -5);
+        points[13] = new Point(-5, -2);
+        points[14] = new Point(-5, -6);
+        points[15] = new Point(0, -6);
+        points[16] = new Point(1, -2);
+
+        return points;
+    }
+
+    public static Point[] testSet5() {
+        Point[] points = new Point[12];
+
+        points[0] = new Point(0, 0);
+        points[1] = new Point(0, 6);
+        points[2] = new Point(5, 0);
+        points[3] = new Point(0, -4);
+        points[4] = new Point(-6, 0);
+        points[5] = new Point(-5, 5);
+        points[6] = new Point(-3, 5);
+        points[7] = new Point(-2, -4);
+        points[8] = new Point(-3, -4);
+        points[9] = new Point(4, -3);
+        points[10] = new Point(3, 4);
+        points[11] = new Point(4, 4);
+
+        return points;
+    }
+
     public static void runAll(Point[] points) {
         Util.printSet(GrahamScan.convexHull(points.clone()));
         Util.printSet(GrahamScan.convexHull_Array(points.clone()));
         Util.printSet(Jarvis.convexHull(points.clone()));
-        Util.printSet(DivideAndConquer.convexHull(points.clone()));
-        Util.printSet(Quickhull.convexHull(points.clone()));
+        //Util.printSet(DivideAndConquer.convexHull(points.clone()));
+        //Util.printSet(Quickhull.convexHull(points.clone()));
         Util.printSet(MonotoneChain.convexHull(points.clone()));
+        Util.printSet(Improved.convexHull(points.clone()));
     }
 
     public static void main(String[] args) {
 
-        Point[] points = testSet2();
+        Point[] points = testSet4();
 
         runAll(points);
 
