@@ -103,8 +103,6 @@ public class Improved {
 
         // From rightmost to highest point
         while((p = topRight.poll()) != null) {
-            System.out.println("Printing:::" + p);
-            hull.forEach(System.out::println);
             while(hull.size() >= 2 && Util.orientation(Util.getSecond(hull), hull.peek(), p) >= 0) {
                 hull.pop();
             }

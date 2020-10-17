@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 
+// Ima tezave s kolinearnimi tockami
 public class Quickhull {
 
     public static HashSet<Point> hull = null;
@@ -26,15 +27,15 @@ public class Quickhull {
             hull.add(p);
             hull.add(q);
             return;
-        }
+        } 
 
         Point farthest = points.get(farthestIndex);
 
         // odstrani tocke v trikotniku (p, q, farthest)
         if(points.size() > 3) {
             for(int i = 0; i < points.size(); i++) {                
-                if(points.get(i) != p && points.get(i) != q && points.get(i) != farthest &&
-                  points.get(i).isInTriangle(p, q, farthest)) {                    
+                if(!points.get(i).equals(p) && !points.get(i).equals(q) && !points.get(i).equals(farthest)
+                 && points.size() > 3 && points.get(i).isInTriangle(p, q, farthest)) {                    
                     points.remove(i);
                     i--;
                 }
@@ -44,8 +45,10 @@ public class Quickhull {
         int angle1 = -Util.orientation(farthest, p, q);
         int angle2 = -Util.orientation(farthest, q, p);
 
-        findHull(points, farthest, p, angle1);
-        findHull(points, farthest, q, angle2);
+        if(points != null && points.size() >= 2 && farthest != null) {
+            findHull(points, farthest, p, angle1);
+            findHull(points, farthest, q, angle2);
+        }
 
         return;
     } // convexHull
@@ -68,9 +71,11 @@ public class Quickhull {
             }
         }
 
+        Point pLeftmost  = points.get(leftmost);
+        Point pRightmost = points.get(rightmost);
 
-        findHull(points, points.get(leftmost), points.get(rightmost),  1);
-        findHull(points, points.get(leftmost), points.get(rightmost), -1);
+        findHull(points, pLeftmost, pRightmost,  1);
+        findHull(points, pLeftmost, pRightmost, -1);
 
         return hull.toArray(new Point[hull.size()]);
     }

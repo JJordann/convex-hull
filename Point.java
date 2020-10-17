@@ -40,7 +40,15 @@ public class Point {
         boolean has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
         boolean has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
 
-        return !(has_neg && has_pos);
+        return !(has_neg && has_pos) ;
+    }
+
+    public boolean isInTriangle2(Point a, Point b, Point c) {
+        boolean isAnEdge = this.equals(a) 
+                        || this.equals(b) 
+                        || this.equals(c);
+
+        return !isAnEdge && this.isInTriangle(a, b, c);
     }
 
 

@@ -69,6 +69,8 @@ public class Testing {
         points[14] = new Point(-5, -6);
         points[15] = new Point(0, -6);
         points[16] = new Point(1, -2);
+        //points[17] = new Point(-6, -3);
+        //points[18] = new Point(3, 0);
 
         return points;
     }
@@ -97,7 +99,7 @@ public class Testing {
         Util.printSet(GrahamScan.convexHull_Array(points.clone()));
         Util.printSet(Jarvis.convexHull(points.clone()));
         //Util.printSet(DivideAndConquer.convexHull(points.clone()));
-        //Util.printSet(Quickhull.convexHull(points.clone()));
+        Util.printSet(Quickhull.convexHull(points.clone()));
         Util.printSet(MonotoneChain.convexHull(points.clone()));
         Util.printSet(Improved.convexHull(points.clone()));
     }
