@@ -8,6 +8,8 @@ import javax.swing.JPanel;
 
 public class Plotting extends javax.swing.JFrame {
 
+    static final long serialVersionUID = 12;
+
     public static int thickness = 7;
     public static int zoom = 10;
     public static int xMin = 10, yMin = 10, xMax, yMax;
@@ -21,6 +23,8 @@ public class Plotting extends javax.swing.JFrame {
         findBounds(points);
 
         JPanel panel = new JPanel() {
+            static final long serialVersionUID = 1337;
+
             @Override
             public void paintComponent(Graphics g) {
                 super.paintComponent(g);

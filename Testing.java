@@ -1,7 +1,3 @@
-import java.awt.EventQueue;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
 
 public class Testing {
 
@@ -99,6 +95,65 @@ public class Testing {
         return points;
     }
 
+    public static Point[] testSet6() {
+        Point[] points = new Point[20];
+
+        points[0] = new Point(0, 0);
+        points[1] = new Point(1, 1);
+        points[2] = new Point(4, -1);
+        points[3] = new Point(0, -4);
+        points[4] = new Point(-3, -4);
+        points[5] = new Point(-5, 5);
+        points[6] = new Point(7, -2);
+        points[7] = new Point(-2, -3);
+        points[8] = new Point(4, -1);
+        points[9] = new Point(4, 0);
+        points[10] = new Point(1, 6);
+        points[11] = new Point(2, 5);
+        points[12] = new Point(-3, 7);
+        points[13] = new Point(-2, -1);
+        points[14] = new Point(6, 4);
+        points[15] = new Point(7, 8);
+        points[16] = new Point(7, -4);
+        points[17] = new Point(-8, 3);
+        points[18] = new Point(-8, -6);
+        points[19] = new Point(2, 8);
+
+        return points;
+    }
+    public static Point[] testSet7() {
+        Point[] points = new Point[25];
+
+        points[0] = new Point(0, 0);
+        points[1] = new Point(1, 1);
+        points[2] = new Point(4, -1);
+        points[3] = new Point(0, -4);
+        points[4] = new Point(-3, -4);
+        points[5] = new Point(-5, 5);
+        points[6] = new Point(7, -2);
+        points[7] = new Point(-2, -3);
+        points[8] = new Point(4, -1);
+        points[9] = new Point(4, 0);
+        points[10] = new Point(1, 6);
+        points[11] = new Point(2, 5);
+        points[12] = new Point(-3, 7);
+        points[13] = new Point(-2, -1);
+        points[14] = new Point(6, 4);
+        points[15] = new Point(7, 8);
+        points[16] = new Point(7, -4);
+        points[17] = new Point(-8, 3);
+        points[18] = new Point(-8, -6);
+        points[19] = new Point(2, 8);
+        points[20] = new Point(5, -5);
+        points[21] = new Point(-5, 8);
+        points[22] = new Point(8, 1);
+        points[23] = new Point(8, 3);
+        points[24] = new Point(-1, 8);
+
+        return points;
+    }
+
+
     public static void runAll(Point[] points) {
         Util.printSet(GrahamScan.convexHull(points.clone()));
         Util.printSet(GrahamScan.convexHull_Array(points.clone()));
@@ -116,11 +171,15 @@ public class Testing {
         Point[] points3 = testSet3();
         Point[] points4 = testSet4();
         Point[] points5 = testSet5();
+        Point[] points6 = testSet6();
+        Point[] points7 = testSet7();
         new Plotting(points1, DivideAndConquer.convexHull(points1), true, 0 * dx);
         new Plotting(points2, DivideAndConquer.convexHull(points2), true, 1 * dx);
         new Plotting(points3, DivideAndConquer.convexHull(points3), true, 2 * dx);
         new Plotting(points4, DivideAndConquer.convexHull(points4), true, 3 * dx);
         new Plotting(points5, DivideAndConquer.convexHull(points5), true, 4 * dx);
+        new Plotting(points6, DivideAndConquer.convexHull(points6), true, 5 * dx);
+        new Plotting(points7, DivideAndConquer.convexHull(points7), true, 6 * dx);
     }
 
     public static void main(String[] args) {
