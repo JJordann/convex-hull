@@ -2,22 +2,23 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.Point2D;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import java.util.Iterator;
 
 
 public class Plotting extends javax.swing.JFrame {
 
-    public static int thickness = 4;
+    public static int thickness = 7;
     public static int zoom = 10;
-    public static int xMin = 10;
-    public static int yMin = 10;
+    public static int xMin = 10, yMin = 10, xMax, yMax;
+
+    public static int margin = 100;
     
     public Plotting(Point[] points, Point[] hull, boolean connect) {
         super("Plotting");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        findBounds(points);
 
         JPanel panel = new JPanel() {
             @Override
@@ -45,13 +46,17 @@ public class Plotting extends javax.swing.JFrame {
                         Ellipse2D dot = new Ellipse2D.Float(x, y, thickness + 1, thickness + 1);
                         g2d.fill(dot);
 
-                        if(connect == true) {
-
+                        if(connect == true && i != 0) {
+                            Point a = scale(hull[i - 1]);
+                            Point b = scale(hull[i]);
+                            g2d.drawLine(a.x, a.y, b.x, b.y);
                         }
                     }
                     if(connect == true) {
                         // draw last line
-
+                        Point a = scale(hull[hull.length - 1]);
+                        Point b = scale(hull[0]);
+                        g2d.drawLine(a.x, a.y, b.x, b.y);
                     }
                 }
 
@@ -61,10 +66,33 @@ public class Plotting extends javax.swing.JFrame {
 
         // todo: poisci bounds
         setContentPane(panel);
-        setBounds(10, 10, 200, 200);
+        setBounds(xMin + margin, yMin + margin, xMax + margin, yMax + margin);
 
         setVisible(true);
 
     }
 
-}
+    public static Point scale(Point p) {
+
+        int x = (p.x + xMin) * zoom + thickness / 2;
+        int y = (p.y + yMin) * zoom + thickness / 2;
+
+        return new Point(x, y);
+    }
+
+    public static void findBounds(Point[] points) {
+
+        for(int i = 0; i < points.length; i++) {
+            Point p = scale(points[i]);
+            if(p.x < xMin) 
+                xMin = p.x;
+            if(p.x > xMax) 
+                xMax = p.x;
+            if(p.y < yMin) 
+                yMin = p.y;
+            if(p.y > yMax)
+                yMax = p.y;
+        }
+    } // findBounds
+
+} // Plotting
