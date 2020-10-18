@@ -5,11 +5,16 @@ public class DivideAndConquer {
     public static Point[] convexHull(Point[] points) {
 
         if(points.length <= 5) 
-            return GrahamScan.convexHull(points);
+            return Jarvis.convexHull(points);
 
         Comparator<Point> xComparator = new Comparator<Point>() {
             public int compare(Point p, Point q) {
-                return p.x - q.x;
+                if(p.x == q.x) {
+                    return p.y - q.y;
+                }
+                else {
+                    return p.x - q.x;
+                }
             }
         };
 
@@ -30,11 +35,11 @@ public class DivideAndConquer {
         List<Point> merged = new LinkedList<Point>();
 
         if(leftHalf == null) {
-            return GrahamScan.convexHull(rightHalf);
+            return Jarvis.convexHull(rightHalf);
         }
 
         if(rightHalf == null) {
-            return GrahamScan.convexHull(leftHalf);
+            return Jarvis.convexHull(leftHalf);
         }
 
         int rightmostA = 0;

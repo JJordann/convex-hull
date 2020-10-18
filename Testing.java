@@ -1,13 +1,9 @@
 import java.awt.EventQueue;
-
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import java.util.ArrayList;
-import java.util.List;
 
-
-public class Testing extends javax.swing.JFrame{
+public class Testing {
 
     public static Point[] testSet1() {
         Point points[] = new Point[7];
@@ -113,30 +109,23 @@ public class Testing extends javax.swing.JFrame{
         Util.printSet(Improved.convexHull(points.clone()));
     }
 
-    private List points = new ArrayList();
+    public static void plotAll() {
+        int dx = 250;
+        Point[] points1 = testSet1();
+        Point[] points2 = testSet2();
+        Point[] points3 = testSet3();
+        Point[] points4 = testSet4();
+        Point[] points5 = testSet5();
+        new Plotting(points1, DivideAndConquer.convexHull(points1), true, 0 * dx);
+        new Plotting(points2, DivideAndConquer.convexHull(points2), true, 1 * dx);
+        new Plotting(points3, DivideAndConquer.convexHull(points3), true, 2 * dx);
+        new Plotting(points4, DivideAndConquer.convexHull(points4), true, 3 * dx);
+        new Plotting(points5, DivideAndConquer.convexHull(points5), true, 4 * dx);
+    }
 
     public static void main(String[] args) {
 
-        //EventQueue.invokeLater(new Runnable() {
-            //@Override
-            //public void run() {
-                //try {
-                    //UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                //}
-                //catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-                    //e.printStackTrace();
-                //}
-
-                //new Plotting(testSet4(), GrahamScan.convexHull(testSet4()));
-            //}
-        //});
-
-        new Plotting(testSet4(), GrahamScan.convexHull(testSet4()), true);
-
-        //Point[] points = testSet4();
-        //runAll(points);
-
-
+        plotAll();
 
     } // main
     

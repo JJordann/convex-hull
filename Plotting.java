@@ -14,8 +14,8 @@ public class Plotting extends javax.swing.JFrame {
 
     public static int margin = 100;
     
-    public Plotting(Point[] points, Point[] hull, boolean connect) {
-        super("Plotting");
+    public Plotting(Point[] points, Point[] hull, boolean connect, int leftMargin) {
+        super("Plot");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         findBounds(points);
@@ -64,9 +64,8 @@ public class Plotting extends javax.swing.JFrame {
             }
         };
 
-        // todo: poisci bounds
         setContentPane(panel);
-        setBounds(xMin + margin, yMin + margin, xMax + margin, yMax + margin);
+        setBounds(leftMargin + margin, margin, xMax + margin, yMax + margin);
 
         setVisible(true);
 
