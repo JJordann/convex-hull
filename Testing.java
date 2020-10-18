@@ -1,4 +1,13 @@
-public class Testing {
+import java.awt.EventQueue;
+
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class Testing extends javax.swing.JFrame{
 
     public static Point[] testSet1() {
         Point points[] = new Point[7];
@@ -104,11 +113,28 @@ public class Testing {
         Util.printSet(Improved.convexHull(points.clone()));
     }
 
+    private List points = new ArrayList();
+
     public static void main(String[] args) {
 
-        Point[] points = testSet4();
+        //EventQueue.invokeLater(new Runnable() {
+            //@Override
+            //public void run() {
+                //try {
+                    //UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                //}
+                //catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+                    //e.printStackTrace();
+                //}
 
-        runAll(points);
+                //new Plotting(testSet4(), GrahamScan.convexHull(testSet4()));
+            //}
+        //});
+
+        new Plotting(testSet4(), GrahamScan.convexHull(testSet4()), true);
+
+        //Point[] points = testSet4();
+        //runAll(points);
 
 
 
