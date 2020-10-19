@@ -173,24 +173,18 @@ public class Testing {
         Point[] points5 = testSet5();
         Point[] points6 = testSet6();
         Point[] points7 = testSet7();
-        new Plotting(points1, Quickhull.convexHull(points1), false, 0 * dx);
-        new Plotting(points2, Quickhull.convexHull(points2), false, 1 * dx);
-        new Plotting(points3, Quickhull.convexHull(points3), false, 2 * dx);
-        new Plotting(points4, Quickhull.convexHull(points4), false, 3 * dx);
-        new Plotting(points5, Quickhull.convexHull(points5), false, 4 * dx);
-        new Plotting(points6, Quickhull.convexHull(points6), false, 5 * dx);
-        new Plotting(points7, Quickhull.convexHull(points7), false, 6 * dx);
+        new Plotting(points1, MonotoneChain.convexHull(points1), true, 0 * dx);
+        new Plotting(points2, MonotoneChain.convexHull(points2), true, 1 * dx);
+        new Plotting(points3, MonotoneChain.convexHull(points3), true, 2 * dx);
+        new Plotting(points4, MonotoneChain.convexHull(points4), true, 3 * dx);
+        new Plotting(points5, MonotoneChain.convexHull(points5), true, 4 * dx);
+        new Plotting(points6, MonotoneChain.convexHull(points6), true, 5 * dx);
+        new Plotting(points7, MonotoneChain.convexHull(points7), true, 6 * dx);
     }
 
     public static void main(String[] args) {
 
-        //plotAll();
-
-
-        Point[] points = testSet4();
-        Point[] pruned = AklToussaint.prune(points);
-
-        new Plotting(points, pruned, false, 0);
+        plotAll();
 
     } // main
     

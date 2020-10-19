@@ -1,6 +1,9 @@
 import java.util.ArrayList;
 
-// Jarvis march a.k.a Gift Wrapping
+/*
+  Jarvis march a.k.a Gift Wrapping
+ (has troubles with colinear points)
+*/
 public class Jarvis {
 
     public static Point[] convexHull(Point[] points) {
@@ -10,6 +13,7 @@ public class Jarvis {
 
         ArrayList<Point> hull = new ArrayList<Point>();
 
+        // Find the lowest point
         int lowestIndex = 0;
         for(int i = 1; i < points.length; i++) {
             if(points[i].y < points[lowestIndex].y) {
@@ -22,6 +26,7 @@ public class Jarvis {
             }
         }
 
+        // Begin at the lowest point
         int currentPoint = lowestIndex;
         int nextPoint; 
 
@@ -30,6 +35,8 @@ public class Jarvis {
 
             nextPoint = (currentPoint + 1) % (points.length);
 
+            // Find the point with the largest counter-clockwise angle,
+            // relative to the current hull
             for(int i = 0; i < points.length; i++) {
                 if(Util.orientation(points[currentPoint], points[i], points[nextPoint]) == -1)
                     nextPoint = i;
@@ -37,6 +44,7 @@ public class Jarvis {
 
             currentPoint = nextPoint;
 
+            // Repeat until connected
         } while(currentPoint != lowestIndex);
 
         return hull.toArray(new Point[hull.size()]);

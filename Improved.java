@@ -9,6 +9,7 @@ public class Improved {
 
         int leftmost = 0, rightmost = 0, lowest = 0, highest = 0;
 
+        // Find extreme points
         for(int i = 1; i < points.length; i++) {
 
             if(points[i].x < points[leftmost].x)
@@ -44,7 +45,19 @@ public class Improved {
             }
         };
 
-
+        // Discard points inside of the quadrilateral formed by connecting extreme points,
+        // divide residual points into 4 priority queues based on their position 
+        // relative to the quadrilateral
+        /*
+                   / \
+         topLeft  /   \ topRight
+                 /     \
+                /discard\
+                \       /
+        botLeft  \     / botRight
+                  \   /
+                   \ /
+        */
         PriorityQueue<Point> topLeft  = new PriorityQueue<Point>(points.length, maxComparator);
         PriorityQueue<Point> topRight = new PriorityQueue<Point>(points.length, maxComparator);
         PriorityQueue<Point> botLeft  = new PriorityQueue<Point>(points.length, minComparator);
@@ -66,13 +79,12 @@ public class Improved {
                 if(points[i].x >= points[lowest].x && points[i].y <= points[rightmost].y){
                     botRight.add(points[i]);
                 }
-            }
-            else {
-                //System.out.println("Discarded: " + points[i]);
-            }
-        }
+            } // if !inside
+        } // for
 
 
+        // Construct the hull using the monotone chain method,
+        // one region at a time, moving in counter-clockwise direction
         Stack<Point> hull = new Stack<Point>();
         Point p = null;
 
@@ -113,11 +125,5 @@ public class Improved {
 
         Point[] ret = new Point[hull.size()];
         return hull.toArray(ret);
-    }
-
-    public static void main(String[] args) {
-        Point[] points = Testing.testSet4();
-        Util.printSet(convexHull(points));
-    }
-    
-}
+    } // convexHull
+} // 

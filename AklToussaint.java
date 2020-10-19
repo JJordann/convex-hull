@@ -9,6 +9,7 @@ public class AklToussaint {
         
         int leftmost = 0, rightmost = 0, lowest = 0, highest = 0;
 
+        // Find extreme points
         for(int i = 0; i < points.length; i++) {
             if(points[i].x < points[leftmost].x)
                 leftmost = i;
@@ -28,6 +29,8 @@ public class AklToussaint {
         Point pLowest    = points[lowest];
         Point pHighest   = points[highest];
 
+        // Discard every point inside the quadrilateral
+        // formed by connecting extreme points
         for(int i = 0; i < points.length; i++) {
             if( ! Util.isInsideQuadrilateral(points[i], pLeftmost, pRightmost, pLowest, pHighest)) {
                 residual[resSize++] = points[i];
