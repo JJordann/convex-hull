@@ -77,6 +77,12 @@ public class Plotting extends javax.swing.JFrame {
 
     public static Point scale(Point p) {
 
+        if(p == null) {
+            int x = (1 + xMin) * zoom + thickness / 2;
+            int y = (1 + yMin) * zoom + thickness / 2;
+            return new Point(x, y);
+        }
+
         int x = (p.x + xMin) * zoom + thickness / 2;
         int y = (p.y + yMin) * zoom + thickness / 2;
 

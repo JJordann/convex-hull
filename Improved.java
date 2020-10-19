@@ -44,17 +44,11 @@ public class Improved {
             }
         };
 
-        //System.out.println(points[leftmost]);
-        //System.out.println(points[rightmost]);
-        //System.out.println(points[lowest]);
-        //System.out.println(points[highest]);
 
         PriorityQueue<Point> topLeft  = new PriorityQueue<Point>(points.length, maxComparator);
         PriorityQueue<Point> topRight = new PriorityQueue<Point>(points.length, maxComparator);
         PriorityQueue<Point> botLeft  = new PriorityQueue<Point>(points.length, minComparator);
         PriorityQueue<Point> botRight = new PriorityQueue<Point>(points.length, minComparator);
-
-
 
         for(int i = 0; i < points.length; i++) {
             if( ! isInsideQuadrilateral(points[i], points[leftmost], points[rightmost], points[lowest], points[highest])) {
@@ -117,8 +111,6 @@ public class Improved {
             hull.add(p);
         }
 
-
-        //hull.pop();
         Point[] ret = new Point[hull.size()];
         return hull.toArray(ret);
     }

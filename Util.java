@@ -22,6 +22,10 @@ public class Util {
         }
     }
 
+    public static float direction(Point u, Point v, Point p) {
+        return (v.x - u.x) * (p.y - u.y) - (v.y - u.y) * (p.x - u.x);
+    }
+
 
     public static void printSet(Point s[]) {
         for(int i = 0; i < s.length; i++) {
@@ -39,14 +43,8 @@ public class Util {
     }
 
     public static void printQueue(PriorityQueue<Point> q) {
-        //System.out.println("Priority queue: ");
-        //Point p = null;
-        //while((p = q.poll()) != null) {
-            //System.out.print(p + " ");
-        //}
-        //System.out.println();
-
-        q.forEach(System.out::println);
+        q.forEach(System.out::print);
+        System.out.println();
     }
 
 }
