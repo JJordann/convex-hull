@@ -43,6 +43,7 @@ public class Point {
         return !(has_neg && has_pos) ;
     }
 
+    // TODO: rename
     public boolean isInTriangle2(Point a, Point b, Point c) {
         boolean isAnEdge = this.equals(a) 
                         || this.equals(b) 

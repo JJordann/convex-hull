@@ -156,9 +156,9 @@ public class Testing {
 
     public static void runAll(Point[] points) {
         Util.printSet(GrahamScan.convexHull(points.clone()));
-        //Util.printSet(GrahamScan.convexHull_Array(points.clone()));
+        Util.printSet(GrahamScan.convexHull_Array(points.clone()));
         Util.printSet(Jarvis.convexHull(points.clone()));
-        //Util.printSet(DivideAndConquer.convexHull(points.clone()));
+        Util.printSet(DivideAndConquer.convexHull(points.clone()));
         Util.printSet(Quickhull.convexHull(points.clone()));
         Util.printSet(MonotoneChain.convexHull(points.clone()));
         Util.printSet(Improved.convexHull(points.clone()));
@@ -184,7 +184,13 @@ public class Testing {
 
     public static void main(String[] args) {
 
-        plotAll();
+        //plotAll();
+
+
+        Point[] points = testSet4();
+        Point[] pruned = AklToussaint.prune(points);
+
+        new Plotting(points, pruned, false, 0);
 
     } // main
     

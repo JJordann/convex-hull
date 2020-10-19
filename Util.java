@@ -47,4 +47,17 @@ public class Util {
         System.out.println();
     }
 
+    public static boolean isInsideQuadrilateral(Point p, Point left, Point right, Point low, Point high) {
+
+        boolean inside = p.isInTriangle(left, high, right) 
+                      || p.isInTriangle(left, low, right);
+
+        boolean notAnEdge = !p.equals(left) 
+                         && !p.equals(right) 
+                         && !p.equals(low) 
+                         && !p.equals(high);
+
+        return inside && notAnEdge;
+    }
+
 }

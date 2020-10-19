@@ -51,7 +51,7 @@ public class Improved {
         PriorityQueue<Point> botRight = new PriorityQueue<Point>(points.length, minComparator);
 
         for(int i = 0; i < points.length; i++) {
-            if( ! isInsideQuadrilateral(points[i], points[leftmost], points[rightmost], points[lowest], points[highest])) {
+            if( ! Util.isInsideQuadrilateral(points[i], points[leftmost], points[rightmost], points[lowest], points[highest])) {
 
                 // todo: dodaj else in ekstremne tocke vstavi loceno
                 if(points[i].x <= points[highest].x && points[i].y >= points[leftmost].y) {
@@ -114,21 +114,6 @@ public class Improved {
         Point[] ret = new Point[hull.size()];
         return hull.toArray(ret);
     }
-
-
-    public static boolean isInsideQuadrilateral(Point p, Point left, Point right, Point low, Point high) {
-
-        boolean inside = p.isInTriangle(left, high, right) 
-                      || p.isInTriangle(left, low, right);
-
-        boolean notAnEdge = !p.equals(left) 
-                         && !p.equals(right) 
-                         && !p.equals(low) 
-                         && !p.equals(high);
-
-        return inside && notAnEdge;
-    }
-
 
     public static void main(String[] args) {
         Point[] points = Testing.testSet4();

@@ -3,7 +3,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 
-// Ima tezave s kolinearnimi tockami
 public class Quickhull {
 
     public static HashSet<Point> hull = new HashSet<Point>();
@@ -16,8 +15,8 @@ public class Quickhull {
         int farthestIndex = -1;
         int max_distance = 0;
 
+        // Find the farthest point from the line pq
         for(int i = 0; i < points.size(); i++) {
-
             int dist = points.get(i).distanceFromLine(p, q);
             if(dist > max_distance) {
                    farthestIndex = i;
@@ -25,34 +24,30 @@ public class Quickhull {
                }
         }
 
-        //Point[] ext = new Point[3];
-        //ext[0] = p;
-        //ext[1] = q;
-        //ext[2] = points.get(farthestIndex);
-        //new Plotting(points.toArray(new Point[points.size()]), ext, true, 0);
-
-
-        if(farthestIndex == -1) {
-           //hull.add(p);
-           //hull.add(q);
+        if(farthestIndex == -1)
            return;
-        } 
-        else {
-            hull.add(points.get(farthestIndex));
-
-            //Point[] ext = new Point[3];
-            //ext[0] = p;
-            //ext[1] = q;
-            //ext[2] = points.get(farthestIndex);
-            //new Plotting(points.toArray(new Point[points.size()]), ext, true, 0);
-        }
 
         Point farthest = points.get(farthestIndex);
 
-        // TODO: razdeli tocke v dve regiji !!!!!
+        // Farthest point is added to the hull
+        hull.add(farthest);
+
         ArrayList<Point> U = new ArrayList<Point>();
         ArrayList<Point> L = new ArrayList<Point>();
 
+        /*  Split the set of points into 3 regions, {S, U, L},
+            depending on their position relative to the farthest point, r.
+            Points in S are discarded
+            q
+            |\
+            | \   U
+            |  \  
+            | S r
+            |  /
+            | /   L
+            |/
+            p 
+        */
         for(int i = 0; i < points.size(); i++) {
             Point pt = points.get(i);
             float dir = Util.direction(p, farthest, pt);
@@ -65,19 +60,13 @@ public class Quickhull {
                 }
             }
         }
-
-
-        //new Plotting(points.toArray(new Point[points.size()]), U.toArray(new Point[U.size()]), false, 250);
-        //new Plotting(points.toArray(new Point[points.size()]), L.toArray(new Point[L.size()]), false, 500);
         
 
         // Recur for both regions separately
         // (p = lowest, q = highest)
-
         findHull(L, p, farthest); 
         findHull(U, farthest, q);
 
-        return;
     } // convexHull
 
 
@@ -101,9 +90,13 @@ public class Quickhull {
         Point pLowest  = points.get(lowest);
         Point pHighest = points.get(highest);
 
+        // Initial extreme points are added to the hull
         hull.add(pLowest);
         hull.add(pHighest);
 
+
+        // Split the set of points into {left, right}, 
+        // based on their position relative to the line (pLowest, pHighest)
         ArrayList<Point> left  = new ArrayList<Point>();
         ArrayList<Point> right = new ArrayList<Point>();
 
@@ -120,28 +113,11 @@ public class Quickhull {
             }
         }
 
-
-
-       // Point[] ext = new Point[2];
-       // ext[0] = points0[leftmost];
-       // ext[1] = points0[rightmost];
-
-       // new Plotting(points.toArray(new Point[hull.size()]), ext, true, 0);
-
-
-
+        // Begin recursion for both sides separately
         findHull(left,  pLowest, pHighest);
         findHull(right, pHighest, pLowest);
 
         return hull.toArray(new Point[hull.size()]);
     }
 
-
-    public static void main(String[] args) {
-        Point[] points = Testing.testSet5();
-        Point[] hull = convexHull(points);
-
-        new Plotting(points, hull, false, 1000);
-    }
-
-}
+} // Quickhull
