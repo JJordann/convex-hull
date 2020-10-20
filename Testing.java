@@ -156,7 +156,6 @@ public class Testing {
 
     public static void runAll(Point[] points) {
         Util.printSet(GrahamScan.convexHull(points.clone()));
-        Util.printSet(GrahamScan.convexHull_Array(points.clone()));
         Util.printSet(Jarvis.convexHull(points.clone()));
         Util.printSet(DivideAndConquer.convexHull(points.clone()));
         Util.printSet(Quickhull.convexHull(points.clone()));
@@ -173,13 +172,13 @@ public class Testing {
         Point[] points5 = testSet5();
         Point[] points6 = testSet6();
         Point[] points7 = testSet7();
-        new Plotting(points1, MonotoneChain.convexHull(points1), true, 0 * dx);
-        new Plotting(points2, MonotoneChain.convexHull(points2), true, 1 * dx);
-        new Plotting(points3, MonotoneChain.convexHull(points3), true, 2 * dx);
-        new Plotting(points4, MonotoneChain.convexHull(points4), true, 3 * dx);
-        new Plotting(points5, MonotoneChain.convexHull(points5), true, 4 * dx);
-        new Plotting(points6, MonotoneChain.convexHull(points6), true, 5 * dx);
-        new Plotting(points7, MonotoneChain.convexHull(points7), true, 6 * dx);
+        new Plotting(points1, Torch.convexHull(points1), true, 0 * dx);
+        new Plotting(points2, Torch.convexHull(points2), true, 1 * dx);
+        new Plotting(points3, Torch.convexHull(points3), true, 2 * dx);
+        new Plotting(points4, Torch.convexHull(points4), true, 3 * dx);
+        new Plotting(points5, Torch.convexHull(points5), true, 4 * dx);
+        new Plotting(points6, Torch.convexHull(points6), true, 5 * dx);
+        new Plotting(points7, Torch.convexHull(points7), true, 6 * dx);
     }
 
     public static void main(String[] args) {
