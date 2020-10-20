@@ -7,18 +7,7 @@ public class DivideAndConquer {
         if(points.length <= 5) 
             return Jarvis.convexHull(points);
 
-        Comparator<Point> xComparator = new Comparator<Point>() {
-            public int compare(Point p, Point q) {
-                if(p.x == q.x) {
-                    return p.y - q.y;
-                }
-                else {
-                    return p.x - q.x;
-                }
-            }
-        };
-
-        Arrays.sort(points, xComparator);
+        Arrays.sort(points, Util.xComparator);
         
         // Divide points into 2 groups by x coordinate
         Point[] leftPoints  = Arrays.copyOfRange(points, 0, points.length / 2);
@@ -31,7 +20,5 @@ public class DivideAndConquer {
         // Merge both hulls into one
         return Util.merge(leftHull, rightHull);
     } // convexHull
-
-
 
 } // DivideAndConquer

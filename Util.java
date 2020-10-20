@@ -1,6 +1,26 @@
 import java.util.*;
 
 public class Util {
+
+
+    public static Comparator<Point> xComparator = new Comparator<Point>() {
+            public int compare(Point p, Point q) {
+                if(p.x == q.x)
+                    return p.y - q.y;
+                else
+                    return p.x - q.x;
+            }
+    };
+
+    public static Comparator<Point> xComparatorReverse = new Comparator<Point>() {
+            public int compare(Point p, Point q) {
+                if(p.x == q.x)
+                    return p.y - q.y;
+                else
+                    return q.x - p.x;
+            }
+        };
+
     
     public static float sign(Point p, Point q, Point r) {
         return (p.x - r.x) * (q.y - r.y) -

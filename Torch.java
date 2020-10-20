@@ -2,7 +2,6 @@ import java.util.Comparator;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 
 
 public class Torch {
@@ -22,8 +21,6 @@ public class Torch {
 
         // Sort by x coordinate
         Arrays.sort(points, xComparator);
-
-        //Util.printSet(points);
 
         // After sorting by x coordinate, leftmost and rightmost 
         // points are the first and last elements of the array
@@ -116,7 +113,6 @@ public class Torch {
                 Point c = A.get((i + 2) % n);
 
                 int det = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
-                //int det = -Util.orientation(a, b, c);
 
                 if(det <= 0) {
                     backtrack++;
@@ -129,7 +125,7 @@ public class Torch {
         }
 
         return hull.toArray(new Point[hull.size()]);
-    }
+    } // convexHull
     
 
     /* 

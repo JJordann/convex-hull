@@ -2,22 +2,15 @@ import java.util.Comparator;
 import java.util.Stack;
 import java.util.Arrays;
 
+/*
+    a.k.a Andrew's algorithm
+*/
 public class MonotoneChain {
     
     public static Point[] convexHull(Point[] points) {
 
-        Comparator<Point> xComparator = new Comparator<Point>() {
-            public int compare(Point p, Point q) {
-                if(p.x == q.x)
-                    return p.y - q.y;
-                else
-                    return p.x - q.x;
-            }
-        };
-
         // Sort points by x coordinate
-        Arrays.sort(points, xComparator);
-
+        Arrays.sort(points, Util.xComparator);
 
         Stack<Point> S = new Stack<Point>();
         S.add(points[0]);

@@ -27,23 +27,6 @@ public class Improved {
 
 
         // TODO: 4 comparatorje, obravnavaj primer p.x == q.x
-        Comparator<Point> maxComparator = new Comparator<Point>() {
-            public int compare(Point p, Point q) {
-                if(p.x == q.x)
-                    return p.y - q.y;
-                else
-                    return q.x - p.x;
-            }
-        };
-
-        Comparator<Point> minComparator = new Comparator<Point>() {
-            public int compare(Point p, Point q) {
-                if(p.x == q.x)
-                    return p.y - q.y;
-                else
-                    return p.x - q.x;
-            }
-        };
 
         // Discard points inside of the quadrilateral formed by connecting extreme points,
         // divide residual points into 4 priority queues based on their position 
@@ -58,15 +41,15 @@ public class Improved {
                   \   /
                    \ /
         */
-        PriorityQueue<Point> topLeft  = new PriorityQueue<Point>(points.length, maxComparator);
-        PriorityQueue<Point> topRight = new PriorityQueue<Point>(points.length, maxComparator);
-        PriorityQueue<Point> botLeft  = new PriorityQueue<Point>(points.length, minComparator);
-        PriorityQueue<Point> botRight = new PriorityQueue<Point>(points.length, minComparator);
+        PriorityQueue<Point> topLeft  = new PriorityQueue<Point>(points.length, Util.xComparatorReverse);
+        PriorityQueue<Point> topRight = new PriorityQueue<Point>(points.length, Util.xComparatorReverse);
+        PriorityQueue<Point> botLeft  = new PriorityQueue<Point>(points.length, Util.xComparator);
+        PriorityQueue<Point> botRight = new PriorityQueue<Point>(points.length, Util.xComparator);
 
         for(int i = 0; i < points.length; i++) {
             if( ! Util.isInsideQuadrilateral(points[i], points[leftmost], points[rightmost], points[lowest], points[highest])) {
 
-                // todo: dodaj else in ekstremne tocke vstavi loceno
+                // TODO: dodaj else in ekstremne tocke vstavi loceno
                 if(points[i].x <= points[highest].x && points[i].y >= points[leftmost].y) {
                     topLeft.add(points[i]);
                 }
