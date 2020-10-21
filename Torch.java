@@ -8,19 +8,8 @@ public class Torch {
 
     public static Point[] convexHull(Point[] points) {
 
-        Comparator<Point> xComparator = new Comparator<Point>() {
-            public int compare(Point p, Point q) {
-                if(p.x == q.x) {
-                    return p.y - q.y;
-                }
-                else {
-                    return p.x - q.x;
-                }
-            }
-        };
-
         // Sort by x coordinate
-        Arrays.sort(points, xComparator);
+        Arrays.sort(points, Util.xComparator);
 
         // After sorting by x coordinate, leftmost and rightmost 
         // points are the first and last elements of the array

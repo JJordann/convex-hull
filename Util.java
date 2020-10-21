@@ -1,4 +1,7 @@
-import java.util.*;
+import java.util.Comparator;
+import java.util.Stack;
+import java.util.PriorityQueue;
+import java.util.ArrayList;
 
 public class Util {
 
@@ -83,7 +86,7 @@ public class Util {
 
     public static Point[] merge(Point[] leftHalf, Point[] rightHalf) {
 
-        List<Point> merged = new LinkedList<Point>();
+        ArrayList<Point> merged = new ArrayList<Point>();
 
         if(leftHalf == null) {
             return Jarvis.convexHull(rightHalf);
@@ -161,6 +164,108 @@ public class Util {
         merged.add(rightHalf[upperB]);
 
         return merged.toArray(new Point[merged.size()]);
+    }
+
+
+    public static boolean below(Point p, Point a, Point b) {
+        // true if a is below b
+        return Util.orientation(p, a, b) < 0;
+    }
+
+
+    public static boolean above(Point p, Point a, Point b) {
+        // true if a is above b
+        return Util.orientation(p, a, b) > 0;
+    }
+
+
+    public static int leftTangent(Point[] points, Point p) {
+
+        int a, b, c;
+        boolean downC, downA;
+
+        if(above(p, points[points.length - 1], points[0]) && below(p, points[1], points[0]))
+            return 0;
+
+        for(a = 0, b = points.length;;) {
+            c = (a + b) / 2;
+
+            downC = below(p, points[c - 1], points[c]);
+            if(above(p, points[c - 1], points[c]) && downC == false) {
+                return c;
+            }
+
+            downA = below(p, points[a + 1], points[a]);
+            if(downA == true) {
+                if(downC == false) {
+                    b = c;
+                }
+                else {
+                    if(below(p, points[a], points[c]))
+                        b = c;
+                    else
+                        a = c;
+                }
+            }
+            else {
+                if(downC == true)
+                    a = c;
+                else {
+                    if(above(p, points[a], points[c]))
+                        b = c;
+                    else
+                        a = c;
+                }
+            }
+
+        } // for
+    } // leftTangent
+
+
+    public static int rightTangent(Point[] points, Point p) {
+
+        int a, b, c;
+        boolean upA, downC;
+
+        if(below(p, points[1], points[0]) && above(p, points[points.length - 1], points[0]))
+            return 0;
+
+        for(a = 0, b = points.length;;) {
+            c = (a + b) / 2;
+            downC = below(p, points[c + 1], points[c]);
+            if(downC && !above(p, points[c - 1], points[c]))
+                return c;
+
+            upA = above(p, points[a + 1], points[a]);
+            if(upA == true) {
+                if(downC == true) {
+                    b = c;
+                }
+                else {
+                    if(above(p, points[a], points[c]))
+                        b = c;
+                    else
+                        a = c;
+                }
+            } // if upA
+            else {
+                if(downC == false)
+                    a = c;
+                else {
+                    if(below(p, points[a], points[c]))
+                        b = c;
+                    else
+                        a = c;
+                }
+            }
+        }
+
+    } // rightTangent
+
+
+
+    public static Point[] fastMerge(Point[] left, Point[] right) {
+        return null;
     }
 
 }
