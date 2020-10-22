@@ -195,7 +195,7 @@ public class Util {
                 return c;
             }
 
-            downA = below(p, points[a + 1], points[a]);
+            downA = below(p, points[(a + 1) % points.length], points[a]);
             if(downA == true) {
                 if(downC == false) {
                     b = c;
@@ -262,6 +262,44 @@ public class Util {
 
     } // rightTangent
 
+
+    // linear search for tangents
+    public static ArrayList<Point> tangents(ArrayList<Point> points, Point p) {
+
+        if(points.size() <= 2) {
+            return points;
+        }
+
+        int left  = 0;
+        int right = 0; 
+
+        float next;
+        float prev = isLeft(points.get(0), points.get(1), p);
+
+        for(int i = 1; i < points.size(); i++) {
+            next = isLeft(points.get(i), points.get( (i + 1) % points.size() ), p);
+            if( (prev <= 0) && (next > 0) ) {
+                right = i;
+            }
+            else if( (prev > 0) && (next <= 0) ) {
+                if( !above(p, points.get(i), points.get(left)) ) {
+                    left = i;
+                }
+            }
+
+            prev = next;
+
+        }
+
+        ArrayList<Point> tangents = new ArrayList<Point>(2);
+        tangents.add(points.get(left));
+        tangents.add(points.get(right));
+        return tangents;
+    }
+
+    public static float isLeft(Point a, Point b, Point c) {
+        return (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y);
+    }
 
 
     public static Point[] fastMerge(Point[] left, Point[] right) {
