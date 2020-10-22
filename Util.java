@@ -264,7 +264,7 @@ public class Util {
 
 
     // linear search for tangents
-    public static ArrayList<Point> tangents(ArrayList<Point> points, Point p) {
+    public static ArrayList<Point> convexTangents(ArrayList<Point> points, Point p) {
 
         if(points.size() <= 2) {
             return points;
@@ -292,10 +292,47 @@ public class Util {
         }
 
         ArrayList<Point> tangents = new ArrayList<Point>(2);
+        //tangents.add(points.get(left));
+        tangents.add(points.get(right));
+        return tangents;
+    }
+
+    // linear search for tangents to a concave polygon
+    public static ArrayList<Point> concaveTangents(ArrayList<Point> points, Point p) {
+
+        if(points.size() <= 2) {
+            return points;
+        }
+
+        int left  = 0;
+        int right = 0; 
+
+        float next;
+        float prev = isLeft(points.get(0), points.get(1), p);
+
+        for(int i = 1; i < points.size(); i++) {
+            next = isLeft(points.get(i), points.get( (i + 1) % points.size() ), p);
+            if( (prev <= 0) && (next > 0) ) {
+                if( !below(p, points.get(i), points.get(right))) {
+                    right = i;
+                }
+            }
+            else if( (prev > 0) && (next <= 0) ) {
+                if(!above(p, points.get(i), points.get(left))) {
+                    left = i;
+                }
+            }
+
+            prev = next;
+
+        }
+
+        ArrayList<Point> tangents = new ArrayList<Point>(2);
         tangents.add(points.get(left));
         tangents.add(points.get(right));
         return tangents;
     }
+
 
     public static float isLeft(Point a, Point b, Point c) {
         return (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y);

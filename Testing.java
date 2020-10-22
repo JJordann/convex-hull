@@ -172,13 +172,13 @@ public class Testing {
         Point[] points5 = testSet5();
         Point[] points6 = testSet6();
         Point[] points7 = testSet7();
-        new Plotting(points1, DivideAndConquer.convexHull(points1), true, 0 * dx);
-        new Plotting(points2, DivideAndConquer.convexHull(points2), true, 1 * dx);
-        new Plotting(points3, DivideAndConquer.convexHull(points3), true, 2 * dx);
-        new Plotting(points4, DivideAndConquer.convexHull(points4), true, 3 * dx);
-        new Plotting(points5, DivideAndConquer.convexHull(points5), true, 4 * dx);
-        new Plotting(points6, DivideAndConquer.convexHull(points6), true, 5 * dx);
-        new Plotting(points7, DivideAndConquer.convexHull(points7), true, 6 * dx);
+        new Plotting(points1, Chan.convexHull(points1), true, 0 * dx);
+        new Plotting(points2, Chan.convexHull(points2), true, 1 * dx);
+        new Plotting(points3, Chan.convexHull(points3), true, 2 * dx);
+        new Plotting(points4, Chan.convexHull(points4), true, 3 * dx);
+        new Plotting(points5, Chan.convexHull(points5), true, 4 * dx);
+        new Plotting(points6, Chan.convexHull(points6), true, 5 * dx);
+        new Plotting(points7, Chan.convexHull(points7), true, 6 * dx);
     }
 
     public static void main(String[] args) {

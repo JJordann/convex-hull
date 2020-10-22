@@ -1,12 +1,15 @@
 import java.util.ArrayList;
 import java.lang.Math;
 
+
 public class Chan {
 
-    public static Point[] convexHull(Point[] points) {
+    public static Point[] convexHull(Point[] points, int t) {
 
-        // m: number of elements in each subgroup
-        int m = 9;
+        // m: number of points in each mini-hull
+        int m = Math.min(points.length, (int) Math.pow(2, Math.pow(2, t)));
+
+        // number of mini-hulls
         int numGroups = (int) Math.ceil( (float) points.length / (float) m);
 
         ArrayList<ArrayList<Point>> K = new ArrayList<ArrayList<Point>>(numGroups);
@@ -20,16 +23,14 @@ public class Chan {
                 h++;
         }
         
-        K.forEach(l -> printList(l));
+        //K.forEach(l -> printList(l));
 
         for(int i = 0; i < numGroups; i++) {
             K.set(i, GrahamScan.convexHull_list(K.get(i)));
         }
 
-        System.out.println("---");
-        K.forEach(l -> printList(l));
-
-
+        //System.out.println("---");
+        //K.forEach(l -> printList(l));
 
 
         Point currentPoint = K.get(0).get(0);
@@ -48,13 +49,12 @@ public class Chan {
 
         // stores the final hull
         ArrayList<Point> hull = new ArrayList<Point>();
-        //hull.add(currentPoint);
 
         // stores index of subhull, which each point in hull belongs to
         ArrayList<Integer> subhullIndex = new ArrayList<Integer>();
         subhullIndex.add(currentHull);
 
-        System.out.println("Lowest: " + currentPoint + "; hull: " + currentHull);
+        //System.out.println("Lowest: " + currentPoint + "; hull: " + currentHull);
 
 
         Point nextPoint;
@@ -62,8 +62,8 @@ public class Chan {
 
         do {
             hull.add(currentPoint);
-            hull.forEach(System.out::print);
-            System.out.println();
+            //hull.forEach(System.out::print);
+            //System.out.println(" (hull: " + currentHull + ")");
 
             // find tangents to all other subhulls
             tangents = new ArrayList<Point>(2 * numGroups);
@@ -80,21 +80,27 @@ public class Chan {
                         //tangents.add(K.get(h).get(lTangent));
                         //tangents.add(K.get(h).get(rTangent));
 
-                        tangents.addAll(Util.tangents(K.get(h), currentPoint));
+                        tangents.addAll(Util.convexTangents(K.get(h), currentPoint));
 
 
                     }
                 }
                 else {
-                    tangents.addAll(K.get(h));
+                    //tangents.addAll(K.get(h));
+                    tangents.addAll(Util.convexTangents(K.get(h), currentPoint));
                 }
             }
 
+            //tangents.forEach(System.out::print);
+            //System.out.println(" <- tangents");
+
             nextPoint = tangents.get(0);
+            currentHull = 0;
 
             for(int i = 0; i < tangents.size(); i++) {
                 if(Util.orientation(currentPoint, tangents.get(i), nextPoint) == -1) {
                     nextPoint = tangents.get(i);
+                    currentHull = i;
                 }
             }
 
@@ -103,16 +109,22 @@ public class Chan {
 
             if(hull.get(0).equals(currentPoint)) {
                 // Full circle, hull is complete
+                System.out.println("t = " + t + " succeeded");
                 return hull.toArray(new Point[hull.size()]);
             }
 
         } while (hull.size() < m);
 
 
+        // hull is not complete, try again with larger mini-hull size
+        System.out.println("t = " + t + " failed");
+        return convexHull(points, t + 1);
+    } // convexHull
 
-        //new Plotting(points, hull.toArray(new Point[hull.size()]), true, 0);
 
-        return hull.toArray(new Point[hull.size()]);
+    // wrapper
+    public static Point[] convexHull(Point[] points) {
+        return convexHull(points, 1);
     }
 
     public static void printList(ArrayList<Point> a) {
