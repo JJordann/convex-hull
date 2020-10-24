@@ -23,14 +23,9 @@ public class Chan {
                 h++;
         }
         
-        //K.forEach(l -> printList(l));
-
         for(int i = 0; i < numGroups; i++) {
             K.set(i, GrahamScan.convexHull_list(K.get(i)));
         }
-
-        //System.out.println("---");
-        //K.forEach(l -> printList(l));
 
 
         Point currentPoint = K.get(0).get(0);
@@ -54,16 +49,12 @@ public class Chan {
         ArrayList<Integer> subhullIndex = new ArrayList<Integer>();
         subhullIndex.add(currentHull);
 
-        //System.out.println("Lowest: " + currentPoint + "; hull: " + currentHull);
-
 
         Point nextPoint;
         ArrayList<Point> tangents = null;
 
         do {
             hull.add(currentPoint);
-            //hull.forEach(System.out::print);
-            //System.out.println(" (hull: " + currentHull + ")");
 
             // find tangents to all other subhulls
             tangents = new ArrayList<Point>(2 * numGroups);
@@ -74,25 +65,20 @@ public class Chan {
                         tangents.addAll(K.get(h));
                     }
                     else {
-                        //int lTangent = Util.leftTangent(K.get(h).toArray(new Point[K.get(h).size()]), currentPoint);
-                        //int rTangent = Util.rightTangent(K.get(h).toArray(new Point[K.get(h).size()]), currentPoint);
-
-                        //tangents.add(K.get(h).get(lTangent));
-                        //tangents.add(K.get(h).get(rTangent));
-
-                        tangents.addAll(Util.convexTangents(K.get(h), currentPoint));
-
+                        int rTangent = Util.rightTangent(K.get(h).toArray(new Point[K.get(h).size()]), currentPoint);
+                        tangents.add(K.get(h).get(rTangent));
 
                     }
                 }
                 else {
-                    //tangents.addAll(K.get(h));
-                    tangents.addAll(Util.convexTangents(K.get(h), currentPoint));
+                    //int rTangent = Util.rightTangent(K.get(h).toArray(new Point[K.get(h).size()]), currentPoint);
+                    //tangents.add(K.get(h).get(rTangent));
+                    //tangents.addAll(Util.convexTangents(K.get(h), currentPoint));
+
+                    tangents.add(Util.nextPoint(K.get(h), currentPoint)); // TODO: improve
                 }
             }
 
-            //tangents.forEach(System.out::print);
-            //System.out.println(" <- tangents");
 
             nextPoint = tangents.get(0);
             currentHull = 0;
