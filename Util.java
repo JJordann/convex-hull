@@ -189,39 +189,26 @@ public class Util {
         return null;
     }
 
-    public static int rightTangent(Point[] points, Point p) {
+    public static int rightTangent(ArrayList<Point> points, Point p) {
+
+        int n = points.size();
 
         int left  = 0;
-        int right = points.length;
+        int right = n;
 
-        int left_prev = orientation(p, points[0], points[points.length - 1]);
-        int left_next = orientation(p, points[0], points[(left + 1) % points.length]);
+        int left_prev = orientation(p, points.get(0), points.get(n - 1));
+        int left_next = orientation(p, points.get(0), points.get((left + 1) % n));
 
         while(left < right) {
-
-            //if(points.length <= 1) {
-                //System.out.println("small group");
-            //}
-
-            //if(points[left].equals(p) && points.length > 1) {
-                //System.out.println("left");
-                //int tan = (left + 1) % points.length;
-                //return tan;
-            //}
-            //if(points[right - 1].equals(p) && points.length > 1) {
-                //System.out.println("right");
-                //int tan = right % points.length;
-                //return tan;
-            //}
 
             int mid = (left + right) / 2;
             int midprevIndex = mid - 1;
             if(midprevIndex < 0)
-                midprevIndex += points.length;
+                midprevIndex += n;
 
-            int mid_prev = orientation(p, points[mid], points[midprevIndex]);
-            int mid_next = orientation(p, points[mid], points[(mid + 1) % points.length]);
-            int mid_side = orientation(p, points[left], points[mid]);
+            int mid_prev = orientation(p, points.get(mid), points.get(midprevIndex));
+            int mid_next = orientation(p, points.get(mid), points.get((mid + 1) % n));
+            int mid_side = orientation(p, points.get(left), points.get(mid));
 
             if(mid_prev != 1 && mid_next != 1) {
                 return mid;
@@ -236,7 +223,7 @@ public class Util {
             }
 
             left_prev = -mid_next;
-            left_next = orientation(p, points[1], points[(left + 1) % points.length]);
+            left_next = orientation(p, points.get(1), points.get((left + 1) % n));
         }
         return left;
     } // rightTangent

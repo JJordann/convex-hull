@@ -1,6 +1,27 @@
 import java.util.ArrayList;
 import java.lang.Math;
 
+class IndexPair {
+    // Because the set of points will be divided into smaller 
+    // subsets of points, representing points as pairs of 
+    // indices is necessary for O(1) access to a point's
+    // successor within its subset
+    public int hull;
+    public int point;
+
+    public IndexPair(int h, int p) {
+        this.hull = h;
+        this.point = p;
+    }
+
+    public Point getPoint(ArrayList<ArrayList<Point>> K) {
+        return K.get(this.hull).get(this.point);
+    }
+
+    public boolean equals(IndexPair p) {
+        return (this.hull == p.hull) && (this.point == p.point);
+    }
+}
 
 public class Chan {
 
@@ -12,6 +33,7 @@ public class Chan {
         // number of mini-hulls
         int numGroups = (int) Math.ceil( (float) points.length / (float) m);
 
+        // divide the points into groups
         ArrayList<ArrayList<Point>> K = new ArrayList<ArrayList<Point>>(numGroups);
         for(int i = 0; i <= numGroups; i++) {
             K.add(new ArrayList<Point>());
@@ -23,87 +45,89 @@ public class Chan {
                 h++;
         }
         
+        // compute the hull for each subset using Graham's scan
         for(int i = 0; i < numGroups; i++) {
             K.set(i, GrahamScan.convexHull_list(K.get(i)));
         }
 
 
-        Point currentPoint = K.get(0).get(0);
-        int currentHull = 0;
+        IndexPair currentPoint = new IndexPair(0, 0);
 
         // Begin with the leftmost point (lowest leftmost in case of tie)
         for(int h = 0; h < numGroups; h++) {
             for(int i = 0; i < K.get(h).size(); i++) {
                 Point p = K.get(h).get(i);
-                if(p.x < currentPoint.x || p.x == currentPoint.x && p.y < currentPoint.y) {
-                    currentPoint = p;
-                    currentHull  = h;
+                if(p.x < currentPoint.getPoint(K).x || p.x == currentPoint.getPoint(K).x && p.y < currentPoint.getPoint(K).y) {
+                    currentPoint = new IndexPair(h, i);
                 }
             }
         }
 
-        // stores the final hull
-        ArrayList<Point> hull = new ArrayList<Point>();
-
         // stores index of subhull, which each point in hull belongs to
-        ArrayList<Integer> subhullIndex = new ArrayList<Integer>();
-        subhullIndex.add(currentHull);
+        ArrayList<IndexPair> hull = new ArrayList<IndexPair>();
 
+        // stores tangents from current point to each mini-hull
+        ArrayList<IndexPair> tangents = null;
 
-        Point nextPoint;
-        ArrayList<Point> tangents = null;
+        IndexPair nextPoint;
 
         do {
+            // In each step, run the gift-wrapping algorithm on the 
+            // set of tangents to find the next point on the hull
+
             hull.add(currentPoint);
 
             // find tangents to all other subhulls
-            tangents = new ArrayList<Point>(2 * numGroups);
+            tangents = new ArrayList<IndexPair>(numGroups);
             for(int h = 0; h < numGroups; h++) {
-                if(h != currentHull) {
+                if(h != currentPoint.hull) {
+                    // If the current point belongs to a different mini-hull,
+                    // tangent to the mini-hull can be computed in O(logn) using binary search
+                    int rTangent = Util.rightTangent(K.get(h), currentPoint.getPoint(K));
+                    tangents.add(new IndexPair(h, rTangent));
 
-                    if(K.get(h).size() <= 2) {
-                        tangents.addAll(K.get(h));
-                    }
-                    else {
-                        int rTangent = Util.rightTangent(K.get(h).toArray(new Point[K.get(h).size()]), currentPoint);
-                        tangents.add(K.get(h).get(rTangent));
-
-                    }
                 }
                 else {
-                    //int rTangent = Util.rightTangent(K.get(h).toArray(new Point[K.get(h).size()]), currentPoint);
-                    //tangents.add(K.get(h).get(rTangent));
-                    //tangents.addAll(Util.convexTangents(K.get(h), currentPoint));
-
-                    tangents.add(Util.nextPoint(K.get(h), currentPoint)); // TODO: improve
+                    // If the point belongs to the same mini-hull, add the next
+                    // point of the same mini-hull instead of the tangent.
+                    // Because points in (convex) mini-hulls are ordered 
+                    // counter-clockwise, the point maximizing the angle to the current hull 
+                    // will always be the next point of the mini-hull, counter-clockwise
+                    int nextIndex = (currentPoint.point + 1) % K.get(currentPoint.hull).size();
+                    tangents.add(new IndexPair(currentPoint.hull, nextIndex));
                 }
             }
 
 
+            // Among all candidates, find the one maximizing the angle to the current hull
+            // (this part of the procedure is identical to the gift-wrapping algorithm)
             nextPoint = tangents.get(0);
-            currentHull = 0;
-
             for(int i = 0; i < tangents.size(); i++) {
-                if(Util.orientation(currentPoint, tangents.get(i), nextPoint) == -1) {
+                if(Util.orientation(currentPoint.getPoint(K), tangents.get(i).getPoint(K), nextPoint.getPoint(K)) == -1) {
                     nextPoint = tangents.get(i);
-                    currentHull = i;
                 }
             }
 
             currentPoint = nextPoint;
 
-
+            // If the hull connects, return it
             if(hull.get(0).equals(currentPoint)) {
-                // Full circle, hull is complete
-                System.out.println("t = " + t + " succeeded");
-                return hull.toArray(new Point[hull.size()]);
+
+                // map pairs to points and return the hull
+                Point[] polygon = new Point[hull.size()];
+                for(int i = 0; i < hull.size(); i++) {
+                    polygon[i] = hull.get(i).getPoint(K);
+                }
+
+                return polygon;
             }
 
+        // Repeat for a maximum of `m` iterations before
+        // starting over with a larger `m`
         } while (hull.size() < m);
 
 
         // hull is not complete, try again with larger mini-hull size
-        System.out.println("t = " + t + " failed");
         return convexHull(points, t + 1);
     } // convexHull
 
@@ -112,6 +136,7 @@ public class Chan {
     public static Point[] convexHull(Point[] points) {
         return convexHull(points, 1);
     }
+
 
     public static void printList(ArrayList<Point> a) {
         a.forEach(System.out::print);
