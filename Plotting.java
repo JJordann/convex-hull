@@ -4,6 +4,8 @@ import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class Plotting extends javax.swing.JFrame {
@@ -73,6 +75,25 @@ public class Plotting extends javax.swing.JFrame {
 
         setVisible(true);
 
+    }
+
+    public Plotting(Point[] points, ArrayList<Point> hull, boolean connect, int leftMargin) {
+
+        Point[] hull0 = new Point[hull.size()];
+        hull0 = hull.toArray(hull0);
+
+        new Plotting(points, hull0, connect, leftMargin);
+    }
+
+    public Plotting(ArrayList<Point> points, ArrayList<Point> hull, boolean connect, int leftMargin) {
+
+        Point[] points0 = new Point[points.size()];
+        points0 = points.toArray(points0);
+
+        Point[] hull0 = new Point[hull.size()];
+        hull0 = hull.toArray(hull0);
+
+        new Plotting(points0, hull0, connect, leftMargin);
     }
 
     public static Point scale(Point p) {
