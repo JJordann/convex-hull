@@ -29,6 +29,10 @@ public class Util {
         return (p.x - r.x) * (q.y - r.y) -
                (q.x - r.x) * (p.y - r.y);
     }
+
+    public static double slope(Point p, Point q) {
+        return (q.y - p.y) / (q.x - p.x);
+    }
     
     public static int orientation(Point p, Point q, Point r) {
         int d1 = (q.y - p.y) * (r.x - q.x);
