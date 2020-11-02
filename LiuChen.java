@@ -54,7 +54,7 @@ public class LiuChen {
     }
 
     /*
-        Function to check if V (points[v_index]) is 
+        Function to check if `V` (points[v_index]) is 
         a candidate for further consideration
 
         TODO: razdeli tocke v 4 regije, 
@@ -173,9 +173,13 @@ public class LiuChen {
         ArrayList<Point> points = new ArrayList<Point>(points0.length);
         Collections.addAll(points, points0);
 
-        //points.forEach(System.out::print);
+
+        ArrayList<Point> sp = Torch.approximateHull(points0);
+        Collections.reverse(sp);
+
+        sp.forEach(System.out::println);
 
         ArrayList<Point> extreme = extremePoints(points);
-        new Plotting(points, extreme, true, 0);
+        new Plotting(points, sp, true, 0);
     }
 }

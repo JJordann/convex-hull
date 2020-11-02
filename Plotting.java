@@ -36,33 +36,33 @@ public class Plotting extends javax.swing.JFrame {
 
                 g2d.setPaint(Color.BLACK);
                 for(int i = 0; i < points.length; i++) {
-                    Point p = points[i];
-                    int x = (p.x + xMin) * zoom;
-                    int y = (p.y + yMin) * zoom;
-                    Ellipse2D dot = new Ellipse2D.Float(x, y, thickness, thickness);
+                    Point p = scale(points[i]);
+                    //int x = (p.x + xMin) * zoom;
+                    //int y = (p.y + yMin) * zoom;
+                    Ellipse2D dot = new Ellipse2D.Float(p.x, p.y, thickness, thickness);
                     g2d.fill(dot);
                 }
 
                 if(hull != null) {
                     g2d.setPaint(Color.RED);
                     for(int i = 0; i < hull.length; i++) {
-                        Point p = hull[i];
-                        int x = (p.x + xMin) * zoom;
-                        int y = (p.y + yMin) * zoom;
-                        Ellipse2D dot = new Ellipse2D.Float(x, y, thickness + 1, thickness + 1);
+                        Point p = scale(hull[i]);
+                        //int x = (p.x + xMin) * zoom;
+                        //int y = (p.y + yMin) * zoom;
+                        Ellipse2D dot = new Ellipse2D.Float(p.x, p.y, thickness + 1, thickness + 1);
                         g2d.fill(dot);
 
                         if(connect == true && i != 0) {
                             Point a = scale(hull[i - 1]);
                             Point b = scale(hull[i]);
-                            g2d.drawLine(a.x, a.y, b.x, b.y);
+                            g2d.drawLine(a.x + thickness / 2, a.y + thickness / 2, b.x + thickness / 2, b.y + thickness / 2);
                         }
                     }
                     if(connect == true) {
                         // draw last line
                         Point a = scale(hull[hull.length - 1]);
                         Point b = scale(hull[0]);
-                        g2d.drawLine(a.x, a.y, b.x, b.y);
+                        g2d.drawLine(a.x + thickness / 2, a.y + thickness / 2, b.x + thickness / 2, b.y + thickness / 2);
                     }
                 }
 
@@ -105,7 +105,7 @@ public class Plotting extends javax.swing.JFrame {
         }
 
         int x = (p.x + xMin) * zoom + thickness / 2;
-        int y = (p.y + yMin) * zoom + thickness / 2;
+        int y = (-p.y + yMin) * zoom + thickness / 2;
 
         return new Point(x, y);
     }

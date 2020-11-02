@@ -4,43 +4,18 @@ import java.util.Collections;
 
 public class Bhattacharya {
     
+    public static ArrayList<Point> hull = new ArrayList<Point>();
 
-    public static ArrayList<Point> convexHull(ArrayList<Point> points) {
-
-        // Find leftmost and rightmost points
-        Point leftmost  = points.get(0);
-        Point rightmost = points.get(0);
-
-        for(int i = 1; i < points.size(); i++) {
-            Point p = points.get(i);
-
-            if(p.x < leftmost.x)
-                leftmost = p;
-            else if(p.x > rightmost.x)
-                rightmost = p;
-        }
-
-
-        // Divide the point set into two, by the (leftmost, rightmost) line.
-        // Points on the dividing line are not added, including the endpoints
-        ArrayList<Point> above = new ArrayList<Point>();
-        ArrayList<Point> below = new ArrayList<Point>();
-        for(int i = 0; i < points.size(); i++) {
-            Point p = points.get(i);
-            int angle = Util.orientation(leftmost, rightmost, p);
-            if(angle < 0)
-                above.add(p);
-            else if(angle > 0)
-                below.add(p);
-        }
+    public static ArrayList<Point> convexHull(ArrayList<Point> points, Point leftmost, Point rightmost) {
 
         // If only one points lies above, return it
-        if(above.size() == 1)
-            return above;
-
+        if(points.size() == 1) {
+            hull.add(points.get(0));
+            return points;
+        }
 
         // Select a random pair of points
-        int j = 1;
+        int j = 0;
 
         // Find 2 points p, q, such that p, q, leftmost, 
         // rightmost form a convex quadrilateral
@@ -49,32 +24,37 @@ public class Bhattacharya {
         Point q = null;
         while(foundPoints == false) {
 
+            if(points.size() == 1) {
+                //hull.add(points.get(0));
+                return points;
+            }
+
             foundPoints = true;
 
-            p = above.get(2 * j - 1);
-            q = above.get(2 * j);
+            p = points.get(0);
+            q = points.get(1);
 
             // If p lies inside the (leftmost, q, rightmost) triangle, delete it
             if(p.isInTriangle(leftmost, q, rightmost)) {
-                above.remove(2 * j - 1);
+                points.remove(2 * j);
                 foundPoints = false;
             }
 
             // If q lies inside the (leftmost, p, rightmost) triangle, delete it
             if(q.isInTriangle(leftmost, p, rightmost)) {
-                above.remove(2 * j);
+                points.remove(2 * j + 1);
                 foundPoints = false;
             }
         }
 
-        Point pm = supportingPoint(above, Util.slope(p, q));
+        Point pm = supportingPoint(points, Util.slope(p, q));
 
         ArrayList<Point> left  = new ArrayList<Point>();
         ArrayList<Point> right = new ArrayList<Point>();
 
-        for(j = 1; 2 * j < above.size(); j++) {
-            p = above.get(2 * j - 1);
-            q = above.get(2 * j);
+        for(j = 0; 2 * j < points.size(); j++) {
+            p = points.get(2 * j);
+            q = points.get(2 * j + 1);
 
             // assert p is left of q
             if(p.x > q.x) {
@@ -111,22 +91,44 @@ public class Bhattacharya {
                 right.add(q);
             }
             else {
-                System.out.println("Should not happen");
+                System.out.println("aaa");
             }
 
         } // for pairs...
 
+        ArrayList<Point> aa = new ArrayList<Point>();
+        aa.add(pm);
+        new Plotting(points, aa, false, 500);
+
+        new Plotting(points, left, false, 0);
+        new Plotting(points, right, false, 250);
 
 
         // Eliminate points from `left` which lie below (leftmost, pm)
 
-
+        for(int i = 0; i < left.size(); i++) {
+            if(Util.orientation(leftmost, pm, left.get(i)) >= 0) {
+                left.remove(i);
+            }
+        }
 
         // Eliminate points from `right` which lie below (pm, rightmost)
         
+        for(int i = 0; i < right.size(); i++) {
+            if(Util.orientation(pm, rightmost, right.get(i)) >= 0) {
+                right.remove(i);
+            }
+        }
 
 
+        if(left.size() > 0) 
+            convexHull(left, leftmost, pm);
 
+
+        hull.add(pm);
+
+        if(right.size() > 0)
+            convexHull(right, pm, rightmost);
 
 
 
@@ -159,14 +161,42 @@ public class Bhattacharya {
 
     public static void main(String[] args) {
 
-        Point[] points0 = Testing.testSet5();
+        Point[] points0 = Testing.testSet8();
         ArrayList<Point> points = new ArrayList<Point>(points0.length);
         Collections.addAll(points, points0);
 
         //points.forEach(System.out::print);
 
-        ArrayList<Point> extreme = convexHull(points);
-        //new Plotting(points, extreme, true, 0);
+        // Find leftmost and rightmost points
+        Point leftmost  = points.get(0);
+        Point rightmost = points.get(0);
+
+        for(int i = 1; i < points.size(); i++) {
+            Point p = points.get(i);
+
+            if(p.x < leftmost.x)
+                leftmost = p;
+            else if(p.x > rightmost.x)
+                rightmost = p;
+        }
+
+
+        // Divide the point set into two, by the (leftmost, rightmost) line.
+        // Points on the dividing line are not added, including the endpoints
+        ArrayList<Point> above = new ArrayList<Point>();
+        ArrayList<Point> below = new ArrayList<Point>();
+        for(int i = 0; i < points.size(); i++) {
+            Point p = points.get(i);
+            int angle = Util.orientation(leftmost, rightmost, p);
+            if(angle < 0)
+                above.add(p);
+            else if(angle > 0)
+                below.add(p);
+        }
+
+        hull = new ArrayList<Point>();
+        convexHull(points, leftmost, rightmost);
+        new Plotting(points, hull, true, 750);
 
     }
 }

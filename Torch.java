@@ -8,6 +8,42 @@ public class Torch {
 
     public static Point[] convexHull(Point[] points) {
 
+        ArrayList<Point> hull = new ArrayList<Point>();
+
+        // Calculate approximate hull
+        ArrayList<Point> A = approximateHull(points);
+
+        // Inflate the approximate hull
+        int backtrack = 0;
+        int n = A.size();
+        if(n >= 3) {
+            for(int i = 0; i < n; i++) {
+                Point a = A.get((i - backtrack) % n);
+                Point b = A.get((i + 1) % n);
+                Point c = A.get((i + 2) % n);
+
+                int det = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+
+                if(det <= 0) {
+                    backtrack++;
+                }
+                else {
+                    backtrack = 0;
+                    hull.add(b);
+                }
+            }
+        }
+
+        return hull.toArray(new Point[hull.size()]);
+    } // convexHull
+
+
+    /*
+        Calculates approximate hull
+        Result is a simple polygon that is not necessarily convex
+    */
+    public static ArrayList<Point> approximateHull(Point[] points) {
+
         // Sort by x coordinate
         Arrays.sort(points, Util.xComparator);
 
@@ -89,32 +125,8 @@ public class Torch {
         Collections.reverse(HNW);
         A.addAll(HNW);
 
-
-        ArrayList<Point> hull = new ArrayList<Point>();
-
-        // Inflate the approximate hull
-        int backtrack = 0;
-        int n = A.size();
-        if(n >= 3) {
-            for(int i = 0; i < n; i++) {
-                Point a = A.get((i - backtrack) % n);
-                Point b = A.get((i + 1) % n);
-                Point c = A.get((i + 2) % n);
-
-                int det = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
-
-                if(det <= 0) {
-                    backtrack++;
-                }
-                else {
-                    backtrack = 0;
-                    hull.add(b);
-                }
-            }
-        }
-
-        return hull.toArray(new Point[hull.size()]);
-    } // convexHull
+        return A;
+    }
     
 
     /* 

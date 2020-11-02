@@ -150,13 +150,6 @@ public class Chan {
         Point[] hull = convexHull(points);
         new Plotting(points, hull, true, 0);
 
-        points[0] = new Point(0, 0);
-        points[1] = new Point(0, 0);
-        points[2] = new Point(0, 0);
-        points[3] = new Point(0, 0);
-        points[4] = new Point(0, 0);
-        points[5] = new Point(0, 0);
-
     }
     
 }

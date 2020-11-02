@@ -31,7 +31,10 @@ public class Util {
     }
 
     public static double slope(Point p, Point q) {
-        return (q.y - p.y) / (q.x - p.x);
+        if(p.x == q.x) 
+            return 0;
+        else
+            return (q.y - p.y) / (q.x - p.x);
     }
     
     public static int orientation(Point p, Point q, Point r) {
