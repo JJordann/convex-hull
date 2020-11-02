@@ -18,7 +18,7 @@ public class LiuChen {
 
 
         // From leftTop to topLeft
-        ArrayList<Point> NW = partialHull(M.get(0), M.get(1), points);
+        ArrayList<Point> NW = partialHull(M.get(1), M.get(2), points);
         hull.addAll(NW);
 
 
@@ -30,7 +30,7 @@ public class LiuChen {
     */
     public static ArrayList<Point> partialHull(Point m1, Point m2, ArrayList<Point> points) {
 
-        ArrayList<Point> hull = new ArrayList<Point>();
+        ArrayList<Point> hull = new ArrayList<Point>(points.size());
         hull.add(m1);
 
         if(m1.equals(m2)) {
@@ -38,20 +38,110 @@ public class LiuChen {
         }
 
         // r = hull.size()
-        // 
+        //
         for(int i = 0; i < points.size(); i++) {
             if(isCandidate(i, m1, m2, points) == true) {
                 // point v is a candidate
                 Point v = points.get(i);
 
+                if(hull.size() == 1) {
+                    hull.add(v);
+                }
+                else {
+                    int j = in_avr(v, hull, m2);
+                    if(j != -1) {
+                        if(v.x >= hull.get(hull.size() - 1).x) {
+                            //hull.set(j + 1, v);
+                            hull.add(v);
+                        }
+                        else {
+                            Point hr = hull.get(hull.size() - 1);
+                            if(Util.S(v, m2, hr) > 0) {
+                                hull.set(j + 1, v);
+                                hull.set(j + 2, hr);
+                            }
+                            else {
+                                hull.set(j + 1, v);
+                            }
+                        }
+                    } // j != -1
+                } // r != 0
 
-            }
-        }
+
+            } // if cand
+        } // for pi in points
 
 
         hull.add(m2);
         return hull;
     }
+
+
+    public static int in_avr(Point v, ArrayList<Point> hull, Point m2) {
+
+        int r = hull.size() - 1;
+        Point hr = hull.get(r);
+
+        if(v.x == hr.x) {
+            // Step 2
+            if(v.y > hr.y) {
+                return find_sar(v, 1, r - 1, hull);
+            }
+            else {
+                return -1;
+            }
+
+        }
+        else if(hr.x < v.x && v.x < m2.x) {
+            // Step 3
+            if(Util.S(hull.get(r - 1), hr, v) >= 0) {
+                return find_sar(v, 1, r - 1, hull);
+            }
+            else if(Util.S(hr, m2, v) > 0) {
+                return r;
+            }
+            else {
+                return -1;
+            }
+        }
+        else {
+            // Step 5
+            if(Util.S(hull.get(r - 1), hr, v) > 0) {
+                return find_sar(v, 1, r - 1, hull);
+            }
+            else {
+                return -1;
+            }
+        }
+    } // in_avr
+
+
+
+    /*
+        finds the hull vertex, whose active region contains `v`
+    */
+    public static int find_sar(Point v, int l, int u, ArrayList<Point> hull) {
+
+        // special case:
+        if(Util.S(hull.get(0), hull.get(1), v) >= 0) {
+            return 0;
+        }
+
+        Point hl = hull.get(l);
+        Point hu = hull.get(u);
+
+        for(int j = l; j <= u; j++) {
+            if(Util.S(hull.get(j - 1), hull.get(j), v) < 0 
+            && Util.S(hull.get(j), hull.get(j + 1), v) >= 0) {
+                return j;
+            }
+
+        }
+
+        return -1;
+    }
+
+
 
     /*
         Function to check if `V` (points[v_index]) is 
@@ -169,7 +259,7 @@ public class LiuChen {
 
     public static void main(String[] args) {
 
-        Point[] points0 = Testing.testSet8();
+        Point[] points0 = Testing.testSet6();
         ArrayList<Point> points = new ArrayList<Point>(points0.length);
         Collections.addAll(points, points0);
 
@@ -177,9 +267,12 @@ public class LiuChen {
         ArrayList<Point> sp = Torch.approximateHull(points0);
         Collections.reverse(sp);
 
-        sp.forEach(System.out::println);
+        //sp.forEach(System.out::println);
 
-        ArrayList<Point> extreme = extremePoints(points);
+        ArrayList<Point> hull = convexHull(sp);
+        ArrayList<Point> extreme = extremePoints(sp);
         new Plotting(points, sp, true, 0);
+        new Plotting(points, extreme, true, 250);
+        new Plotting(points, hull, true, 500);
     }
 }

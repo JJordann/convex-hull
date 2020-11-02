@@ -52,6 +52,12 @@ public class Util {
         }
     }
 
+    // S > 0 => right
+    // S < 0 => left
+    public static float S(Point a, Point b, Point c) {
+        return (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y);
+    }
+
     public static float direction(Point u, Point v, Point p) {
         return (v.x - u.x) * (p.y - u.y) - (v.y - u.y) * (p.x - u.x);
     }
