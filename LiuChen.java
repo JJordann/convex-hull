@@ -3,10 +3,286 @@ import java.util.Collections;
 
 public class LiuChen {
     
+
+    public static ArrayList<Point> convexHull(ArrayList<Point> points) {
+
+
+        // TODO: indeksiranje z 1
+
+
+        return null;
+    }
+
+
+    public static int[] in_avr_pps(Point v, ArrayList<Point> h, Point m2) {
+
+        int m = -1, n = -1, t = 0;
+        int r = h.size() - 1;
+        Point hr = h.get(r);
+
+        // Case 1: new point is directly above/below the last hull vertex
+        if(v.x == hr.x) {
+            n = -1;
+            if(v.y > hr.y) {
+                // if new point is above, find which active 
+                // region it belongs to. Otherwise, discard it
+                m = find_sar(v, 1, r - 1, h);
+            }
+        }
+        // Case 2: new point is to the right of the last hull vertex
+        else if(h.get(r - 1).x < v.x && v.x < m2.x) {
+            // Step 3
+            n = -1;
+            if(Util.S(h.get(r - 1), hr, v) >= 0) {
+                m = find_sar(v, 1, r - 1, h);
+                // quit
+            }
+            else if(Util.S(hr, m2, v) > 0) { // && Util.S(h.get(r - 1), hr, v) < 0
+                 m = r;
+                // quit
+            }
+            else {
+                m = 0;
+                // quit
+            }
+        }
+        // Case 3: new point lies to the left of the last hull vertex
+        else {
+            if(Util.S(h.get(r - 1), hr, v) > 0) {
+                n = -1;
+                m = find_sar(v, 1, r - 1, h);
+                // quit
+            }
+            else {
+                int j = findJ(v, h);
+                if(Util.S(h.get(j), h.get(j + 1), v) <= 0) {
+                    m = 0;
+                    n = 0;
+                    // quit
+                }
+                else {
+                    return find_avr_pps(v, j, h);
+                }
+
+            }
+        }
+        
+        int[] mnt = new int[3];
+        mnt[0] = m; mnt[1] = n; mnt[2] = t;
+        return mnt;
+    }
+
+    /*
+        finds j such that: h[j].x < v.x <= h[j + 1].x
+    */
+    public static int findJ(Point v, ArrayList<Point> h) {
+
+        for(int j = 1; j < h.size() - 1; j++) {
+            if(h.get(j).x < v.x && v.x <= h.get(j + 1).x)
+                return j;
+        }
+        return -1;
+    }
+
+    /*
+        v: point to insert
+        j: integer such that: h[j].x < v.x < h[j+1].x
+        h: current hull
+
+        returns:
+            [m, n, t]:
+                m: index of active region
+                n: index of inverse active region
+                t: 1 if collinear with h[j], h[j+1], otherwise 0
+
+    */
+    public static int[] find_avr_pps(Point v, int j, ArrayList<Point> h) {
+
+        int r = h.size() - 1;
+        int m = -1, n = -1, t = -1;
+
+        // Case 1: inserting immediately after h[0]
+        if(j == 1) {
+            m = 1;           
+
+            if(Util.S(h.get(3), h.get(2), v) == 0) {
+                n = 2;
+                t = 1;
+                // quit
+            }
+            else if(Util.S(h.get(3), h.get(2), v) > 0) {
+                n = 2;
+                t = 0;
+                // quit
+            }
+            else {
+                int[] nt = find_isar(v, 3, r - 1, h);
+                n = nt[0];
+                t = nt[1];
+                // quit
+            }
+        }
+
+        // Case 2: inserting before the second to last vertex
+        else if(j == r - 2) {
+            n = r - 1;
+            if(Util.S(h.get(r - 1), h.get(r), v) == 0)
+                t = 1;
+            
+            if(Util.S(h.get(r - 1), h.get(r), v) < 0) {
+                t = 0;
+                // Step 3
+
+                if(Util.S(h.get(r - 3), h.get(r - 2), v) < 0) {
+                    m = r - 2;
+                    // quit
+                }
+                else {
+                    m = find_sar(v, 1, r - 3, h);
+                    // quit
+                }
+
+            }
+        }
+
+        // Case 3: the general case
+        else {
+            // Step 4
+            float S1 = Util.S(h.get(j - 1), h.get(j), v);
+            float S2 = Util.S(h.get(j + 1), h.get(j + 2), v);
+
+            return table(S1, S2, j, r, v, h);
+        }
+
+        int[] mnt = new int[3];
+        mnt[0] = m;
+        mnt[1] = n;
+        mnt[2] = t;
+        return mnt;
+    }
+
+
     /*
 
     */
-    public static ArrayList<Point> convexHull(ArrayList<Point> points) {
+    public static int[] table(float S1, float S2, int j, int r, Point v, ArrayList<Point> h) {
+
+        int m = -1, n = -1, t = -1;
+
+        if(S1 == 0 && S2 == 0) {
+            m = j - 1;
+            n = j + 1;
+            t = 1;
+        }
+        else if(S1 == 0 && S2 < 0) {
+            m = j - 1;
+            n = j + 1;
+            t = 0;
+        }
+        else if(S1 == 0 && S2 > 0) {
+            m = j - 1; 
+            int[] nt = find_isar(v, j + 2, r - 1, h);
+            n = nt[0];
+            t = nt[1];
+        }
+        else if(S1 < 0 && S2 == 0) {
+            m = j;
+            n = j + 1;
+            t = 1;
+        }
+        else if(S1 < 0 && S2 < 0) {
+            m = j;
+            n = j + 1;
+            t = 0;
+        }
+        else if(S1 < 0 && S2 > 0) {
+            m = j;
+            int[] nt = find_isar(v, j + 2, r - 1, h);
+            n = nt[0];
+            t = nt[1];
+        }
+        else if(S1 > 0 && S2 == 0) {
+            m = find_sar(v, 1, j - 1, h);
+            n = j + 1;
+            t = 1;
+        }
+        else if(S1 > 0 && S2 < 0) {
+            m = find_sar(v, 1, j - 1, h);
+            n = j + 1;
+            t = 0;
+        }
+        else if(S1 > 0 && S2 > 0) {
+            m = find_sar(v, 1, j - 1, h);
+            int[] nt = find_isar(v, j + 2, r - 1, h);
+            n = nt[0];
+            t = nt[1];
+        }
+
+        int[] mnt = new int[3];
+        mnt[0] = m;
+        mnt[1] = n;
+        mnt[2] = t;
+        return mnt;
+    }
+
+
+
+    /*
+        returns:
+            [n, t]:
+                n: index of inverse active region
+                t: 1 if collinear with h[n], h[n+1]
+    */
+    public static int[] find_isar(Point v, int l, int u, ArrayList<Point> h) {
+
+        for(int k = l; k < u; k++) {
+            float sf = Util.S(h.get(k + 1), h.get(k), v); // forward border
+            float sb = Util.S(h.get(k), h.get(k - 1), v); // backward border
+
+            if(sb < 0 && sf >= 0) {
+                int[] nt = new int[2];
+                nt[0] = k;
+
+                if(sf == 0.0)
+                    nt[1] = 1;
+                else
+                    nt[1] = 0;
+
+                return nt;
+            }
+        }
+
+        return null;
+    }
+
+    /*
+        finds the hull vertex, whose active region contains `v`
+    */
+    public static int find_sar(Point v, int l, int u, ArrayList<Point> hull) {
+
+        // special case:
+        if(Util.S(hull.get(0), hull.get(1), v) >= 0) {
+            return 0;
+        }
+
+        Point hl = hull.get(l);
+        Point hu = hull.get(u);
+
+        for(int j = l; j <= u; j++) {
+            if(Util.S(hull.get(j - 1), hull.get(j), v) < 0 
+            && Util.S(hull.get(j), hull.get(j + 1), v) >= 0) {
+                return j;
+            }
+
+        }
+
+        return -1;
+    }
+
+    /*
+
+    */
+    public static ArrayList<Point> convexHull_SP(ArrayList<Point> points) {
 
         // Extreme points, ordered clockwise, 
         // beginning at the lowest leftmost point
@@ -45,11 +321,18 @@ public class LiuChen {
                 Point v = points.get(i);
 
                 if(hull.size() == 1) {
+                    // First candidate is added to the hull immediately
                     hull.add(v);
                 }
                 else {
+                    // Current candidate `v` lies in 
+                    // the active region of hull[j]
                     int j = in_avr(v, hull, m2);
+                    // If `v` is not in the active region of any point,
+                    // it is inside the current polyline. Ignore it.
                     if(j != -1) {
+                        // First scenario: `v` lies on the right side of the hull vertex
+                        // Add `v` to the hull
                         if(v.x >= hull.get(hull.size() - 1).x) {
                             //hull.set(j + 1, v);
                             hull.add(v);
@@ -57,10 +340,13 @@ public class LiuChen {
                         else {
                             Point hr = hull.get(hull.size() - 1);
                             if(Util.S(v, m2, hr) > 0) {
+                                // Second scenario: `v` lies on the left side of the last hull vertex
+                                // Insert `v` after hull[j]
                                 hull.set(j + 1, v);
                                 hull.set(j + 2, hr);
                             }
                             else {
+                                // Third scenario: 
                                 hull.set(j + 1, v);
                             }
                         }
@@ -77,6 +363,9 @@ public class LiuChen {
     }
 
 
+    /*
+
+    */
     public static int in_avr(Point v, ArrayList<Point> hull, Point m2) {
 
         int r = hull.size() - 1;
@@ -117,29 +406,6 @@ public class LiuChen {
 
 
 
-    /*
-        finds the hull vertex, whose active region contains `v`
-    */
-    public static int find_sar(Point v, int l, int u, ArrayList<Point> hull) {
-
-        // special case:
-        if(Util.S(hull.get(0), hull.get(1), v) >= 0) {
-            return 0;
-        }
-
-        Point hl = hull.get(l);
-        Point hu = hull.get(u);
-
-        for(int j = l; j <= u; j++) {
-            if(Util.S(hull.get(j - 1), hull.get(j), v) < 0 
-            && Util.S(hull.get(j), hull.get(j + 1), v) >= 0) {
-                return j;
-            }
-
-        }
-
-        return -1;
-    }
 
 
 
