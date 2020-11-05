@@ -315,4 +315,41 @@ public class Util {
         return null;
     }
 
+    public static Point flipRight1(Point p) {
+        return new Point(-p.x, p.y);
+    }
+
+    public static ArrayList<Point> flipRight(final ArrayList<Point> points) {
+        ArrayList<Point> flipped = new ArrayList<Point>();
+
+        for(int i = 0; i < points.size(); i++) {
+            Point p = points.get(i);
+            flipped.add(new Point(-p.x, p.y));
+        }
+
+        return flipped;
+    }
+
+    public static ArrayList<Point> flipDown(final ArrayList<Point> points) {
+        ArrayList<Point> flipped = new ArrayList<Point>();
+
+        for(int i = 0; i < points.size(); i++) {
+            Point p = points.get(i);
+            flipped.add(new Point(p.x, -p.y));
+        }
+
+        return flipped;
+    }
+
+    public static ArrayList<Point> flipDiagonal(final ArrayList<Point> points) {
+        ArrayList<Point> flipped = new ArrayList<Point>();
+
+        for(int i = 0; i < points.size(); i++) {
+            Point p = points.get(i);
+            flipped.add(new Point(-p.x, -p.y));
+        }
+
+        return flipped;
+    }
+
 }

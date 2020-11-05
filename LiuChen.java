@@ -1,32 +1,106 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Arrays;
 
 public class LiuChen {
     
 
-    public static ArrayList<Point> convexHull(ArrayList<Point> points) {
+    public static Point[] convexHull(Point[] points) {
 
 
         // TODO: indeksiranje z 1
-        // TODO: uporabi navaden array namesto ArrayList
 
+        ArrayList<Point> points0 = new ArrayList<Point>();
+        Collections.addAll(points0, points);
 
+        ArrayList<Point> M = extremePoints(points0);
+        Point[] H = new Point[points.length];
 
-        ArrayList<Point> M = extremePoints(points);
-        ArrayList<Point> H = new ArrayList<Point>();
-        H.add(M.get(1));
-        H.add(M.get(1));
+        H[0] = M.get(1);
 
-        for(int i = 0; i < points.size(); i++) {
-            Point v = points.get(i);
-            if(is_cand_pps(M.get(1), M.get(2), v)) {
-                deal_cand_pps(H, v, M.get(2));
+        int r = 1;
+
+        Point endpoint;
+
+        /* division by quadrant:
+                y
+                |
+             Q1 | Q2
+          ------+----->x
+             Q3 | Q4
+                |
+        */
+
+        // Quadrant 1
+        H[r] = M.get(1); 
+        endpoint = M.get(2);
+
+        for(int i = 0; i < points.length; i++) {
+            Point v = points[i];
+            if(is_cand_pps(M.get(1), endpoint, v)) {
+                System.out.println("cand: " + v);
+                r = deal_cand_pps(H, v, endpoint, r);
             }
         }
 
-        H.add(M.get(2));
+        r = r + 1;
+        H[r] = endpoint;
 
-        return H;
+
+        // Quadrant 2
+        //endpoint = M.get(4);
+        //H.add(M.get(3));
+
+        //for(int i = 0; i < points.size(); i++) {
+            //Point v = points.get(i);
+            //if(is_cand_pps(M.get(3), endpoint, v)) {
+                //deal_cand_pps(H, v, endpoint);
+            //}
+        //}
+        //H.add(endpoint);
+
+        // Quadrant 3
+        //endpoint = M.get(6);
+        //H.add(M.get(5));
+
+        //for(int i = 0; i < points.size(); i++) {
+            //Point v = points.get(i);
+            //if(is_cand_pps(M.get(5), endpoint, v)) {
+                //System.out.println("is cand");
+                //deal_cand_pps(H, v, endpoint);
+            //}
+        //}
+        //H.add(endpoint);
+
+        // Quadrant 4
+        // ...
+
+
+
+        // Quadrant 2
+        /*
+        endpoint = Util.flipRight1(M.get(3));
+        ArrayList<Point> H2 = new ArrayList<Point>();
+        H2.add(Util.flipRight1(M.get(4)));
+
+        ArrayList<Point> flipped = Util.flipRight(points);
+        for(int i = 0; i < flipped.size(); i++) {
+            Point v = flipped.get(i);
+            if(is_cand_pps(endpoint, M.get(3), v)) {
+                deal_cand_pps(H, v, endpoint);
+            }
+        }
+
+        H2.add(endpoint);
+        H2 = Util.flipRight(H2);
+        for(int i = H2.size() - 1; i >= 0; i--) {
+            H.add(H2.get(i));
+        }
+        */
+        // Quadrant 3
+
+
+        return Arrays.copyOf(H, r + 1);
     }
 
     public static boolean is_cand_pps(Point m1, Point m2, Point v) {
@@ -42,6 +116,175 @@ public class LiuChen {
         }
     }
 
+    /*
+        Array version
+    */ 
+    public static int find_sar(Point v, int l, int u, Point[] hull, int r) {
+
+        // special case:
+        if(Util.S(hull[1], hull[2], v) >= 0) {
+            return 1;
+        }
+
+        Point hl = hull[l];
+        Point hu = hull[u];
+
+        for(int j = l; j <= u; j++) {
+            if(Util.S(hull[j - 1], hull[j], v) < 0 
+            && Util.S(hull[j], hull[j + 1], v) >= 0) {
+                return j;
+            }
+
+        }
+
+        return -1;
+    }
+    /*
+        Array version
+    */
+    public static int[] in_avr_pps(Point v, Point[] h, Point m2, int r) {
+
+        int m = -1, n = -1, t = 0;
+
+        // Case 1: new point is directly above/below the last hull vertex
+        if(v.x == h[r].x) {
+            n = -1;
+            if(v.y > h[r].y) {
+                // if new point is above, find which active 
+                // region it belongs to. Otherwise, discard it
+                m = find_sar(v, 1, r - 1, h, r);
+            }
+        }
+        // Case 2: new point is to the right of the last hull vertex
+        else if(h[r - 1].x < v.x && v.x < m2.x) {
+            // Step 3
+            n = -1;
+            if(Util.S(h[r - 1], h[r], v) >= 0) {
+                m = find_sar(v, 1, r - 1, h, r);
+                // quit
+            }
+            else if(Util.S(h[r], m2, v) > 0) { // && Util.S(h.get(r - 1), hr, v) < 0
+                 m = r;
+                // quit
+            }
+            else {
+                m = -1;
+                // quit
+            }
+        }
+        // Case 3: new point lies to the left of the last hull vertex
+        else {
+            if(Util.S(h[r - 1], h[r], v) > 0) {
+                n = -1;
+                m = find_sar(v, 1, r - 1, h, r);
+                // quit
+            }
+            else {
+                int j = findJ(v, h, r);
+                if(Util.S(h[j], h[j + 1], v) <= 0) {
+                    m = -1;
+                    n = -1;
+                    // quit
+                }
+                else {
+                    return find_avr_pps(v, j, h, r);
+                }
+
+            }
+        }
+        
+        int[] mnt = new int[3];
+        mnt[0] = m; mnt[1] = n; mnt[2] = t;
+        return mnt;
+    }
+
+
+    /*
+        Array version
+    */
+    public static int deal_cand_pps(Point[] h, Point v, Point m2, int r) {
+
+        // Case 1: adding the first point
+        if(r == 1) {
+            r = r + 1;
+            h[r] = v;
+            return r;
+        }
+
+        int[] mnt = in_avr_pps(v, h, m2, r);
+        int m = mnt[0], n = mnt[1], t = mnt[2];
+
+        // Case 2:
+        if(m == -1)
+            return r;
+    
+        if(n == -1) {
+            // Step 3
+            if(v.x >= h[r].x) {                    
+                r = m + 1;
+                h[r] = v;
+                return r;
+            }
+            // Step 4
+            else if(Util.S(v, m2, h[r]) > 0 ) { 
+                Point w = h[r];
+                r = m + 1;
+                h[r] = v;
+                r = r + 1;
+                h[r] = w;
+                return r;
+
+            }
+            else {
+            System.out.println(m);
+                r = m + 1;
+                h[r] = v;
+                return r;
+            }
+
+        }
+        else {
+            // n > 0
+            // Step 5
+
+            //if(t == 0)  {
+              //r = r - n + m + 2;
+            //}
+            //else {
+              //r = r - n + m + 1;
+            //}
+
+            h[m + 1] = v;
+            // delete after h[m + 1] and before h[n]
+
+            if(t == 1) {
+                // delete up to including h[n]
+                int gap = n - m - 1;
+                for(int i = n + 1; i <= r; i++) {
+                    h[i - gap] = h[i];
+                }
+
+                r = r - n + m + 1;
+            }
+            else {
+                // delete up to h[n], excluding h[n]
+                int gap = n - m - 2;
+                for(int i = n; i <= r; i++) {
+                    h[i - gap] = h[i];
+                }
+
+                r = r - n + m + 2;
+            }
+
+            // delete points after h[m] and before h[n]
+
+            // insert `v` before h[n]
+
+            return r;
+
+        } // Step 5
+
+    } // deal_cand_pps
 
     public static void deal_cand_pps(ArrayList<Point> h, Point v, Point m2) {
 
@@ -210,6 +453,14 @@ public class LiuChen {
         return -1;
     }
 
+    public static int findJ(Point v, Point[] h, int r) {
+
+        for(int j = 1; j < r; j++) {
+            if(h[j].x < v.x && v.x <= h[j + 1].x)
+                return j;
+        }
+        return -1;
+    }
     /*
         v: point to insert
         j: integer such that: h[j].x < v.x < h[j+1].x
@@ -287,6 +538,138 @@ public class LiuChen {
         return mnt;
     }
 
+    /*
+        Array version
+    */
+    public static int[] find_avr_pps(Point v, int j, Point[] h, int r) {
+
+        int m = -1, n = -1, t = -1;
+
+        // Case 1: inserting immediately after h[0]
+        if(j == 1) {
+            m = 1;           
+
+            if(Util.S(h[3], h[2], v) == 0) {
+                n = 2;
+                t = 1;
+                // quit
+            }
+            else if(Util.S(h[3], h[2], v) > 0) {
+                n = 2;
+                t = 0;
+                // quit
+            }
+            else {
+                int[] nt = find_isar(v, 3, r - 1, h);
+                n = nt[0];
+                t = nt[1];
+                // quit
+            }
+        }
+
+        // Case 2: inserting before the second to last vertex
+        else if(j == r - 2) {
+            n = r - 1;
+            if(Util.S(h[r - 1], h[r], v) == 0)
+                t = 1;
+            
+            if(Util.S(h[r - 1], h[r], v) < 0) {
+                t = 0;
+                // Step 3
+
+                if(Util.S(h[r - 3], h[r - 2], v) < 0) {
+                    m = r - 2;
+                    // quit
+                }
+                else {
+                    m = find_sar(v, 1, r - 3, h, r);
+                    // quit
+                }
+
+            }
+        }
+
+        // Case 3: the general case
+        else {
+            // Step 4
+            float S1 = Util.S(h[j - 1], h[j], v);
+            float S2 = Util.S(h[j + 1], h[j + 2], v);
+
+            return table(S1, S2, j, r, v, h);
+        }
+
+        int[] mnt = new int[3];
+        mnt[0] = m;
+        mnt[1] = n;
+        mnt[2] = t;
+        return mnt;
+    }
+
+    /*
+        Array version
+    */
+
+    public static int[] table(float S1, float S2, int j, int r, Point v, Point[] h) {
+
+        int m = -1, n = -1337, t = -1;
+
+        if(S1 == 0 && S2 == 0) {
+            m = j - 1;
+            n = j + 1;
+            t = 1;
+        }
+        else if(S1 == 0 && S2 < 0) {
+            m = j - 1;
+            n = j + 1;
+            t = 0;
+        }
+        else if(S1 == 0 && S2 > 0) {
+            m = j - 1; 
+            int[] nt = find_isar(v, j + 2, r - 1, h);
+            n = nt[0];
+            t = nt[1];
+        }
+        else if(S1 < 0 && S2 == 0) {
+            m = j;
+            n = j + 1;
+            t = 1;
+        }
+        else if(S1 < 0 && S2 < 0) {
+            m = j;
+            n = j + 1;
+            t = 0;
+        }
+        else if(S1 < 0 && S2 > 0) {
+            m = j;
+            int[] nt = find_isar(v, j + 2, r - 1, h);
+            n = nt[0];
+            t = nt[1];
+        }
+        else if(S1 > 0 && S2 == 0) {
+            m = find_sar(v, 1, j - 1, h, r);
+            n = j + 1;
+            t = 1;
+        }
+        else if(S1 > 0 && S2 < 0) {
+            m = find_sar(v, 1, j - 1, h, r);
+            n = j + 1;
+            t = 0;
+        }
+        else if(S1 > 0 && S2 > 0) {
+            m = find_sar(v, 1, j - 1, h, r);
+            int[] nt = find_isar(v, j + 2, r - 1, h);
+            n = nt[0];
+            t = nt[1];
+        }
+
+        int[] mnt = new int[3];
+        mnt[0] = m;
+        mnt[1] = n;
+        mnt[2] = t;
+        return mnt;
+    }
+
+
 
     /*
 
@@ -351,6 +734,31 @@ public class LiuChen {
         return mnt;
     }
 
+
+    /*
+        Array version
+    */
+    public static int[] find_isar(Point v, int l, int u, Point[] h) {
+
+        for(int k = l; k < u; k++) {
+            float sf = Util.S(h[k + 1], h[k], v); // forward border
+            float sb = Util.S(h[k], h[k - 1], v); // backward border
+
+            if(sb < 0 && sf >= 0) {
+                int[] nt = new int[2];
+                nt[0] = k;
+
+                if(sf == 0.0)
+                    nt[1] = 1;
+                else
+                    nt[1] = 0;
+
+                return nt;
+            }
+        }
+
+        return null;
+    }
 
 
     /*
@@ -650,15 +1058,17 @@ public class LiuChen {
 
     public static void avr_test() {
 
-        ArrayList<Point> hull = new ArrayList<Point>();
-        hull.add(new Point(-10, -1)); // 
-        hull.add(new Point(-10, -1)); // M1
-        hull.add(new Point(-9, 2));
-        hull.add(new Point(-8, 4));
-        hull.add(new Point(-7, 5));
-        hull.add(new Point(-4, 6));
-        hull.add(new Point(1, 7));
-        //hull.add(new Point(8, 8)); // M2
+        Point[] hull = new Point[7];
+        int r = 6;
+        hull[0] = new Point(-10, -1); // 
+        hull[1] = new Point(-10, -1); // M1
+        hull[2] = new Point(-9, 2);
+        hull[3] = new Point(-8, 4);
+        hull[4] = new Point(-7, 5);
+        hull[5] = new Point(-4, 6);
+        hull[6] = new Point(1, 7);
+
+        Point m2 = new Point(8, 8);
 
         Point p1 = new Point(-8, 6);
         Point p2 = new Point(-7, 6);
@@ -666,33 +1076,30 @@ public class LiuChen {
         Point p4 = new Point(-9, 3);
         Point p5 = new Point(-4, 4);
 
-        Point p = p4;
+        Point p = p2;
 
+        //int[] mnt = in_avr_pps(p, hull, m2, r);
 
-        //Point m2 = hull.get(hull.size() - 1);
-        Point m2 = new Point(8, 8);
+        //ArrayList<Point> res = new ArrayList<Point>();
+        //if(mnt[0] != -1) {
+            //res.add(hull[mnt[0]]);
+        //}
 
-        int[] mnt = in_avr_pps(p, hull, m2);
+        //res.add(p);
 
-        ArrayList<Point> res = new ArrayList<Point>();
-        if(mnt[0] != -1) {
-            res.add(hull.get(mnt[0]));
-        }
+        //if(mnt[1] != -1) {
+            //res.add(hull[mnt[1]]);
+        //}
+        //else {
+            //res.add(m2);
+        //}
+        //System.out.println(mnt[0] + ", " + mnt[1] + ", " + mnt[2]);
 
-        res.add(p);
+        Point[] hull2 = hull.clone();
 
-        if(mnt[1] != -1) {
-            res.add(hull.get(mnt[1]));
-        }
-        else {
-            res.add(m2);
-        }
-        System.out.println(mnt[0] + ", " + mnt[1] + ", " + mnt[2]);
-
-        ArrayList<Point> hull2 = new ArrayList<Point>();
-        hull2.addAll(hull);
-
-        deal_cand_pps(hull2, p, m2);
+        r = deal_cand_pps(hull2, p, m2, r);
+        System.out.println("from main: " + r);
+        hull2 = Arrays.copyOf(hull2, r + 1);
 
         new Plotting(hull, hull2, true, 0);
 
@@ -711,15 +1118,17 @@ public class LiuChen {
 
     public static void main(String[] args) {
 
-        Point[] points0 = Testing.testSet8();
-        ArrayList<Point> points = new ArrayList<Point>();
-        Collections.addAll(points, points0);
+        Point[] points = Testing.testSet8();
+        //ArrayList<Point> points = new ArrayList<Point>();
+        //Collections.addAll(points, points0);
 
-        ArrayList<Point> hull = convexHull(points);
+        Point[] hull = convexHull(points);
+        Util.printSet(hull);
 
         new Plotting(points, hull, true, 0);
 
 
+        //avr_test();
 
         
     } // main
