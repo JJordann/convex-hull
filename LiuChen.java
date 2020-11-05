@@ -8,9 +8,38 @@ public class LiuChen {
 
 
         // TODO: indeksiranje z 1
+        // TODO: uporabi navaden array namesto ArrayList
 
 
-        return null;
+
+        ArrayList<Point> M = extremePoints(points);
+        ArrayList<Point> H = new ArrayList<Point>();
+        H.add(M.get(1));
+        H.add(M.get(1));
+
+        for(int i = 0; i < points.size(); i++) {
+            Point v = points.get(i);
+            if(is_cand_pps(M.get(1), M.get(2), v)) {
+                deal_cand_pps(H, v, M.get(2));
+            }
+        }
+
+        H.add(M.get(2));
+
+        return H;
+    }
+
+    public static boolean is_cand_pps(Point m1, Point m2, Point v) {
+        return Util.S(m1, m2, v) > 0;
+    }
+
+    public static void safeSet(ArrayList<Point> h, int index, Point v) {
+        if(index >= h.size()) {
+            h.add(v);
+        }
+        else {
+            h.set(index, v);
+        }
     }
 
 
@@ -35,20 +64,46 @@ public class LiuChen {
         if(n == -1) {
             // Step 3
             if(v.x >= hr.x) {                    
-                r = m + 1;      // TODO: resize h to size r !!!!!!!!!
-                h.set(r, v);    // TODO: safe set
+                //r = m + 1;      // TODO: resize h to size r !!!!!!!!!
+                                // izbrisi vsa vozlisca po `hm`, nato appendaj `v`
+                //h.set(r, v);    // TODO: safe set
+
+                // Remove all hull vertices after h[m]
+                for(int i = h.size() - 1; i > m; i--) {
+                    h.remove(i);
+                }
+                // insert `v` after h[m]
+                h.add(v);
+
+
                 return;
             }
             // Step 4
-            else if(Util.S(v, m2, hr) > 0) {
+            else if(Util.S(v, m2, hr) > 0 ) { 
                 r = m + 1;
-                h.set(r, v);
+                safeSet(h, r, v);
+                //h.set(r, v);
                 r = r + 1;
-                h.set(r, hr);               
+                //h.set(r, hr);               
+                safeSet(h, r, hr);
+            
+                // delete all after h[r]
+
+                while(h.size() > r + 1) {
+                    h.remove(h.size() - 1);
+                }
+
             }
             else {
                 r = m + 1;
-                h.set(r, v);
+                //h.set(r, v);
+                safeSet(h, r, v);
+
+                // delete all after h[r]
+                while(h.size() > r + 1) {
+                    h.remove(h.size() - 1);
+                }
+
                 return;
             }
 
@@ -56,21 +111,30 @@ public class LiuChen {
         else {
             // n > 0
             // Step 5
-            if(t == 0) 
-                r = r - n + m + 2;
-            else
-                r = r - n + m + 1;
 
-            // delete points after h[m] and before h[n],
-            // insert v immediately before h[n]
+            //if(t == 0)  {
+                //r = r - n + m + 2;
+            //}
+            //else {
+                //r = r - n + m + 1;
+            //}
+
+            // delete points after h[m] and before h[n]
+            for(int i = m + 1; i < n; i++) {
+                h.remove(i);
+            }
+
+            if(t == 1)
+                h.remove(n - 1);
+
+            // insert `v` between h[m] and h[n] 
+            h.add(m + 1, v);
 
             return;
 
-
         } // Step 5
 
-
-    }
+    } // deal_cand_pps
 
 
     /*
@@ -584,8 +648,7 @@ public class LiuChen {
         return extreme;
     }
 
-
-    public static void main(String[] args) {
+    public static void avr_test() {
 
         ArrayList<Point> hull = new ArrayList<Point>();
         hull.add(new Point(-10, -1)); // 
@@ -595,7 +658,7 @@ public class LiuChen {
         hull.add(new Point(-7, 5));
         hull.add(new Point(-4, 6));
         hull.add(new Point(1, 7));
-        hull.add(new Point(8, 8)); // M2
+        //hull.add(new Point(8, 8)); // M2
 
         Point p1 = new Point(-8, 6);
         Point p2 = new Point(-7, 6);
@@ -606,7 +669,8 @@ public class LiuChen {
         Point p = p4;
 
 
-        Point m2 = hull.get(hull.size() - 1);
+        //Point m2 = hull.get(hull.size() - 1);
+        Point m2 = new Point(8, 8);
 
         int[] mnt = in_avr_pps(p, hull, m2);
 
@@ -625,7 +689,12 @@ public class LiuChen {
         }
         System.out.println(mnt[0] + ", " + mnt[1] + ", " + mnt[2]);
 
-        new Plotting(hull, res, true, 0);
+        ArrayList<Point> hull2 = new ArrayList<Point>();
+        hull2.addAll(hull);
+
+        deal_cand_pps(hull2, p, m2);
+
+        new Plotting(hull, hull2, true, 0);
 
 
         // convexity check
@@ -638,5 +707,20 @@ public class LiuChen {
         //hull.add(p3);
         //new Plotting(hull, hull0ar, true, 0);
 
+    }
+
+    public static void main(String[] args) {
+
+        Point[] points0 = Testing.testSet8();
+        ArrayList<Point> points = new ArrayList<Point>();
+        Collections.addAll(points, points0);
+
+        ArrayList<Point> hull = convexHull(points);
+
+        new Plotting(points, hull, true, 0);
+
+
+
+        
     } // main
 }
