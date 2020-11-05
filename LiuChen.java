@@ -10,13 +10,11 @@ public class LiuChen {
 
         // TODO: indeksiranje z 1
 
-        ArrayList<Point> points0 = new ArrayList<Point>();
-        Collections.addAll(points0, points);
 
-        ArrayList<Point> M = extremePoints(points0);
+        Point[] M = extremePoints(points);
         Point[] H = new Point[points.length];
 
-        H[0] = M.get(1);
+        H[0] = M[0];
 
         int r = 1;
 
@@ -32,13 +30,12 @@ public class LiuChen {
         */
 
         // Quadrant 1
-        H[r] = M.get(1); 
-        endpoint = M.get(2);
+        H[r] = M[0]; 
+        endpoint = M[1];
 
         for(int i = 0; i < points.length; i++) {
             Point v = points[i];
-            if(is_cand_pps(M.get(1), endpoint, v)) {
-                System.out.println("cand: " + v);
+            if(is_cand_pps(M[0], endpoint, v)) {
                 r = deal_cand_pps(H, v, endpoint, r);
             }
         }
@@ -57,6 +54,7 @@ public class LiuChen {
     }
 
     /*
+
     */ 
     public static int find_sar(Point v, int l, int u, Point[] hull, int r) {
 
@@ -78,6 +76,7 @@ public class LiuChen {
 
         return -1;
     }
+
 
     /*
 
@@ -103,7 +102,7 @@ public class LiuChen {
                 m = find_sar(v, 1, r - 1, h, r);
                 // quit
             }
-            else if(Util.S(h[r], m2, v) > 0) { // && Util.S(h.get(r - 1), hr, v) < 0
+            else if(Util.S(h[r], m2, v) > 0) { 
                  m = r;
                 // quit
             }
@@ -176,7 +175,6 @@ public class LiuChen {
 
             }
             else {
-            System.out.println(m);
                 r = m + 1;
                 h[r] = v;
                 return r;
@@ -187,15 +185,8 @@ public class LiuChen {
             // n > 0
             // Step 5
 
-            //if(t == 0)  {
-              //r = r - n + m + 2;
-            //}
-            //else {
-              //r = r - n + m + 1;
-            //}
-
+            // insert `v` after h[m]
             h[m + 1] = v;
-            // delete after h[m + 1] and before h[n]
 
             if(t == 1) {
                 // delete up to including h[n]
@@ -215,10 +206,6 @@ public class LiuChen {
 
                 r = r - n + m + 2;
             }
-
-            // delete points after h[m] and before h[n]
-
-            // insert `v` before h[n]
 
             return r;
 
@@ -314,10 +301,10 @@ public class LiuChen {
         return mnt;
     }
 
+
     /*
     
     */
-
     public static int[] table(float S1, float S2, int j, int r, Point v, Point[] h) {
 
         int m = -1, n = -1337, t = -1;
@@ -411,24 +398,24 @@ public class LiuChen {
     /*
         Returns the 8 extreme points
     */
-    public static ArrayList<Point> extremePoints(ArrayList<Point> points) {
+    public static Point[] extremePoints(Point[] points) {
 
-        int minX = points.get(0).x;
-        int minY = points.get(0).y;
-        int maxX = points.get(0).x;
-        int maxY = points.get(0).y;
+        int minX = points[0].x;
+        int minY = points[0].y;
+        int maxX = points[0].x;
+        int maxY = points[0].y;
 
-        Point leftTop  = points.get(0);
-        Point leftBot  = points.get(0);
-        Point rightTop = points.get(0);
-        Point rightBot = points.get(0);
-        Point topLeft  = points.get(0);
-        Point topRight = points.get(0);
-        Point botLeft  = points.get(0);
-        Point botRight = points.get(0);
+        Point leftTop  = points[0];
+        Point leftBot  = points[0];
+        Point rightTop = points[0];
+        Point rightBot = points[0];
+        Point topLeft  = points[0];
+        Point topRight = points[0];
+        Point botLeft  = points[0];
+        Point botRight = points[0];
 
-        for(int i = 1; i < points.size(); i++) {
-            Point pi = points.get(i);
+        for(int i = 1; i < points.length; i++) {
+            Point pi = points[i];
 
             // left
             if(pi.x < minX) {
@@ -484,15 +471,15 @@ public class LiuChen {
         }  // for pi in points
 
 
-        ArrayList<Point> extreme = new ArrayList<Point>(8);
-        extreme.add(leftBot);
-        extreme.add(leftTop);
-        extreme.add(topLeft);
-        extreme.add(topRight);
-        extreme.add(rightTop);
-        extreme.add(rightBot);
-        extreme.add(botRight);
-        extreme.add(botLeft);
+        Point[] extreme = new Point[8];
+        extreme[0] = leftTop;
+        extreme[1] = topLeft;
+        extreme[2] = topRight;
+        extreme[3] = rightTop;
+        extreme[4] = rightBot;
+        extreme[5] = botRight;
+        extreme[6] = botLeft;
+        extreme[7] = leftBot;
 
         return extreme;
     }
@@ -519,55 +506,23 @@ public class LiuChen {
 
         Point p = p2;
 
-        //int[] mnt = in_avr_pps(p, hull, m2, r);
-
-        //ArrayList<Point> res = new ArrayList<Point>();
-        //if(mnt[0] != -1) {
-            //res.add(hull[mnt[0]]);
-        //}
-
-        //res.add(p);
-
-        //if(mnt[1] != -1) {
-            //res.add(hull[mnt[1]]);
-        //}
-        //else {
-            //res.add(m2);
-        //}
-        //System.out.println(mnt[0] + ", " + mnt[1] + ", " + mnt[2]);
-
         Point[] hull2 = hull.clone();
 
         r = deal_cand_pps(hull2, p, m2, r);
-        System.out.println("from main: " + r);
         hull2 = Arrays.copyOf(hull2, r + 1);
 
         new Plotting(hull, hull2, true, 0);
-
-
-        // convexity check
-        //Point[] hull0 = new Point[hull.size()];
-        //hull0 = GrahamScan.convexHull(hull.toArray(hull0));
-        //ArrayList<Point> hull0ar = new ArrayList<Point>();
-        //Collections.addAll(hull0ar, hull0);
-        //hull.add(p1);
-        //hull.add(p2);
-        //hull.add(p3);
-        //new Plotting(hull, hull0ar, true, 0);
 
     }
 
     public static void main(String[] args) {
 
         Point[] points = Testing.testSet8();
-        //ArrayList<Point> points = new ArrayList<Point>();
-        //Collections.addAll(points, points0);
 
         Point[] hull = convexHull(points);
         Util.printSet(hull);
 
         new Plotting(points, hull, true, 0);
-
 
         //avr_test();
 
