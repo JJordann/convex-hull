@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Arrays;
 
 public class LiuChen {
@@ -14,9 +12,7 @@ public class LiuChen {
         Point[] M = extremePoints(points);
         Point[] H = new Point[points.length];
 
-        H[0] = M[0];
-
-        int r = 1;
+        int r = 0;
 
         Point endpoint;
 
@@ -59,8 +55,8 @@ public class LiuChen {
     public static int find_sar(Point v, int l, int u, Point[] hull, int r) {
 
         // special case:
-        if(Util.S(hull[1], hull[2], v) >= 0) {
-            return 1;
+        if(Util.S(hull[0], hull[1], v) >= 0) {
+            return 0;
         }
 
         Point hl = hull[l];
@@ -139,12 +135,12 @@ public class LiuChen {
 
 
     /*
-    
+        Mutates `h` and returns updated `r` 
     */
     public static int deal_cand_pps(Point[] h, Point v, Point m2, int r) {
 
         // Case 1: adding the first point
-        if(r == 1) {
+        if(r == 0) {
             r = r + 1;
             h[r] = v;
             return r;
@@ -215,9 +211,11 @@ public class LiuChen {
 
 
 
-    public static int findJ(Point v, Point[] h, int r) {
+    /*
 
-        for(int j = 1; j < r; j++) {
+    */
+    public static int findJ(Point v, Point[] h, int r) {
+        for(int j = 0; j < r; j++) {
             if(h[j].x < v.x && v.x <= h[j + 1].x)
                 return j;
         }
@@ -242,21 +240,21 @@ public class LiuChen {
         int m = -1, n = -1, t = -1;
 
         // Case 1: inserting immediately after h[0]
-        if(j == 1) {
-            m = 1;           
+        if(j == 0) {
+            m = 0;           
 
-            if(Util.S(h[3], h[2], v) == 0) {
+            if(Util.S(h[2], h[1], v) == 0) {
                 n = 2;
                 t = 1;
                 // quit
             }
-            else if(Util.S(h[3], h[2], v) > 0) {
+            else if(Util.S(h[2], h[1], v) > 0) {
                 n = 2;
                 t = 0;
                 // quit
             }
             else {
-                int[] nt = find_isar(v, 3, r - 1, h);
+                int[] nt = find_isar(v, 2, r - 1, h);
                 n = nt[0];
                 t = nt[1];
                 // quit
@@ -278,7 +276,7 @@ public class LiuChen {
                     // quit
                 }
                 else {
-                    m = find_sar(v, 1, r - 3, h, r);
+                    m = find_sar(v, 0, r - 3, h, r);
                     // quit
                 }
 
@@ -307,7 +305,7 @@ public class LiuChen {
     */
     public static int[] table(float S1, float S2, int j, int r, Point v, Point[] h) {
 
-        int m = -1, n = -1337, t = -1;
+        int m = -1, n = -1, t = -1;
 
         if(S1 == 0 && S2 == 0) {
             m = j - 1;
@@ -342,17 +340,17 @@ public class LiuChen {
             t = nt[1];
         }
         else if(S1 > 0 && S2 == 0) {
-            m = find_sar(v, 1, j - 1, h, r);
+            m = find_sar(v, 0, j - 1, h, r);
             n = j + 1;
             t = 1;
         }
         else if(S1 > 0 && S2 < 0) {
-            m = find_sar(v, 1, j - 1, h, r);
+            m = find_sar(v, 0, j - 1, h, r);
             n = j + 1;
             t = 0;
         }
         else if(S1 > 0 && S2 > 0) {
-            m = find_sar(v, 1, j - 1, h, r);
+            m = find_sar(v, 0, j - 1, h, r);
             int[] nt = find_isar(v, j + 2, r - 1, h);
             n = nt[0];
             t = nt[1];
@@ -486,15 +484,14 @@ public class LiuChen {
 
     public static void avr_test() {
 
-        Point[] hull = new Point[7];
-        int r = 6;
-        hull[0] = new Point(-10, -1); // 
-        hull[1] = new Point(-10, -1); // M1
-        hull[2] = new Point(-9, 2);
-        hull[3] = new Point(-8, 4);
-        hull[4] = new Point(-7, 5);
-        hull[5] = new Point(-4, 6);
-        hull[6] = new Point(1, 7);
+        Point[] hull = new Point[6];
+        int r = 5;
+        hull[0] = new Point(-10, -1); // M1
+        hull[1] = new Point(-9, 2);
+        hull[2] = new Point(-8, 4);
+        hull[3] = new Point(-7, 5);
+        hull[4] = new Point(-4, 6);
+        hull[5] = new Point(1, 7);
 
         Point m2 = new Point(8, 8);
 
@@ -504,12 +501,17 @@ public class LiuChen {
         Point p4 = new Point(-9, 3);
         Point p5 = new Point(-4, 4);
 
-        Point p = p2;
+        Point p = p4;
 
         Point[] hull2 = hull.clone();
 
+        Util.printSet(hull2);
+
         r = deal_cand_pps(hull2, p, m2, r);
         hull2 = Arrays.copyOf(hull2, r + 1);
+
+        Util.printSet(hull2);
+
 
         new Plotting(hull, hull2, true, 0);
 
@@ -517,14 +519,14 @@ public class LiuChen {
 
     public static void main(String[] args) {
 
-        Point[] points = Testing.testSet8();
+        //Point[] points = Testing.testSet8();
 
-        Point[] hull = convexHull(points);
-        Util.printSet(hull);
+        //Point[] hull = convexHull(points);
+        //Util.printSet(hull);
 
-        new Plotting(points, hull, true, 0);
+        //new Plotting(points, hull, true, 0);
 
-        //avr_test();
+        avr_test();
 
         
     } // main
