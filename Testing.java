@@ -164,6 +164,18 @@ public class Testing {
         return mirror;
     }
 
+    // test set 7, mirrored along the x axis
+    public static Point[] testSet9() {
+        Point[] points = testSet7();
+        Point[] mirror = new Point[points.length];
+
+        for(int i = 0; i < points.length; i++)
+            mirror[i] = new Point(points[i].x, -points[i].y);
+
+        return mirror;
+    }
+
+
 
     public static void runAll(Point[] points) {
         Util.printSet(GrahamScan.convexHull(points.clone()));

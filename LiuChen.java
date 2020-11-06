@@ -5,10 +5,6 @@ public class LiuChen {
 
     public static Point[] convexHull(Point[] points) {
 
-
-        // TODO: indeksiranje z 1
-
-
         Point[] M = extremePoints(points);
         Point[] H = new Point[points.length];
 
@@ -25,24 +21,99 @@ public class LiuChen {
                 |
         */
 
-        // Quadrant 1
+        // Quadrant 1 -----------------------------------------------
         H[r] = M[0]; 
         endpoint = M[1];
 
         for(int i = 0; i < points.length; i++) {
             Point v = points[i];
             if(is_cand_pps(M[0], endpoint, v)) {
-                r = deal_cand_pps(H, v, endpoint, r);
+                r = deal_cand_pps(H, v, endpoint, r, 1);
             }
         }
 
         r = r + 1;
         H[r] = endpoint;
+        H = Arrays.copyOf(H, r + 1);
 
-        // Quadrant 2
+        // Quadrant 2 -------------------------------------------------
+
+        // TODO: if m1 != m2
+        // TODO: delete first vertex of each subhull
+
+        Point[] H2 = new Point[points.length];
+        r = 0;
+        H2[r] = M[2];
+        endpoint = M[3];
+
+        for(int i = 0; i < points.length; i++) {
+            Point v = points[i];
+            if(is_cand_pps(M[2], endpoint, v)) {
+                r = deal_cand_pps(H2, v, endpoint, r, 2);
+            }
+        }
+
+        r = r + 1;
+        H2[r] = endpoint;
+        H2 = Arrays.copyOf(H2, r + 1);
+
+        // Quadrant 3 --------------------------------------------------
 
 
-        return Arrays.copyOf(H, r + 1);
+        Point[] H3 = new Point[points.length];
+        r = 0;
+        H3[r] = M[4];
+        endpoint = M[5];
+
+        for(int i = 0; i < points.length; i++) {
+            Point v = points[i];
+            if(is_cand_pps(M[4], endpoint, v)) {
+                System.out.println("cand:" + v);
+                r = deal_cand_pps(H3, v, endpoint, r, 3);
+            }
+        }
+
+        r = r + 1;
+        H3[r] = endpoint;
+        H3 = Arrays.copyOf(H3, r + 1);
+
+
+
+        // Quadrant 4 --------------------------------------------------
+
+
+        Point[] H4 = new Point[points.length];
+        r = 0;
+        H4[r] = M[6];
+        endpoint = M[7];
+
+        for(int i = 0; i < points.length; i++) {
+            Point v = points[i];
+            if(is_cand_pps(M[6], endpoint, v)) {
+                System.out.println("cand:" + v);
+                r = deal_cand_pps(H4, v, endpoint, r, 4);
+            }
+        }
+
+        r = r + 1;
+        H4[r] = endpoint;
+        H4 = Arrays.copyOf(H4, r + 1);
+
+
+
+
+
+        // Quadrant 4 --------------------------------------------------
+        System.out.println("H1: ");
+        Util.printSet(H);
+        System.out.println("H2: ");
+        Util.printSet(H2);
+        System.out.println("H3: ");
+        Util.printSet(H3);
+        System.out.println("H4: ");
+        Util.printSet(H4);
+
+        return Util.concatHulls(H, Util.concatHulls(H2, Util.concatHulls(H3, H4)));
     }
 
     public static boolean is_cand_pps(Point m1, Point m2, Point v) {
@@ -77,7 +148,7 @@ public class LiuChen {
     /*
 
     */
-    public static int[] in_avr_pps(Point v, Point[] h, Point m2, int r) {
+    public static int[] in_avr_pps1(Point v, Point[] h, Point m2, int r) {
 
         int m = -1, n = -1, t = 0;
 
@@ -115,7 +186,179 @@ public class LiuChen {
                 // quit
             }
             else {
-                int j = findJ(v, h, r);
+                int j = findJ(v, h, r, 1);
+                if(Util.S(h[j], h[j + 1], v) <= 0) {
+                    m = -1;
+                    n = -1;
+                    // quit
+                }
+                else {
+                    return find_avr_pps(v, j, h, r);
+                }
+
+            }
+        }
+        
+        int[] mnt = new int[3];
+        mnt[0] = m; mnt[1] = n; mnt[2] = t;
+        return mnt;
+    }
+
+    public static int[] in_avr_pps2(Point v, Point[] h, Point m2, int r) {
+
+        int m = -1, n = -1, t = 0;
+
+        // Case 1: new point is directly above/below the last hull vertex
+        if(v.y == h[r].y) {                                 // <-------------------
+            n = -1;
+            if(v.x > h[r].x) {                               // <-------------------
+                // if new point is above, find which active 
+                // region it belongs to. Otherwise, discard it
+                m = find_sar(v, 1, r - 1, h, r);
+            }
+        }
+        // Case 2: new point is to the right of the last hull vertex
+        else if(h[r - 1].y > v.y && v.y > m2.y) {               // <-------------------          
+            // Step 3
+            n = -1;
+            if(Util.S(h[r - 1], h[r], v) >= 0) {
+                m = find_sar(v, 1, r - 1, h, r);
+                // quit
+            }
+            else if(Util.S(h[r], m2, v) > 0) { 
+                 m = r;
+                // quit
+            }
+            else {
+                m = -1;
+                // quit
+            }
+        }
+        // Case 3: new point lies to the left of the last hull vertex
+        else {
+            if(Util.S(h[r - 1], h[r], v) > 0) {
+                n = -1;
+                m = find_sar(v, 1, r - 1, h, r);
+                // quit
+            }
+            else {
+                int j = findJ(v, h, r, 2);                      // <-------------------                      
+                if(Util.S(h[j], h[j + 1], v) <= 0) {
+                    m = -1;
+                    n = -1;
+                    // quit
+                }
+                else {
+                    return find_avr_pps(v, j, h, r);
+                }
+
+            }
+        }
+        
+        int[] mnt = new int[3];
+        mnt[0] = m; mnt[1] = n; mnt[2] = t;
+        return mnt;
+    }
+
+
+    /*
+
+    */
+    public static int[] in_avr_pps3(Point v, Point[] h, Point m2, int r) {
+
+        int m = -1, n = -1, t = 0;
+
+        // Case 1: new point is directly above/below the last hull vertex
+        if(v.x == h[r].x) {
+            n = -1;
+            if(v.y < h[r].y) {  // <----------------------------------------------
+                // if new point is above, find which active 
+                // region it belongs to. Otherwise, discard it
+                m = find_sar(v, 1, r - 1, h, r);
+            }
+        }
+        // Case 2: new point is to the right of the last hull vertex
+        else if(h[r - 1].x > v.x && v.x > m2.x) {
+            // Step 3
+            n = -1;
+            if(Util.S(h[r - 1], h[r], v) >= 0) {
+                m = find_sar(v, 1, r - 1, h, r);
+                // quit
+            }
+            else if(Util.S(h[r], m2, v) > 0) { 
+                 m = r;
+                // quit
+            }
+            else {
+                m = -1;
+                // quit
+            }
+        }
+        // Case 3: new point lies to the left of the last hull vertex
+        else {
+            if(Util.S(h[r - 1], h[r], v) > 0) {
+                n = -1;
+                m = find_sar(v, 1, r - 1, h, r);
+                // quit
+            }
+            else {
+                int j = findJ(v, h, r, 3);
+                if(Util.S(h[j], h[j + 1], v) <= 0) {
+                    m = -1;
+                    n = -1;
+                    // quit
+                }
+                else {
+                    return find_avr_pps(v, j, h, r);
+                }
+
+            }
+        }
+        
+        int[] mnt = new int[3];
+        mnt[0] = m; mnt[1] = n; mnt[2] = t;
+        return mnt;
+    }
+
+    public static int[] in_avr_pps4(Point v, Point[] h, Point m2, int r) {
+
+        int m = -1, n = -1, t = 0;
+
+        // Case 1: new point is directly above/below the last hull vertex
+        if(v.y == h[r].y) {
+            n = -1;
+            if(v.x < h[r].x) {  // <----------------------------------------------
+                // if new point is above, find which active 
+                // region it belongs to. Otherwise, discard it
+                m = find_sar(v, 1, r - 1, h, r);
+            }
+        }
+        // Case 2: new point is to the right of the last hull vertex
+        else if(h[r - 1].y < v.y && v.y < m2.y) {
+            // Step 3
+            n = -1;
+            if(Util.S(h[r - 1], h[r], v) >= 0) {
+                m = find_sar(v, 1, r - 1, h, r);
+                // quit
+            }
+            else if(Util.S(h[r], m2, v) > 0) { 
+                 m = r;
+                // quit
+            }
+            else {
+                m = -1;
+                // quit
+            }
+        }
+        // Case 3: new point lies to the left of the last hull vertex
+        else {
+            if(Util.S(h[r - 1], h[r], v) > 0) {
+                n = -1;
+                m = find_sar(v, 1, r - 1, h, r);
+                // quit
+            }
+            else {
+                int j = findJ(v, h, r, 4);
                 if(Util.S(h[j], h[j + 1], v) <= 0) {
                     m = -1;
                     n = -1;
@@ -137,7 +380,7 @@ public class LiuChen {
     /*
         Mutates `h` and returns updated `r` 
     */
-    public static int deal_cand_pps(Point[] h, Point v, Point m2, int r) {
+    public static int deal_cand_pps(Point[] h, Point v, Point m2, int r, int quadrant) {
 
         // Case 1: adding the first point
         if(r == 0) {
@@ -146,7 +389,14 @@ public class LiuChen {
             return r;
         }
 
-        int[] mnt = in_avr_pps(v, h, m2, r);
+        int[] mnt = new int[3];
+        switch(quadrant) {
+            case 1: mnt = in_avr_pps1(v, h, m2, r); break;
+            case 2: mnt = in_avr_pps2(v, h, m2, r); break;
+            case 3: mnt = in_avr_pps3(v, h, m2, r); break;
+            case 4: mnt = in_avr_pps4(v, h, m2, r); break;
+        }
+        //int[] mnt = in_avr_pps(v, h, m2, r);
         int m = mnt[0], n = mnt[1], t = mnt[2];
 
         // Case 2:
@@ -211,13 +461,39 @@ public class LiuChen {
 
 
 
+
     /*
 
     */
-    public static int findJ(Point v, Point[] h, int r) {
-        for(int j = 0; j < r; j++) {
-            if(h[j].x < v.x && v.x <= h[j + 1].x)
-                return j;
+    public static int findJ(Point v, Point[] h, int r, int quadrant) {
+
+        switch(quadrant) {
+            case 1: {
+                for(int j = 0; j < r; j++) {
+                    if(h[j].x < v.x && v.x <= h[j + 1].x)
+                        return j;
+                }
+            }; break;
+            case 2: {
+                for(int j = 0; j < r; j++) {
+                    if(h[j].y > v.y && v.y >= h[j + 1].y)
+                        return j;
+                }
+            }; break;
+            case 3: {
+                for(int j = 0; j < r; j++) {
+                    if(h[j].x > v.x && v.x >= h[j + 1].x)
+                        return j;
+                }
+            }; break;
+            case 4: {
+                for(int j = 0; j < r; j++) {
+                    if(h[j].y < v.y && v.y <= h[j + 1].y)
+                        return j;
+                }
+            }; break;
+            default:
+                return -1;
         }
         return -1;
     }
@@ -507,7 +783,7 @@ public class LiuChen {
 
         Util.printSet(hull2);
 
-        r = deal_cand_pps(hull2, p, m2, r);
+        r = deal_cand_pps(hull2, p, m2, r, 1);
         hull2 = Arrays.copyOf(hull2, r + 1);
 
         Util.printSet(hull2);
@@ -519,14 +795,38 @@ public class LiuChen {
 
     public static void main(String[] args) {
 
-        //Point[] points = Testing.testSet8();
+        Point[] points = Testing.testSet9();
+        Point[] points0 = Arrays.copyOf(points, points.length + 1);
+        points0[points0.length - 1] = new Point(7, -9);
+        //7, -9
 
-        //Point[] hull = convexHull(points);
-        //Util.printSet(hull);
+        Point[] hull = convexHull(points0);
+        Util.printSet(hull);
+
+        new Plotting(points0, hull, true, 0);
+
+        //int r = 2;
+        //Point[] points = new Point[3];
+        //points[0] = new Point(-8, 6);
+        //points[1] = new Point(5, 5);
+        //points[2] = new Point(7, 2);
+
+        //Point m2 = new Point(8, -1);
+
+        //Point v = new Point(7, 4);
+
+        //Util.printSet(points);
+
+        //new Plotting(points, points, true, 0);
+        //Util.printSet(points);
+
+        //r = deal_cand_pps_Q2(points.clone(), v, m2, r);
+        
+        //Point[] hull = Arrays.copyOf(points, r + 1);
 
         //new Plotting(points, hull, true, 0);
 
-        avr_test();
+        //avr_test();
 
         
     } // main

@@ -352,4 +352,19 @@ public class Util {
         return flipped;
     }
 
+
+    public static Point[] concatHulls(final Point[] a, final Point[] b) {
+        Point[] res = new Point[a.length + b.length];
+
+        for(int i = 0; i < a.length; i++){
+            res[i] = a[i];
+        }
+
+        for(int i = 0; i < b.length; i++){
+            res[a.length + i] = b[i];
+        }
+
+        return res;
+    }
+
 }
