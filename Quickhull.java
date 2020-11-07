@@ -1,11 +1,10 @@
-import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 
 public class Quickhull {
 
-    public static HashSet<Point> hull = new HashSet<Point>();
+    public static ArrayList<Point> hull = new ArrayList<Point>();
     
     public static void findHull(ArrayList<Point> points, Point p, Point q) {
 
@@ -29,8 +28,6 @@ public class Quickhull {
 
         Point farthest = points.get(farthestIndex);
 
-        // Farthest point is added to the hull
-        hull.add(farthest);
 
         ArrayList<Point> U = new ArrayList<Point>();
         ArrayList<Point> L = new ArrayList<Point>();
@@ -61,10 +58,14 @@ public class Quickhull {
             }
         }
         
-
         // Recur for both regions separately
         // (p = lowest, q = highest)
         findHull(L, p, farthest); 
+
+        // Farthest point is added to the hull
+        // Add the point between recursive calls to preserve order
+        hull.add(farthest);
+
         findHull(U, farthest, q);
 
     } // convexHull
@@ -72,12 +73,12 @@ public class Quickhull {
 
     public static Point[] convexHull(Point[] points0) {
         ArrayList<Point> points = new ArrayList<Point>(Arrays.asList(points0));
-        hull = new HashSet<Point>();
+        hull = new ArrayList<Point>();
 
         int lowest  = 0;
         int highest = 0;
 
-        // TODO: v primeru ==
+        // Find lowest and highest point of the set
         for(int i = 1; i < points.size(); i++) {
             if(points.get(i).y < points.get(lowest).y) {
                 lowest = i;
@@ -89,10 +90,6 @@ public class Quickhull {
 
         Point pLowest  = points.get(lowest);
         Point pHighest = points.get(highest);
-
-        // Initial extreme points are added to the hull
-        hull.add(pLowest);
-        hull.add(pHighest);
 
 
         // Split the set of points into {left, right}, 
@@ -114,7 +111,10 @@ public class Quickhull {
         }
 
         // Begin recursion for both sides separately
+        // Initial extreme points are also added to the hull
+        hull.add(pLowest);
         findHull(left,  pLowest, pHighest);
+        hull.add(pHighest);
         findHull(right, pHighest, pLowest);
 
         return hull.toArray(new Point[hull.size()]);
