@@ -1,5 +1,7 @@
 import java.util.Arrays;
 
+import javax.lang.model.util.ElementScanner6;
+
 public class LiuChen {
     
 
@@ -130,6 +132,7 @@ public class LiuChen {
 
     /*
 
+    // TODO: binary search
     */ 
     public static int find_sar(Point v, int l, int u, Point[] hull, int r) {
 
@@ -138,16 +141,37 @@ public class LiuChen {
             return 0;
         }
 
-        for(int j = l; j <= u; j++) {
-            if(Util.S(hull[j - 1], hull[j], v) < 0 
-            && Util.S(hull[j], hull[j + 1], v) >= 0) {
-                return j;
+        while(l <= u) {
+
+            int mid = (int) Math.floor((l + u) / 2);
+
+            float backward = Util.S(hull[mid - 1], hull[mid], v);
+            float forward  = Util.S(hull[mid], hull[mid + 1], v);
+
+            //if(backward < 0 && forward >= 0) {
+                //return mid;
+            //}
+
+            if(backward > 0 && forward >= 0)
+                u = mid - 1;
+            else if(backward < 0 && forward < 0)
+                l = mid + 1;
+            else {
+                System.out.println("found");
+                return mid;
             }
 
         }
 
+        //for(int j = l; j <= u; j++) {
+            //if(Util.S(hull[j - 1], hull[j], v) < 0 && Util.S(hull[j], hull[j + 1], v) >= 0) {
+                //return j;
+            //}
+
+        //}
+
         return -1;
-    }
+    } // find_sar
 
 
     /*
@@ -473,34 +497,69 @@ public class LiuChen {
 
         switch(quadrant) {
             case 1: {
-                for(int j = 0; j < r; j++) {
-                    if(h[j].x < v.x && v.x <= h[j + 1].x)
-                        return j;
+
+                int l = 0, u = r;
+
+                while(l <= u) {
+                    int mid = (int) Math.floor((l + u) / 2);
+                    if(h[mid].x < v.x && h[mid + 1].x < v.x)
+                        l = mid + 1;
+                    else if(h[mid].x > v.x && h[mid + 1].x > v.x)
+                        u = mid - 1;
+                    else
+                        return mid;
                 }
             }; break;
             case 2: {
-                for(int j = 0; j < r; j++) {
-                    if(h[j].y > v.y && v.y >= h[j + 1].y)
-                        return j;
+
+                int l = 0, u = r;
+
+                while(l <= u) {
+                    int mid = (int) Math.floor((l + u) / 2);
+
+                    if(h[mid].y < v.y && h[mid + 1].y < v.y)
+                        l = mid + 1;
+                    else if(h[mid].y > v.y && h[mid + 1].y > v.y)
+                        u = mid - 1;
+                    else
+                        return mid;
                 }
             }; break;
             case 3: {
-                for(int j = 0; j < r; j++) {
-                    if(h[j].x > v.x && v.x >= h[j + 1].x)
-                        return j;
+
+                int l = 0, u = r;
+
+                while(l <= u) {
+
+                    int mid = (int) Math.floor((l + u) / 2);
+
+                    if(h[mid].x > v.x && h[mid + 1].x > v.x)
+                        u = mid - 1;
+                    else if(h[mid].x < v.x && h[mid + 1].x < v.x) 
+                        l = mid + 1;
+                    else
+                        return mid;
                 }
             }; break;
             case 4: {
-                for(int j = 0; j < r; j++) {
-                    if(h[j].y < v.y && v.y <= h[j + 1].y)
-                        return j;
+                int l = 0, u = r;
+
+                while(l <= u) {
+
+                    int mid = (int) Math.floor((l + u) / 2);
+
+                    if(h[mid].y > v.y && h[mid + 1].y > v.y)
+                        u = mid - 1;
+                    else if(h[mid].y < v.y && h[mid + 1].y < v.y)
+                        l = mid + 1;
+                    else
+                        return mid;
                 }
             }; break;
-            default:
-                return -1;
         }
+
         return -1;
-    }
+    } // findJ
 
 
     /*
@@ -513,6 +572,8 @@ public class LiuChen {
                 m: index of active region
                 n: index of inverse active region
                 t: 1 if collinear with h[j], h[j+1], otherwise 0
+
+                TODO: binary search
 
     */
     public static int[] find_avr_pps(Point v, int j, Point[] h, int r) {
@@ -649,24 +710,34 @@ public class LiuChen {
             [n, t]:
                 n: index of inverse active region
                 t: 1 if collinear with h[n], h[n+1]
+
     */
     public static int[] find_isar(Point v, int l, int u, Point[] h) {
 
-        for(int k = l; k < u; k++) {
-            float sf = Util.S(h[k + 1], h[k], v); // forward border
-            float sb = Util.S(h[k], h[k - 1], v); // backward border
+        while(l <= u) {
+            int mid = (int) Math.floor((l + u) / 2);
 
-            if(sb < 0 && sf >= 0) {
+            float forward  = Util.S(h[mid + 1], h[mid], v); 
+            float backward = Util.S(h[mid], h[mid - 1], v); 
+
+            if(backward > 0 && forward >= 0)
+                u = mid - 1;
+            else if(backward < 0 && forward < 0)
+                l = mid + 1;
+            else {
+                // backward < 0 && forward >= 0
                 int[] nt = new int[2];
-                nt[0] = k;
+                nt[0] = mid;
 
-                if(sf == 0.0)
+                if(forward == 0.0)
                     nt[1] = 1;
                 else
                     nt[1] = 0;
 
+                System.out.println("found 2");
                 return nt;
             }
+
         }
 
         return null;
@@ -781,7 +852,7 @@ public class LiuChen {
         Point p4 = new Point(-9, 3);
         Point p5 = new Point(-4, 4);
 
-        Point p = p4;
+        Point p = p3;
 
         Point[] hull2 = hull.clone();
 
@@ -807,6 +878,8 @@ public class LiuChen {
         Util.printSet(hull);
 
         new Plotting(points0, hull, true, 0);
+
+        //avr_test();
 
         
     } // main
