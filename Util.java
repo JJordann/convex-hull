@@ -192,16 +192,6 @@ public class Util {
     }
 
 
-    public static Point nextPoint(ArrayList<Point> points, Point p) {
-        for(int i = 0; i < points.size(); i++) {
-            if(points.get(i).equals(p)) {
-                int nextIndex = (i + 1) % points.size();
-                return points.get(nextIndex);
-            }
-        }
-        return null;
-    }
-
     public static int rightTangent(ArrayList<Point> points, Point p) {
 
         int n = points.size();

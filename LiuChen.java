@@ -6,11 +6,6 @@ public class LiuChen {
     public static Point[] convexHull(Point[] points) {
 
         Point[] M = extremePoints(points);
-        Point[] H = new Point[points.length];
-
-        int r = 0;
-
-        Point endpoint;
 
         /* division by quadrant:
                 y
@@ -21,100 +16,113 @@ public class LiuChen {
                 |
         */
 
-        // Quadrant 1 -----------------------------------------------
-        H[r] = M[0]; 
-        endpoint = M[1];
+        Point[] Q1 = new Point[points.length]; int n1 = 0;
+        Point[] Q2 = new Point[points.length]; int n2 = 0;
+        Point[] Q3 = new Point[points.length]; int n3 = 0;
+        Point[] Q4 = new Point[points.length]; int n4 = 0;
 
         for(int i = 0; i < points.length; i++) {
-            Point v = points[i];
-            if(is_cand_pps(M[0], endpoint, v)) {
-                r = deal_cand_pps(H, v, endpoint, r, 1);
-            }
+            if(is_cand_pps(M[0], M[1], points[i]))
+                Q1[n1++] = points[i];
+            else if(is_cand_pps(M[2], M[3], points[i]))
+                Q2[n2++] = points[i];
+            else if(is_cand_pps(M[4], M[5], points[i]))
+                Q3[n3++] = points[i];
+            else if(is_cand_pps(M[6], M[7], points[i]))
+                Q4[n4++] = points[i];
         }
 
-        r = r + 1;
-        H[r] = endpoint;
-        H = Arrays.copyOf(H, r + 1);
+        Q1 = Arrays.copyOf(Q1, n1);
+        Q2 = Arrays.copyOf(Q2, n2);
+        Q3 = Arrays.copyOf(Q3, n3);
+        Q4 = Arrays.copyOf(Q4, n4);
 
-        // Quadrant 2 -------------------------------------------------
+        //System.out.println("Q1: "); Util.printSet(Q1);
+        //System.out.println("Q2: "); Util.printSet(Q2);
+        //System.out.println("Q3: "); Util.printSet(Q3);
+        //System.out.println("Q4: "); Util.printSet(Q4);
 
-        // TODO: if m1 != m2
-        // TODO: delete first vertex of each subhull
+        Point[] H1 = ord_chull_pps(M[0], M[1], Q1, 1);
+        Point[] H2 = ord_chull_pps(M[2], M[3], Q2, 2);
+        Point[] H3 = ord_chull_pps(M[4], M[5], Q3, 3);
+        Point[] H4 = ord_chull_pps(M[6], M[7], Q4, 4);
 
-        Point[] H2 = new Point[points.length];
-        r = 0;
-        H2[r] = M[2];
-        endpoint = M[3];
+        //System.out.println("H1: "); Util.printSet(H1);
+        //System.out.println("H2: "); Util.printSet(H2);
+        //System.out.println("H3: "); Util.printSet(H3);
+        //System.out.println("H4: "); Util.printSet(H4);
 
-        for(int i = 0; i < points.length; i++) {
-            Point v = points[i];
-            if(is_cand_pps(M[2], endpoint, v)) {
-                r = deal_cand_pps(H2, v, endpoint, r, 2);
-            }
-        }
-
-        r = r + 1;
-        H2[r] = endpoint;
-        H2 = Arrays.copyOf(H2, r + 1);
-
-        // Quadrant 3 --------------------------------------------------
-
-
-        Point[] H3 = new Point[points.length];
-        r = 0;
-        H3[r] = M[4];
-        endpoint = M[5];
-
-        for(int i = 0; i < points.length; i++) {
-            Point v = points[i];
-            if(is_cand_pps(M[4], endpoint, v)) {
-                System.out.println("cand:" + v);
-                r = deal_cand_pps(H3, v, endpoint, r, 3);
-            }
-        }
-
-        r = r + 1;
-        H3[r] = endpoint;
-        H3 = Arrays.copyOf(H3, r + 1);
-
-
-
-        // Quadrant 4 --------------------------------------------------
-
-
-        Point[] H4 = new Point[points.length];
-        r = 0;
-        H4[r] = M[6];
-        endpoint = M[7];
-
-        for(int i = 0; i < points.length; i++) {
-            Point v = points[i];
-            if(is_cand_pps(M[6], endpoint, v)) {
-                System.out.println("cand:" + v);
-                r = deal_cand_pps(H4, v, endpoint, r, 4);
-            }
-        }
-
-        r = r + 1;
-        H4[r] = endpoint;
-        H4 = Arrays.copyOf(H4, r + 1);
-
-
-
-
-
-        // Quadrant 4 --------------------------------------------------
-        System.out.println("H1: ");
-        Util.printSet(H);
-        System.out.println("H2: ");
-        Util.printSet(H2);
-        System.out.println("H3: ");
-        Util.printSet(H3);
-        System.out.println("H4: ");
-        Util.printSet(H4);
-
-        return Util.concatHulls(H, Util.concatHulls(H2, Util.concatHulls(H3, H4)));
+        return concatHulls(H1, H2, H3, H4);
     }
+
+
+    /*
+        Concatenates the 4 hulls in clockwise order, omitting duplicates
+    */
+    public static Point[] concatHulls(final Point[] H1, final Point[] H2, final Point[] H3, final Point[] H4) {
+        Point[] H = new Point[H1.length + H2.length + H3.length + H4.length];
+        int r = 0;
+
+        // H1 -----------------------------------
+        for(int i = 0; i < H1.length; i++) 
+            H[r++] = H1[i];
+        
+
+        // H2 -----------------------------------
+        if(H[r - 1].equals(H2[0]) == false)
+            H[r++] = H2[0];
+
+        if(H2.length > 1)
+            for(int i = 1; i < H2.length; i++)
+                H[r++] = H2[i];
+
+
+        // H3 -----------------------------------
+        if(H[r - 1].equals(H3[0]) == false)
+            H[r++] = H3[0];
+        
+        if(H3.length > 1)
+            for(int i = 1; i < H3.length; i++)
+                H[r++] = H3[i];
+
+        // H4 -----------------------------------
+        if(H[r - 1].equals(H4[0]) == false)
+            H[r++] = H4[0];
+
+        if(H4.length > 1)
+            for(int i = 1; i < H4.length - 1; i++)
+                H[r++] = H4[i];
+
+        if(H4[H4.length - 1].equals(H[0]) == false)
+            H[r++] = H4[H4.length - 1];
+
+
+        return Arrays.copyOf(H, r);
+    }
+
+
+    /*
+
+    */
+    public static Point[] ord_chull_pps(Point m1, Point m2, Point[] Q, int quadrant) {
+        Point[] H = new Point[Q.length + 2];
+
+        int r = 0;
+        H[r] = m1; 
+
+        if(m1.equals(m2))
+            return Arrays.copyOf(H, 1);
+
+        for(int i = 0; i < Q.length; i++) {
+            r = deal_cand_pps(H, Q[i], m2, r, quadrant);
+        }
+
+        r = r + 1;
+        H[r] = m2;
+
+        return Arrays.copyOf(H, r + 1);
+    }
+
 
     public static boolean is_cand_pps(Point m1, Point m2, Point v) {
         return Util.S(m1, m2, v) > 0;
@@ -129,9 +137,6 @@ public class LiuChen {
         if(Util.S(hull[0], hull[1], v) >= 0) {
             return 0;
         }
-
-        Point hl = hull[l];
-        Point hu = hull[u];
 
         for(int j = l; j <= u; j++) {
             if(Util.S(hull[j - 1], hull[j], v) < 0 
@@ -396,7 +401,6 @@ public class LiuChen {
             case 3: mnt = in_avr_pps3(v, h, m2, r); break;
             case 4: mnt = in_avr_pps4(v, h, m2, r); break;
         }
-        //int[] mnt = in_avr_pps(v, h, m2, r);
         int m = mnt[0], n = mnt[1], t = mnt[2];
 
         // Case 2:
@@ -798,35 +802,11 @@ public class LiuChen {
         Point[] points = Testing.testSet9();
         Point[] points0 = Arrays.copyOf(points, points.length + 1);
         points0[points0.length - 1] = new Point(7, -9);
-        //7, -9
 
         Point[] hull = convexHull(points0);
         Util.printSet(hull);
 
         new Plotting(points0, hull, true, 0);
-
-        //int r = 2;
-        //Point[] points = new Point[3];
-        //points[0] = new Point(-8, 6);
-        //points[1] = new Point(5, 5);
-        //points[2] = new Point(7, 2);
-
-        //Point m2 = new Point(8, -1);
-
-        //Point v = new Point(7, 4);
-
-        //Util.printSet(points);
-
-        //new Plotting(points, points, true, 0);
-        //Util.printSet(points);
-
-        //r = deal_cand_pps_Q2(points.clone(), v, m2, r);
-        
-        //Point[] hull = Arrays.copyOf(points, r + 1);
-
-        //new Plotting(points, hull, true, 0);
-
-        //avr_test();
 
         
     } // main
