@@ -205,6 +205,50 @@ public class Testing {
         return points;
     }
 
+    public static Point[] testSet11() {
+
+        Point[] points = new Point[30];
+    
+        points[0] = new Point(-3, -1);
+        points[1] = new Point(2, 3);
+        points[2] = new Point(1, -12);
+        points[3] = new Point(-3, 11);
+        points[4] = new Point(-2, 6);
+
+        points[5] = new Point(-6, -14);
+        points[6] = new Point(2, 13);
+        points[7] = new Point(-3, 11);
+        points[8] = new Point(12, -8);
+        points[9] = new Point(-12, -8);
+
+        points[10] = new Point(4, 11);
+        points[11] = new Point(11, 2);
+        points[12] = new Point(5, -12);
+        points[13] = new Point(-12, -1);
+        points[14] = new Point(4, -6);
+
+        points[15] = new Point(-4, 0);
+        points[16] = new Point(-8, 10);
+        points[17] = new Point(-4, -12);
+        points[18] = new Point(-13, -5);
+        points[19] = new Point(13, -4);
+
+        points[20] = new Point(12, 2);
+        points[21] = new Point(13, 8);
+        points[22] = new Point(10, 2);
+        points[23] = new Point(-4, 1);
+        points[24] = new Point(-6, 6);
+
+        points[25] = new Point(-8, 14);
+        points[26] = new Point(4, 9);
+        points[27] = new Point(14, 5);
+        points[28] = new Point(-13, 0);
+        points[29] = new Point(-9, 10);
+
+
+        return points;
+    }
+
 
     // TODO: poskrbi za duplikate
     public static Point[] generateRectangle(int n, int xspan, int yspan) {

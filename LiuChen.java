@@ -37,6 +37,8 @@ public class LiuChen {
         Q3 = Arrays.copyOf(Q3, n3);
         Q4 = Arrays.copyOf(Q4, n4);
 
+        Util.printSet(Q3);
+        System.out.println("m1: " + M[4] + ", m2: " + M[5]);
         //System.out.println("Q1: "); Util.printSet(Q1);
         //System.out.println("Q2: "); Util.printSet(Q2);
         //System.out.println("Q3: "); Util.printSet(Q3);
@@ -46,6 +48,10 @@ public class LiuChen {
         Point[] H2 = ord_chull_pps(M[2], M[3], Q2, 2);
         Point[] H3 = ord_chull_pps(M[4], M[5], Q3, 3);
         Point[] H4 = ord_chull_pps(M[6], M[7], Q4, 4);
+
+        System.out.print("H3: ");
+        Util.printSet(H3);
+
 
         //System.out.println("H1: "); Util.printSet(H1);
         //System.out.println("H2: "); Util.printSet(H2);
@@ -259,7 +265,7 @@ public class LiuChen {
             }
         }
         // Case 2: new point is to the right of the last hull vertex
-        else if(h[r - 1].y > v.y && v.y > m2.y) {               // <-------------------          
+        else if(h[r].y > v.y && v.y > m2.y) {               // <-------------------          
             // Step 3
             n = -1;
             if(Util.S(h[r - 1], h[r], v) >= 0) {
@@ -318,8 +324,9 @@ public class LiuChen {
                 m = find_sar(v, 1, r - 1, h, r);
             }
         }
-        // Case 2: new point is to the right of the last hull vertex
-        else if(h[r - 1].x > v.x && v.x > m2.x) {
+        // Case 2: new point is to the left of the last hull vertex
+        else if(h[r].x > v.x && v.x > m2.x) {
+            System.out.println("Hr: " + h[r] + ", v: " + v);
             // Step 3
             n = -1;
             if(Util.S(h[r - 1], h[r], v) >= 0) {
@@ -329,6 +336,7 @@ public class LiuChen {
             else if(Util.S(h[r], m2, v) > 0) { 
                  m = r;
                 // quit
+                System.out.println("Here");
             }
             else {
                 m = -1;
@@ -442,6 +450,8 @@ public class LiuChen {
         }
         int m = mnt[0], n = mnt[1], t = mnt[2];
 
+        //System.out.println("m: " + mnt[0] + ", n: " + mnt[1] + ", t: " + mnt[2]);
+
         // Case 2:
         if(m == -1)
             return r;
@@ -449,15 +459,17 @@ public class LiuChen {
         if(n == -1) {
             // Step 3
 
-            boolean step3 = false;
+            // Check if candidate is ahead of the last hull vertex
+            // (in order of traversal)
+            boolean ahead = false;
             switch(quadrant) {
-                case 1: step3 = (v.y >= h[r].x); break;
-                case 2: step3 = (v.y <= h[r].y); break;
-                case 3: step3 = (v.x <= h[r].x); break;
-                case 4: step3 = (v.y >= h[r].y); break;
+                case 1: ahead = (v.x >= h[r].x); break;
+                case 2: ahead = (v.y <= h[r].y); break;
+                case 3: ahead = (v.x <= h[r].x); break;
+                case 4: ahead = (v.y >= h[r].y); break;
             }
 
-            if(step3) {     // <----------------------------------------------------------- TODO               
+            if(ahead) {     // <----------------------------------------------------------- TODO               
                 r = m + 1;
                 h[r] = v;
                 return r;
@@ -483,24 +495,30 @@ public class LiuChen {
             // n > 0
             // Step 5
 
-            // insert `v` after h[m]
+            // make space for v
+            r++;
+            for(int i = r; i > m; i--)
+                h[i] = h[i - 1];
+
+            // insert v after m
             h[m + 1] = v;
 
             if(t == 1) {
                 // delete up to including h[n]
                 int gap = n - m - 1;
-                for(int i = n + 1; i <= r; i++) {
-                    h[i - gap] = h[i];
-                }
+                if(gap > 0)
+                    for(int i = n + 1; i <= r; i++)
+                        h[i - gap] = h[i];
 
                 r = r - n + m + 1;
             }
             else {
+
                 // delete up to h[n], excluding h[n]
                 int gap = n - m - 2;
-                for(int i = n; i <= r; i++) {
-                    h[i - gap] = h[i];
-                }
+                if(gap > 0) 
+                    for(int i = n; i <= r; i++)
+                        h[i - gap] = h[i];
 
                 r = r - n + m + 2;
             }
@@ -764,7 +782,7 @@ public class LiuChen {
 
     public static int[] find_isar(Point v, int l, int u, Point[] h) {
 
-        for(int k = l; k < u; k++) {
+        for(int k = l; k <= u; k++) {
             float sf = Util.S(h[k + 1], h[k], v); // forward border
             float sb = Util.S(h[k], h[k - 1], v); // backward border
 
@@ -914,41 +932,28 @@ public class LiuChen {
 
     public static void avr_test() {
 
-        Point[] hull = new Point[2];
-        int r = 1;
-        hull[0] = new Point(13, -9); // M1
-        hull[1] = new Point(-6, -4);
-        Point m2 = new Point(-11, 7);
-        Point p = new Point(4, -7);
+        int r = 2;
+        Point[] hull = new Point[r + 1];
+        hull[0] = new Point(-14, -5); // M1
+        hull[1] = new Point(-12, 8);
+        hull[2] = new Point(-5, 12);
 
-        //hull[0] = new Point(-9, -13); // M1
-        //hull[1] = new Point(-4, 6);
-        //Point m2 = new Point(7, 11);
-        //Point p = new Point(-7, -4);
-
-        
-
-        //System.out.println("S: " + Util.S(hull[0], hull[1], p));
+        Point m2 = new Point(6, 14);
+        Point p =  new Point(-13, 4); 
 
 
         Point[] hull2 = Arrays.copyOf(hull, 5);
-
-
-        r = deal_cand_pps(hull2, p, m2, r, 4);
+        r = deal_cand_pps(hull2, p, m2, r, 1);
         r = r + 1;
         hull2[r] = m2;
         hull2 = Arrays.copyOf(hull2, r + 1);
-
-        Util.printSet(hull2);
-
-
         new Plotting(hull, hull2, true, 0);
 
     }
 
     public static void main(String[] args) {
 
-        Point[] points = Testing.testSet10();
+        Point[] points = Testing.testSet11();
         Point[] hull = convexHull(points);
         Util.printSet(hull);
         new Plotting(points, hull, true, 0);

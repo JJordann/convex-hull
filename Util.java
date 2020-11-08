@@ -362,4 +362,9 @@ public class Util {
         return (int) ( (Math.random() * (max - min) ) + min);
     }
 
+
+    public static Point rotateClockwise(Point p) {
+        return new Point(p.y, -p.x);
+    }
+
 }
