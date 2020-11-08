@@ -15,8 +15,27 @@ public class Point {
 
 
     public boolean equals(Point b) {
-        return (this.x == b.x) && 
-               (this.y == b.y);
+        return this.x == b.x 
+            && this.y == b.y;
+    }
+    
+
+    @Override
+    public boolean equals(Object b) {
+
+        if(b == this)
+            return true;
+
+        if( ! (b instanceof Point) )
+            return false;
+
+        return (this.x == ((Point) b).x) && 
+               (this.y == ((Point) b).y);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.x * 1000 + this.y;
     }
 
 

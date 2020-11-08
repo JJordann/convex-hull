@@ -344,27 +344,17 @@ public class Util {
     }
 
 
-    public static Point[] concatHulls(final Point[] a, final Point[] b) {
-        Point[] res = new Point[a.length + b.length];
-
-        for(int i = 0; i < a.length; i++){
-            res[i] = a[i];
-        }
-
-        for(int i = 0; i < b.length; i++){
-            res[a.length + i] = b[i];
-        }
-
-        return res;
-    }
-
     public static int randomInt(int min, int max) {
         return (int) ( (Math.random() * (max - min) ) + min);
     }
 
 
-    public static Point rotateClockwise(Point p) {
+    public static Point rotate90(Point p) {
         return new Point(p.y, -p.x);
+    }
+
+    public static Point rotate180(Point p) {
+        return new Point(-p.x, -p.y);
     }
 
 }

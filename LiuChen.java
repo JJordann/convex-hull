@@ -38,7 +38,6 @@ public class LiuChen {
         Q4 = Arrays.copyOf(Q4, n4);
 
         Util.printSet(Q3);
-        System.out.println("m1: " + M[4] + ", m2: " + M[5]);
         //System.out.println("Q1: "); Util.printSet(Q1);
         //System.out.println("Q2: "); Util.printSet(Q2);
         //System.out.println("Q3: "); Util.printSet(Q3);
@@ -48,9 +47,6 @@ public class LiuChen {
         Point[] H2 = ord_chull_pps(M[2], M[3], Q2, 2);
         Point[] H3 = ord_chull_pps(M[4], M[5], Q3, 3);
         Point[] H4 = ord_chull_pps(M[6], M[7], Q4, 4);
-
-        System.out.print("H3: ");
-        Util.printSet(H3);
 
 
         //System.out.println("H1: "); Util.printSet(H1);
@@ -175,7 +171,6 @@ public class LiuChen {
             else if(backward < 0 && forward < 0)
                 l = mid + 1;
             else {
-                System.out.println("found");
                 return mid;
             }
 
@@ -254,6 +249,7 @@ public class LiuChen {
     public static int[] in_avr_pps2(Point v, Point[] h, Point m2, int r) {
 
         int m = -1, n = -1, t = 0;
+        System.out.println("v: " + v + ", h[r]: " + h[r]);
 
         // Case 1: new point is directly above/below the last hull vertex
         if(v.y == h[r].y) {                                 // <-------------------
@@ -326,7 +322,6 @@ public class LiuChen {
         }
         // Case 2: new point is to the left of the last hull vertex
         else if(h[r].x > v.x && v.x > m2.x) {
-            System.out.println("Hr: " + h[r] + ", v: " + v);
             // Step 3
             n = -1;
             if(Util.S(h[r - 1], h[r], v) >= 0) {
@@ -336,7 +331,6 @@ public class LiuChen {
             else if(Util.S(h[r], m2, v) > 0) { 
                  m = r;
                 // quit
-                System.out.println("Here");
             }
             else {
                 m = -1;
@@ -371,7 +365,6 @@ public class LiuChen {
 
     public static int[] in_avr_pps4(Point v, Point[] h, Point m2, int r) {
 
-        System.out.println("Candidate: " + v);
 
         int m = -1, n = -1, t = 0;
 
@@ -404,7 +397,6 @@ public class LiuChen {
         // Case 3: new point lies to the left of the last hull vertex
         else {
             if(Util.S(h[r - 1], h[r], v) > 0) {
-                System.out.println("here");
                 n = -1;
                 m = find_sar(v, 1, r - 1, h, r);
                 // quit
@@ -469,13 +461,16 @@ public class LiuChen {
                 case 4: ahead = (v.y >= h[r].y); break;
             }
 
-            if(ahead) {     // <----------------------------------------------------------- TODO               
+            if(ahead) {     
                 r = m + 1;
                 h[r] = v;
                 return r;
             }
             // Step 4
             else if(Util.S(v, m2, h[r]) > 0 ) { 
+
+                System.out.println("First");
+
                 Point w = h[r];
                 r = m + 1;
                 h[r] = v;
@@ -494,6 +489,7 @@ public class LiuChen {
         else {
             // n > 0
             // Step 5
+            System.out.println("Second");
 
             // make space for v
             r++;
@@ -510,7 +506,7 @@ public class LiuChen {
                     for(int i = n + 1; i <= r; i++)
                         h[i - gap] = h[i];
 
-                r = r - n + m + 1;
+                r = r - n + m;
             }
             else {
 
@@ -520,7 +516,7 @@ public class LiuChen {
                     for(int i = n; i <= r; i++)
                         h[i - gap] = h[i];
 
-                r = r - n + m + 2;
+                r = r - n + m + 1;
             }
 
             return r;
@@ -831,7 +827,6 @@ public class LiuChen {
                 else
                     nt[1] = 0;
 
-                System.out.println("found 2");
                 return nt;
             }
 
@@ -953,9 +948,9 @@ public class LiuChen {
 
     public static void main(String[] args) {
 
-        Point[] points = Testing.testSet11();
+        Point[] points = Testing.testSet12();
         Point[] hull = convexHull(points);
-        Util.printSet(hull);
+        //Util.printSet(hull);
         new Plotting(points, hull, true, 0);
 
         //avr_test();

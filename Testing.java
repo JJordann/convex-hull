@@ -1,3 +1,5 @@
+import java.util.HashSet;
+
 
 public class Testing {
 
@@ -176,11 +178,6 @@ public class Testing {
     }
 
 
-    public static Point[] generateCircle(int n, int radius) {
-        Point[] points = new Point[n];
-        return points;
-    }
-
     public static Point[] testSet10() {
         Point[] points = new Point[15];
 
@@ -204,6 +201,7 @@ public class Testing {
 
         return points;
     }
+
 
     public static Point[] testSet11() {
 
@@ -250,20 +248,252 @@ public class Testing {
     }
 
 
-    // TODO: poskrbi za duplikate
     public static Point[] generateRectangle(int n, int xspan, int yspan) {
-        Point[] points = new Point[n];
 
-        for(int i = 0; i < n; i++) {
+        // use set to prevent duplicates
+        HashSet<Point> points = new HashSet<Point>();
+
+        // generate `n` random points
+        while(points.size() < n){
 
             int x = Util.randomInt(-xspan, xspan);
             int y = Util.randomInt(-yspan, yspan);
 
-            points[i] = new Point(x, y);
+            points.add(new Point(x, y));
         }
 
+        return points.toArray(new Point[points.size()]);
+    }
+
+
+    public static Point[] generateCircle(int n, int radius) {
+
+        // use set to prevent duplicates
+        HashSet<Point> points = new HashSet<Point>();
+
+        while(points.size() < n) {
+
+            double phi = Math.random() * 2 * Math.PI;
+            int r = Util.randomInt(0, radius);
+
+            int x = (int) (r * Math.cos(phi));
+            int y = (int) (r * Math.sin(phi));
+
+            points.add(new Point(x, y));
+        }
+
+        return points.toArray(new Point[points.size()]);
+    }
+
+    public static Point[] testSet12() {
+
+        Point[] points = new Point[200];
+
+        int i = 0;
+
+        points[i++] = new Point(0,-1);
+        points[i++] = new Point(0,0);
+        points[i++] = new Point(0,-2);
+        points[i++] = new Point(0,1);
+        points[i++] = new Point(0,2);
+        points[i++] = new Point(0,3);
+        points[i++] = new Point(0,5);
+        points[i++] = new Point(0,-6);
+        points[i++] = new Point(0,-7);
+        points[i++] = new Point(0,7);
+        points[i++] = new Point(0,8);
+        points[i++] = new Point(0,-10);
+        points[i++] = new Point(0,11);
+        points[i++] = new Point(-13,3);
+        points[i++] = new Point(-13,1);
+        points[i++] = new Point(-13,-3);
+        points[i++] = new Point(13,2);
+        points[i++] = new Point(-12,3);
+        points[i++] = new Point(-12,2);
+        points[i++] = new Point(12,-2);
+        points[i++] = new Point(12,0);
+        points[i++] = new Point(-12,-3);
+        points[i++] = new Point(12,3);
+        points[i++] = new Point(12,5);
+        points[i++] = new Point(11,-7);
+        points[i++] = new Point(-11,5);
+        points[i++] = new Point(11,-1);
+        points[i++] = new Point(11,2);
+        points[i++] = new Point(11,4);
+        points[i++] = new Point(11,7);
+        points[i++] = new Point(10,-9);
+        points[i++] = new Point(10,-8);
+        points[i++] = new Point(-10,7);
+        points[i++] = new Point(-10,6);
+        points[i++] = new Point(-10,5);
+        points[i++] = new Point(-10,2);
+        points[i++] = new Point(-10,1);
+        points[i++] = new Point(-10,0);
+        points[i++] = new Point(-10,-1);
+        points[i++] = new Point(10,2);
+        points[i++] = new Point(-10,-3);
+        points[i++] = new Point(10,3);
+        points[i++] = new Point(10,4);
+        points[i++] = new Point(10,5);
+        points[i++] = new Point(9,-10);
+        points[i++] = new Point(9,-8);
+        points[i++] = new Point(-9,7);
+        points[i++] = new Point(9,-6);
+        points[i++] = new Point(9,-5);
+        points[i++] = new Point(-9,3);
+        points[i++] = new Point(-9,2);
+        points[i++] = new Point(9,-1);
+        points[i++] = new Point(-9,-1);
+        points[i++] = new Point(9,1);
+        points[i++] = new Point(-9,-2);
+        points[i++] = new Point(9,3);
+        points[i++] = new Point(9,8);
+        points[i++] = new Point(-9,-10);
+        points[i++] = new Point(8,-8);
+        points[i++] = new Point(8,-7);
+        points[i++] = new Point(8,-5);
+        points[i++] = new Point(-8,2);
+        points[i++] = new Point(8,-3);
+        points[i++] = new Point(-8,0);
+        points[i++] = new Point(8,0);
+        points[i++] = new Point(8,1);
+        points[i++] = new Point(8,2);
+        points[i++] = new Point(-8,-6);
+        points[i++] = new Point(-8,-8);
+        points[i++] = new Point(8,9);
+        points[i++] = new Point(8,11);
+        points[i++] = new Point(7,-10);
+        points[i++] = new Point(-7,8);
+        points[i++] = new Point(7,-8);
+        points[i++] = new Point(-7,5);
+        points[i++] = new Point(7,-2);
+        points[i++] = new Point(7,-1);
+        points[i++] = new Point(7,0);
+        points[i++] = new Point(-7,-2);
+        points[i++] = new Point(-7,-4);
+        points[i++] = new Point(-7,-6);
+        points[i++] = new Point(7,7);
+        points[i++] = new Point(-7,-9);
+        points[i++] = new Point(7,9);
+        points[i++] = new Point(-7,-10);
+        points[i++] = new Point(-7,-11);
+        points[i++] = new Point(7,11);
+        points[i++] = new Point(6,-12);
+        points[i++] = new Point(6,-11);
+        points[i++] = new Point(-6,8);
+        points[i++] = new Point(6,-7);
+        points[i++] = new Point(-6,0);
+        points[i++] = new Point(6,0);
+        points[i++] = new Point(6,1);
+        points[i++] = new Point(6,2);
+        points[i++] = new Point(-6,-3);
+        points[i++] = new Point(-6,-4);
+        points[i++] = new Point(6,5);
+        points[i++] = new Point(-6,-10);
+        points[i++] = new Point(-6,-11);
+        points[i++] = new Point(-5,12);
+        points[i++] = new Point(6,11);
+        points[i++] = new Point(5,-12);
+        points[i++] = new Point(5,-11);
+        points[i++] = new Point(5,-9);
+        points[i++] = new Point(-5,7);
+        points[i++] = new Point(-5,5);
+        points[i++] = new Point(5,-3);
+        points[i++] = new Point(-5,0);
+        points[i++] = new Point(5,-1);
+        points[i++] = new Point(5,2);
+        points[i++] = new Point(-5,-3);
+        points[i++] = new Point(5,3);
+        points[i++] = new Point(-5,-11);
+        points[i++] = new Point(5,10);
+        points[i++] = new Point(-4,10);
+        points[i++] = new Point(4,-6);
+        points[i++] = new Point(4,-5);
+        points[i++] = new Point(4,-2);
+        points[i++] = new Point(-4,0);
+        points[i++] = new Point(4,0);
+        points[i++] = new Point(-4,-3);
+        points[i++] = new Point(4,3);
+        points[i++] = new Point(-4,-4);
+        points[i++] = new Point(4,4);
+        points[i++] = new Point(4,5);
+        points[i++] = new Point(-4,-7);
+        points[i++] = new Point(4,7);
+        points[i++] = new Point(-4,-8);
+        points[i++] = new Point(4,8);
+        points[i++] = new Point(-3,13);
+        points[i++] = new Point(-4,-11);
+        points[i++] = new Point(4,11);
+        points[i++] = new Point(-3,12);
+        points[i++] = new Point(-3,11);
+        points[i++] = new Point(3,-11);
+        points[i++] = new Point(3,-8);
+        points[i++] = new Point(-3,6);
+        points[i++] = new Point(3,-5);
+        points[i++] = new Point(-3,3);
+        points[i++] = new Point(-3,2);
+        points[i++] = new Point(3,-3);
+        points[i++] = new Point(3,-2);
+        points[i++] = new Point(3,-1);
+        points[i++] = new Point(-3,0);
+        points[i++] = new Point(3,0);
+        points[i++] = new Point(3,1);
+        points[i++] = new Point(-3,-3);
+        points[i++] = new Point(3,3);
+        points[i++] = new Point(-3,-4);
+        points[i++] = new Point(-3,-5);
+        points[i++] = new Point(3,8);
+        points[i++] = new Point(3,9);
+        points[i++] = new Point(-2,13);
+        points[i++] = new Point(-3,-11);
+        points[i++] = new Point(3,11);
+        points[i++] = new Point(2,-11);
+        points[i++] = new Point(-2,10);
+        points[i++] = new Point(2,-7);
+        points[i++] = new Point(-2,5);
+        points[i++] = new Point(-2,3);
+        points[i++] = new Point(2,-4);
+        points[i++] = new Point(-2,1);
+        points[i++] = new Point(2,-2);
+        points[i++] = new Point(-2,0);
+        points[i++] = new Point(2,0);
+        points[i++] = new Point(-2,-1);
+        points[i++] = new Point(2,1);
+        points[i++] = new Point(-2,-3);
+        points[i++] = new Point(2,3);
+        points[i++] = new Point(-2,-5);
+        points[i++] = new Point(2,4);
+        points[i++] = new Point(-2,-6);
+        points[i++] = new Point(2,7);
+        points[i++] = new Point(-2,-11);
+        points[i++] = new Point(-1,13);
+        points[i++] = new Point(1,-12);
+        points[i++] = new Point(-2,-13);
+        points[i++] = new Point(-1,6);
+        points[i++] = new Point(1,-7);
+        points[i++] = new Point(-1,5);
+        points[i++] = new Point(-1,4);
+        points[i++] = new Point(-1,3);
+        points[i++] = new Point(-1,2);
+        points[i++] = new Point(1,-3);
+        points[i++] = new Point(1,-2);
+        points[i++] = new Point(-1,1);
+        points[i++] = new Point(1,-1);
+        points[i++] = new Point(-1,0);
+        points[i++] = new Point(1,0);
+        points[i++] = new Point(-1,-1);
+        points[i++] = new Point(1,1);
+        points[i++] = new Point(-1,-2);
+        points[i++] = new Point(-1,-3);
+        points[i++] = new Point(1,3);
+        points[i++] = new Point(1,4);
+        points[i++] = new Point(-1,-7);
+        points[i++] = new Point(-1,-8);
+        points[i++] = new Point(-1,-9);
+        points[i++] = new Point(1,9);
         return points;
     }
+   
 
 
     public static void runAll(Point[] points) {
@@ -295,10 +525,9 @@ public class Testing {
 
     public static void main(String[] args) {
 
-        Point[] points = generateRectangle(30, 15, 15);
+        Point[] points = generateCircle(200, 15);
         Util.printSet(points);
         Point[] hull = LiuChen.convexHull(points);
-
         new Plotting(points, hull, true, 0);
 
         //plotAll();
