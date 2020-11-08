@@ -37,7 +37,8 @@ public class LiuChen {
         Q3 = Arrays.copyOf(Q3, n3);
         Q4 = Arrays.copyOf(Q4, n4);
 
-        Util.printSet(Q3);
+        Util.printSet(Q2);
+        System.out.println("m1: " + M[2] + ", m2: " + M[3]);
         //System.out.println("Q1: "); Util.printSet(Q1);
         //System.out.println("Q2: "); Util.printSet(Q2);
         //System.out.println("Q3: "); Util.printSet(Q3);
@@ -249,19 +250,19 @@ public class LiuChen {
     public static int[] in_avr_pps2(Point v, Point[] h, Point m2, int r) {
 
         int m = -1, n = -1, t = 0;
-        System.out.println("v: " + v + ", h[r]: " + h[r]);
+        //System.out.println("v: " + v + ", h[r]: " + h[r]);
 
         // Case 1: new point is directly above/below the last hull vertex
-        if(v.y == h[r].y) {                                 // <-------------------
+        if(v.y == h[r].y) {                                 
             n = -1;
-            if(v.x > h[r].x) {                               // <-------------------
+            if(v.x > h[r].x) {                              
                 // if new point is above, find which active 
                 // region it belongs to. Otherwise, discard it
                 m = find_sar(v, 1, r - 1, h, r);
             }
         }
         // Case 2: new point is to the right of the last hull vertex
-        else if(h[r].y > v.y && v.y > m2.y) {               // <-------------------          
+        else if(h[r].y > v.y && v.y > m2.y) {               
             // Step 3
             n = -1;
             if(Util.S(h[r - 1], h[r], v) >= 0) {
@@ -285,7 +286,7 @@ public class LiuChen {
                 // quit
             }
             else {
-                int j = findJ(v, h, r, 2);                      // <-------------------                      
+                int j = findJ(v, h, r, 2);                      
                 if(Util.S(h[j], h[j + 1], v) <= 0) {
                     m = -1;
                     n = -1;
@@ -469,7 +470,7 @@ public class LiuChen {
             // Step 4
             else if(Util.S(v, m2, h[r]) > 0 ) { 
 
-                System.out.println("First");
+                //System.out.println("First");
 
                 Point w = h[r];
                 r = m + 1;
@@ -489,7 +490,7 @@ public class LiuChen {
         else {
             // n > 0
             // Step 5
-            System.out.println("Second");
+            //System.out.println("Second");
 
             // make space for v
             r++;
@@ -506,7 +507,8 @@ public class LiuChen {
                     for(int i = n + 1; i <= r; i++)
                         h[i - gap] = h[i];
 
-                r = r - n + m;
+                //r = r - n + m;
+                r = r - gap;
             }
             else {
 
@@ -516,7 +518,8 @@ public class LiuChen {
                     for(int i = n; i <= r; i++)
                         h[i - gap] = h[i];
 
-                r = r - n + m + 1;
+                //r = r - n + m + 1;
+                r = r - gap;
             }
 
             return r;
@@ -927,22 +930,39 @@ public class LiuChen {
 
     public static void avr_test() {
 
-        int r = 2;
-        Point[] hull = new Point[r + 1];
-        hull[0] = new Point(-14, -5); // M1
-        hull[1] = new Point(-12, 8);
-        hull[2] = new Point(-5, 12);
+        int r = 15;
+        Point[] points = new Point[r + 1];
 
-        Point m2 = new Point(6, 14);
+        points[0] = new Point(-1, 13); // M1
+        points[1] = new Point(12,3);
+        points[2] = new Point(12,5);
+        points[3] = new Point(11,4);
+        points[4] = new Point(11,7);
+        points[5] = new Point(10,5);
+        points[6] = new Point(9,8);
+        points[7] = new Point(8,9);
+        points[8] = new Point(8,11);
+        points[9] = new Point(7,7);
+        points[10] = new Point(7,9);
+        points[11] = new Point(7,11);
+        points[12] = new Point(6,11);
+        points[13] = new Point(5,10);
+        points[14] = new Point(4,11);
+        points[15] = new Point(3,11);
+       
+        Point m2 = new Point(13, 2);
         Point p =  new Point(-13, 4); 
 
 
-        Point[] hull2 = Arrays.copyOf(hull, 5);
-        r = deal_cand_pps(hull2, p, m2, r, 1);
-        r = r + 1;
-        hull2[r] = m2;
-        hull2 = Arrays.copyOf(hull2, r + 1);
-        new Plotting(hull, hull2, true, 0);
+
+
+
+        //Point[] hull2 = Arrays.copyOf(points, 5);
+        //r = deal_cand_pps(hull2, p, m2, r, 1);
+        //r = r + 1;
+        //hull2[r] = m2;
+        //hull2 = Arrays.copyOf(hull2, r + 1);
+        //new Plotting(points, hull2, true, 0);
 
     }
 
