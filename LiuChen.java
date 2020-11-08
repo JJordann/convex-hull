@@ -1,7 +1,5 @@
 import java.util.Arrays;
 
-import javax.lang.model.util.ElementScanner6;
-
 public class LiuChen {
     
 
@@ -131,10 +129,24 @@ public class LiuChen {
     }
 
     /*
-
-    // TODO: binary search
-    */ 
+        Linear search
+    */
     public static int find_sar(Point v, int l, int u, Point[] hull, int r) {
+        if(Util.S(hull[0], hull[1], v) >= 0) {
+            return 0;
+        }
+
+        for(int j = l; j <= u; j++) {
+            if(Util.S(hull[j - 1], hull[j], v) < 0 && Util.S(hull[j], hull[j + 1], v) >= 0) {
+                return j;
+            }
+        }
+        return -1;
+    }
+    /*
+
+    */ 
+    public static int find_sar1(Point v, int l, int u, Point[] hull, int r) {
 
         // special case:
         if(Util.S(hull[0], hull[1], v) >= 0) {
@@ -191,7 +203,7 @@ public class LiuChen {
             }
         }
         // Case 2: new point is to the right of the last hull vertex
-        else if(h[r - 1].x < v.x && v.x < m2.x) {
+        else if(h[r].x < v.x && v.x < m2.x) {
             // Step 3
             n = -1;
             if(Util.S(h[r - 1], h[r], v) >= 0) {
@@ -351,6 +363,8 @@ public class LiuChen {
 
     public static int[] in_avr_pps4(Point v, Point[] h, Point m2, int r) {
 
+        System.out.println("Candidate: " + v);
+
         int m = -1, n = -1, t = 0;
 
         // Case 1: new point is directly above/below the last hull vertex
@@ -363,7 +377,7 @@ public class LiuChen {
             }
         }
         // Case 2: new point is to the right of the last hull vertex
-        else if(h[r - 1].y < v.y && v.y < m2.y) {
+        else if(h[r].y < v.y && v.y < m2.y) { // <--------------------!!!!!!!!!!!!!
             // Step 3
             n = -1;
             if(Util.S(h[r - 1], h[r], v) >= 0) {
@@ -382,6 +396,7 @@ public class LiuChen {
         // Case 3: new point lies to the left of the last hull vertex
         else {
             if(Util.S(h[r - 1], h[r], v) > 0) {
+                System.out.println("here");
                 n = -1;
                 m = find_sar(v, 1, r - 1, h, r);
                 // quit
@@ -433,7 +448,16 @@ public class LiuChen {
     
         if(n == -1) {
             // Step 3
-            if(v.x >= h[r].x) {                    
+
+            boolean step3 = false;
+            switch(quadrant) {
+                case 1: step3 = (v.y >= h[r].x); break;
+                case 2: step3 = (v.y <= h[r].y); break;
+                case 3: step3 = (v.x <= h[r].x); break;
+                case 4: step3 = (v.y >= h[r].y); break;
+            }
+
+            if(step3) {     // <----------------------------------------------------------- TODO               
                 r = m + 1;
                 h[r] = v;
                 return r;
@@ -490,10 +514,43 @@ public class LiuChen {
 
 
 
+     public static int findJ(Point v, Point[] h, int r, int quadrant) {
+
+        switch(quadrant) {
+            case 1: {
+                for(int j = 0; j < r; j++) {
+                    if(h[j].x < v.x && v.x <= h[j + 1].x)
+                        return j;
+                }
+            }; break;
+            case 2: {
+                for(int j = 0; j < r; j++) {
+                    if(h[j].y > v.y && v.y >= h[j + 1].y)
+                        return j;
+                }
+            }; break;
+            case 3: {
+                for(int j = 0; j < r; j++) {
+                    if(h[j].x > v.x && v.x >= h[j + 1].x)
+                        return j;
+                }
+            }; break;
+            case 4: {
+                for(int j = 0; j < r; j++) {
+                    if(h[j].y < v.y && v.y <= h[j + 1].y)
+                        return j;
+                }
+            }; break;
+            default:
+                return -1;
+        }
+        return -1;
+    }
+
     /*
 
     */
-    public static int findJ(Point v, Point[] h, int r, int quadrant) {
+    public static int findJ1(Point v, Point[] h, int r, int quadrant) {
 
         switch(quadrant) {
             case 1: {
@@ -705,6 +762,28 @@ public class LiuChen {
     }
 
 
+    public static int[] find_isar(Point v, int l, int u, Point[] h) {
+
+        for(int k = l; k < u; k++) {
+            float sf = Util.S(h[k + 1], h[k], v); // forward border
+            float sb = Util.S(h[k], h[k - 1], v); // backward border
+
+            if(sb < 0 && sf >= 0) {
+                int[] nt = new int[2];
+                nt[0] = k;
+
+                if(sf == 0.0)
+                    nt[1] = 1;
+                else
+                    nt[1] = 0;
+
+                return nt;
+            }
+        }
+
+        return null;
+    }
+
     /*
         returns:
             [n, t]:
@@ -712,7 +791,7 @@ public class LiuChen {
                 t: 1 if collinear with h[n], h[n+1]
 
     */
-    public static int[] find_isar(Point v, int l, int u, Point[] h) {
+    public static int[] find_isar1(Point v, int l, int u, Point[] h) {
 
         while(l <= u) {
             int mid = (int) Math.floor((l + u) / 2);
@@ -835,30 +914,29 @@ public class LiuChen {
 
     public static void avr_test() {
 
-        Point[] hull = new Point[6];
-        int r = 5;
-        hull[0] = new Point(-10, -1); // M1
-        hull[1] = new Point(-9, 2);
-        hull[2] = new Point(-8, 4);
-        hull[3] = new Point(-7, 5);
-        hull[4] = new Point(-4, 6);
-        hull[5] = new Point(1, 7);
+        Point[] hull = new Point[2];
+        int r = 1;
+        hull[0] = new Point(13, -9); // M1
+        hull[1] = new Point(-6, -4);
+        Point m2 = new Point(-11, 7);
+        Point p = new Point(4, -7);
 
-        Point m2 = new Point(8, 8);
+        //hull[0] = new Point(-9, -13); // M1
+        //hull[1] = new Point(-4, 6);
+        //Point m2 = new Point(7, 11);
+        //Point p = new Point(-7, -4);
 
-        Point p1 = new Point(-8, 6);
-        Point p2 = new Point(-7, 6);
-        Point p3 = new Point(-4, 7);
-        Point p4 = new Point(-9, 3);
-        Point p5 = new Point(-4, 4);
+        
 
-        Point p = p3;
+        //System.out.println("S: " + Util.S(hull[0], hull[1], p));
 
-        Point[] hull2 = hull.clone();
 
-        Util.printSet(hull2);
+        Point[] hull2 = Arrays.copyOf(hull, 5);
 
-        r = deal_cand_pps(hull2, p, m2, r, 1);
+
+        r = deal_cand_pps(hull2, p, m2, r, 4);
+        r = r + 1;
+        hull2[r] = m2;
         hull2 = Arrays.copyOf(hull2, r + 1);
 
         Util.printSet(hull2);
@@ -870,14 +948,10 @@ public class LiuChen {
 
     public static void main(String[] args) {
 
-        Point[] points = Testing.testSet9();
-        Point[] points0 = Arrays.copyOf(points, points.length + 1);
-        points0[points0.length - 1] = new Point(7, -9);
-
-        Point[] hull = convexHull(points0);
+        Point[] points = Testing.testSet10();
+        Point[] hull = convexHull(points);
         Util.printSet(hull);
-
-        new Plotting(points0, hull, true, 0);
+        new Plotting(points, hull, true, 0);
 
         //avr_test();
 

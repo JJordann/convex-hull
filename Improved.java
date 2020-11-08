@@ -1,5 +1,4 @@
 import java.util.PriorityQueue;
-import java.util.Comparator;
 import java.util.Stack;
 
 
@@ -25,8 +24,6 @@ public class Improved {
                 lowest = i;
         }
 
-
-        // TODO: 4 comparatorje, obravnavaj primer p.x == q.x
 
         // Discard points inside of the quadrilateral formed by connecting extreme points,
         // divide residual points into 4 priority queues based on their position 

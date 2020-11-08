@@ -5,7 +5,6 @@ import java.awt.geom.Ellipse2D;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.util.ArrayList;
-import java.util.Collections;
 
 
 public class Plotting extends javax.swing.JFrame {
@@ -13,8 +12,8 @@ public class Plotting extends javax.swing.JFrame {
     static final long serialVersionUID = 12;
 
     public static int thickness = 7;
-    public static int zoom = 15;
-    public static int xMin = 14, yMin = 15, xMax, yMax;
+    public static int zoom = 10;
+    public static int xMin = 14, yMin = 15, xMax = 260, yMax = 250;
 
     public static int margin = 100;
     
@@ -22,7 +21,7 @@ public class Plotting extends javax.swing.JFrame {
         super("Plot");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        findBounds(points);
+        //findBounds(points);
 
         JPanel panel = new JPanel() {
             static final long serialVersionUID = 1337;
@@ -37,8 +36,6 @@ public class Plotting extends javax.swing.JFrame {
                 g2d.setPaint(Color.BLACK);
                 for(int i = 0; i < points.length; i++) {
                     Point p = scale(points[i]);
-                    //int x = (p.x + xMin) * zoom;
-                    //int y = (p.y + yMin) * zoom;
                     Ellipse2D dot = new Ellipse2D.Float(p.x, p.y, thickness, thickness);
                     g2d.fill(dot);
                 }
@@ -47,8 +44,6 @@ public class Plotting extends javax.swing.JFrame {
                     g2d.setPaint(Color.RED);
                     for(int i = 0; i < hull.length; i++) {
                         Point p = scale(hull[i]);
-                        //int x = (p.x + xMin) * zoom;
-                        //int y = (p.y + yMin) * zoom;
                         Ellipse2D dot = new Ellipse2D.Float(p.x, p.y, thickness + 1, thickness + 1);
                         g2d.fill(dot);
 

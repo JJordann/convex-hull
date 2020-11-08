@@ -2,6 +2,7 @@ import java.util.Comparator;
 import java.util.Stack;
 import java.util.PriorityQueue;
 import java.util.ArrayList;
+import java.lang.Math;
 
 public class Util {
 
@@ -355,6 +356,10 @@ public class Util {
         }
 
         return res;
+    }
+
+    public static int randomInt(int min, int max) {
+        return (int) ( (Math.random() * (max - min) ) + min);
     }
 
 }

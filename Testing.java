@@ -176,6 +176,51 @@ public class Testing {
     }
 
 
+    public static Point[] generateCircle(int n, int radius) {
+        Point[] points = new Point[n];
+        return points;
+    }
+
+    public static Point[] testSet10() {
+        Point[] points = new Point[15];
+
+        points[0] = new Point(-10, 8);
+        points[1] = new Point(-11, 7);
+        points[2] = new Point(4, -2);
+        points[3] = new Point(10, 0);
+        points[4] = new Point(-6, -4);
+
+        points[5] = new Point(0, 13);
+        points[6] = new Point(4, -7);
+        points[7] = new Point(-3, 4);
+        points[8] = new Point(10, 7);
+        points[9] = new Point(0, -3);
+
+        points[10] = new Point(0, 8);
+        points[11] = new Point(10, 0);
+        points[12] = new Point(2, 8);
+        points[13] = new Point(13, -9);
+        points[14] = new Point(-4, 6);
+
+        return points;
+    }
+
+
+    // TODO: poskrbi za duplikate
+    public static Point[] generateRectangle(int n, int xspan, int yspan) {
+        Point[] points = new Point[n];
+
+        for(int i = 0; i < n; i++) {
+
+            int x = Util.randomInt(-xspan, xspan);
+            int y = Util.randomInt(-yspan, yspan);
+
+            points[i] = new Point(x, y);
+        }
+
+        return points;
+    }
+
 
     public static void runAll(Point[] points) {
         Util.printSet(GrahamScan.convexHull(points.clone()));
@@ -206,7 +251,13 @@ public class Testing {
 
     public static void main(String[] args) {
 
-        plotAll();
+        Point[] points = generateRectangle(30, 15, 15);
+        Util.printSet(points);
+        Point[] hull = LiuChen.convexHull(points);
+
+        new Plotting(points, hull, true, 0);
+
+        //plotAll();
 
     } // main
     
