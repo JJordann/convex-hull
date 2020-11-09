@@ -443,7 +443,7 @@ public class LiuChen {
         }
         int m = mnt[0], n = mnt[1], t = mnt[2];
 
-        //System.out.println("m: " + mnt[0] + ", n: " + mnt[1] + ", t: " + mnt[2]);
+        System.out.println("m: " + mnt[0] + ", n: " + mnt[1] + ", t: " + mnt[2]);
 
         // Case 2:
         if(m == -1)
@@ -493,7 +493,8 @@ public class LiuChen {
             //System.out.println("Second");
 
             // make space for v
-            r++;
+            r++; 
+            n++;
             for(int i = r; i > m; i--)
                 h[i] = h[i - 1];
 
@@ -658,18 +659,18 @@ public class LiuChen {
         if(j == 0) {
             m = 0;           
 
-            if(Util.S(h[2], h[1], v) == 0) {
-                n = 2;
+            if(Util.S(h[2], h[1], v) == 0) { 
+                n = 1;                         // <-- decrement
                 t = 1;
                 // quit
             }
-            else if(Util.S(h[2], h[1], v) > 0) {
-                n = 2;
+            else if(Util.S(h[2], h[1], v) > 0) { 
+                n = 1;                            // <-- decrement
                 t = 0;
                 // quit
             }
             else {
-                int[] nt = find_isar(v, 2, r - 1, h);
+                int[] nt = find_isar(v, 1, r - 1, h);
                 n = nt[0];
                 t = nt[1];
                 // quit
@@ -930,39 +931,42 @@ public class LiuChen {
 
     public static void avr_test() {
 
-        int r = 15;
+        int r = 2;
         Point[] points = new Point[r + 1];
 
-        points[0] = new Point(-1, 13); // M1
-        points[1] = new Point(12,3);
-        points[2] = new Point(12,5);
-        points[3] = new Point(11,4);
-        points[4] = new Point(11,7);
-        points[5] = new Point(10,5);
-        points[6] = new Point(9,8);
-        points[7] = new Point(8,9);
-        points[8] = new Point(8,11);
-        points[9] = new Point(7,7);
-        points[10] = new Point(7,9);
-        points[11] = new Point(7,11);
-        points[12] = new Point(6,11);
-        points[13] = new Point(5,10);
-        points[14] = new Point(4,11);
-        points[15] = new Point(3,11);
+        int i = 0;
+        points[i++] = new Point(-1, 13); // m1
+        //points[i++] = new Point(12,3);
+        points[i++] = new Point(11,7); // <-- outlier
+        points[i++] = new Point(12,5);
+        //points[i++] = new Point(11,4);
+        //points[i++] = new Point(10,5);
+        //points[i++] = new Point(9,8);
+        //points[i++] = new Point(8,9); // <--- p
+        //points[i++] = new Point(8,11);
+        //points[i++] = new Point(7,7);
+        //points[i++] = new Point(7,9);
+        //points[i++] = new Point(7,11);
+        //points[i++] = new Point(6,11);
+        //points[i++] = new Point(5,10);
+        //points[i++] = new Point(4,11);
+        //points[i++] = new Point(3,11);
+        
        
+        Point m1 = new Point(-1, 13);
         Point m2 = new Point(13, 2);
-        Point p =  new Point(-13, 4); 
+        Point p =  new Point(8, 9); 
 
-
-
-
-
-        //Point[] hull2 = Arrays.copyOf(points, 5);
-        //r = deal_cand_pps(hull2, p, m2, r, 1);
-        //r = r + 1;
-        //hull2[r] = m2;
-        //hull2 = Arrays.copyOf(hull2, r + 1);
-        //new Plotting(points, hull2, true, 0);
+        //Point[] hull = ord_chull_pps(m1, m2, points, 2);
+        //Util.printSet(hull);
+        //new Plotting(points, hull, true, 0);
+        
+        Point[] hull2 = Arrays.copyOf(points, r + 5);
+        r = deal_cand_pps(hull2, p, m2, r, 2);
+        r = r + 1;
+        hull2[r] = m2;
+        hull2 = Arrays.copyOf(hull2, r + 1);
+        new Plotting(points, hull2, true, 0);
 
     }
 

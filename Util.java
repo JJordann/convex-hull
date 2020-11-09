@@ -357,4 +357,11 @@ public class Util {
         return new Point(-p.x, -p.y);
     }
 
+
+    public static void printHull_r(Point[] h, int r) {
+        for(int i = 0; i <= r; i++)
+            System.out.print(h[i]);
+        System.out.println();
+    }
+
 }
