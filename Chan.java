@@ -96,7 +96,7 @@ public class Chan {
                     // tangent to the mini-hull can be computed in O(logn) using binary search
 
                     int rTangent = Util.rightTangent(K.get(h), currentPoint.getPoint(K));
-                    //int rTangent = Util.rightTangentBruteForce(K.get(h), currentPoint.getPoint(K));
+                    //int rTangent = Util.rightTangentLinear(K.get(h), currentPoint.getPoint(K));
                     tangents.add(new IndexPair(h, rTangent));
 
                 }
@@ -140,6 +140,7 @@ public class Chan {
         } while (hull.size() < m);
 
 
+        // TODO: exclude points inside mini-hulls in subsequent calls
         // hull is not complete, recur with larger mini-hull size
         return convexHull(points, t + 1);
     } // convexHull
@@ -163,43 +164,6 @@ public class Chan {
         Point[] hull = convexHull(points);
         new Plotting(points, hull, true, 0);
 
-        //ArrayList<Point> ps = new ArrayList<Point>();
-
-        //ps.add(new Point(4, -12));
-        //ps.add(new Point(4, -8));
-        //ps.add(new Point(-4, 10));
-        //ps.add(new Point(-4, 8));
-
-        //Point p = new Point(4, -13);
-        //System.out.println(Util.rightTangent(ps, p));
-        //ps.add(p);
-
-        //new Plotting(ps, ps, true, 0);
-
-
-        //ArrayList<Point> ps = new ArrayList<Point>();
-        //ps.add(new Point(1, -9));
-        //ps.add(new Point(2, 4));
-        //ps.add(new Point(2, 12));
-        //ps.add(new Point(-1, 12));
-        //ps.add(new Point(-2, -8));
-
-        //Point p = new Point(-6, 12);
-        //System.out.println(Util.rightTangent(ps, p));
-        //ps.add(p);
-        //new Plotting(ps, ps, true, 0);
-
-        //ArrayList<Point> ps = new ArrayList<Point>();
-        //ps.add(new Point(-6, -8));
-        //ps.add(new Point(5, -8));
-        //ps.add(new Point(6, 1));
-        //ps.add(new Point(6, 6));
-        //ps.add(new Point(-5, 9));
-        //ps.add(new Point(-6, -6));
-
-        //Point p = new Point(-6, 12);
-        //ps.add(p);
-        //new Plotting(ps, ps, true, 0);
     }
     
 }

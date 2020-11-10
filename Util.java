@@ -6,7 +6,6 @@ import java.lang.Math;
 
 public class Util {
 
-
     public static Comparator<Point> xComparator = new Comparator<Point>() {
             public int compare(Point p, Point q) {
                 if(p.x == q.x)
@@ -181,8 +180,7 @@ public class Util {
     }
 
 
-
-
+    /*
     public static int rightTangent1(final ArrayList<Point> points, Point p) {
 
         int n = points.size();
@@ -224,28 +222,22 @@ public class Util {
         }
         return left % n;
     } // rightTangent
+    */
 
-    public static int rightTangentBruteForce(ArrayList<Point> points, Point p) {
+    public static int rightTangentLinear(ArrayList<Point> points, Point p) {
 
-        if(points.size() <= 1) {
+        if(points.size() <= 1)
             return 0;
-        }
 
-        int left  = 0;
         int right = 0; 
 
-        float next;
-        float prev = isLeft(points.get(0), points.get(1), p);
+        int prev = orientation(points.get(0), points.get(1), p);
+        int next;
 
         for(int i = 1; i < points.size(); i++) {
-            next = isLeft(points.get(i), points.get( (i + 1) % points.size() ), p);
-            if( (prev <= 0) && (next > 0) ) {
+            next = orientation(points.get(i), points.get( (i + 1) % points.size() ), p);
+            if( (prev >= 0) && (next < 0) ) {
                 right = i;
-            }
-            else if( (prev > 0) && (next <= 0) ) {
-                if( !above(p, points.get(i), points.get(left)) ) {
-                    left = i;
-                }
             }
 
             prev = next;
@@ -258,157 +250,67 @@ public class Util {
 
     public static int rightTangent(ArrayList<Point> points, Point p) {
 
-        // TODO: if points.size is small, use linear search
-        if(points.size() < 3)
-            return rightTangentBruteForce(points, p);
+        // If points.size is small, use linear search
+        if(points.size() <= 3)
+            return rightTangentLinear(points, p);
 
         int n = points.size();
         int left = 0;
         int right = n;
 
-        // Check first point
-        if(below(p, points.get(1), points.get(0)) 
-        && below(p, points.get(n - 1), points.get(0)))
+        // Check if first point is the right tangent
+        if(orientation(p, points.get(1), points.get(0)) > 0 
+        && orientation(p, points.get(n - 1), points.get(0)) >= 0)
             return 0;
 
-        while(true) {
+        do {
             int mid = (left + right) / 2;
 
             //points.forEach(System.out::print);
             //System.out.println(" | " + p + " | " + mid);
-            boolean downC = below(p, points.get((mid + 1) % n), points.get(mid));
+            int nextMid = orientation(p, points.get((mid + 1) % n), points.get(mid));
 
             int midPrev = mid - 1;
             if(midPrev < 0)
                 midPrev += n;
 
-
             // Check if `mid` is the right tangent
-            if(downC && !above(p, points.get(midPrev), points.get(mid)))
+            if(nextMid > 0 && orientation(p, points.get(midPrev), points.get(mid)) >= 0)
                 return mid;
 
 
-            boolean upA = above(p, points.get((left + 1) % n), points.get(left));
-            if(upA) {
-                if(downC)
-                    right = mid;
+            int nextLeft = orientation(p, points.get((left + 1) % n), points.get(left));
+            if(nextLeft < 0) {
+                if(nextMid > 0)
+                    right = mid; // interval := [left, mid]
                 else {
-                    if(above(p, points.get(left), points.get(mid)))
-                        right = mid;
+                    if(orientation(p, points.get(left), points.get(mid)) < 0)
+                        right = mid; // interval := [left, mid]
                     else 
-                        left = mid;
+                        left = mid; // interval := [mid, right]
                 }
             } // if above
             else {
-                if(!downC)
-                    left = mid;
+                if(nextMid <= 0)
+                    left = mid;  
                 else {
-                    if(below(p, points.get(left), points.get(mid)))
+                    if(orientation(p, points.get(left), points.get(mid)) > 0)
                         right = mid;
                     else
                         left = mid;
                 }
             }
 
+        } while(left < right - 1); // while true
 
-            if(left == right - 1) 
-                return left;
-
-        } // while true
-
+        return left;
     } // rightTangent
-
-    // linear search for tangents
-    public static ArrayList<Point> convexTangents(ArrayList<Point> points, Point p) {
-
-        if(points.size() <= 2) {
-            return points;
-        }
-
-        int left  = 0;
-        int right = 0; 
-
-        float next;
-        float prev = isLeft(points.get(0), points.get(1), p);
-
-        for(int i = 1; i < points.size(); i++) {
-            next = isLeft(points.get(i), points.get( (i + 1) % points.size() ), p);
-            if( (prev <= 0) && (next > 0) ) {
-                right = i;
-            }
-            else if( (prev > 0) && (next <= 0) ) {
-                if( !above(p, points.get(i), points.get(left)) ) {
-                    left = i;
-                }
-            }
-
-            prev = next;
-
-        }
-
-        ArrayList<Point> tangents = new ArrayList<Point>(2);
-        //tangents.add(points.get(left));
-        tangents.add(points.get(right));
-        return tangents;
-    }
-
-
-    public static float isLeft(Point p0, Point p1, Point p2) {
-        return (p1.x - p0.x) * (p2.y - p0.y) - (p2.x - p0.x) * (p1.y - p0.y);
-    }
-
-    public static boolean above(Point p, Point vi, Point vj) {
-        // true if a is above b
-        return isLeft(p, vi, vj) > 0;
-    }
-
-    public static boolean below(Point p, Point vi, Point vj) {
-        // true if a is below b
-        return isLeft(p, vi, vj) < 0;
-    }
-
 
 
     public static Point[] fastMerge(Point[] left, Point[] right) {
         return null;
     }
 
-    public static Point flipRight1(Point p) {
-        return new Point(-p.x, p.y);
-    }
-
-    public static ArrayList<Point> flipRight(final ArrayList<Point> points) {
-        ArrayList<Point> flipped = new ArrayList<Point>();
-
-        for(int i = 0; i < points.size(); i++) {
-            Point p = points.get(i);
-            flipped.add(new Point(-p.x, p.y));
-        }
-
-        return flipped;
-    }
-
-    public static ArrayList<Point> flipDown(final ArrayList<Point> points) {
-        ArrayList<Point> flipped = new ArrayList<Point>();
-
-        for(int i = 0; i < points.size(); i++) {
-            Point p = points.get(i);
-            flipped.add(new Point(p.x, -p.y));
-        }
-
-        return flipped;
-    }
-
-    public static ArrayList<Point> flipDiagonal(final ArrayList<Point> points) {
-        ArrayList<Point> flipped = new ArrayList<Point>();
-
-        for(int i = 0; i < points.size(); i++) {
-            Point p = points.get(i);
-            flipped.add(new Point(-p.x, -p.y));
-        }
-
-        return flipped;
-    }
 
 
     public static int randomInt(int min, int max) {
