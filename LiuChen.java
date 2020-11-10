@@ -290,7 +290,7 @@ public class LiuChen {
     */
     public static int findJ(Point v, Point[] h, int r, int quadrant) {
         
-        //System.out.println("Searching for J");
+        System.out.println("Searching for J");
 
         //if(h[0].x > v.x && v.x >= h[1].x)
             //return 0;
@@ -302,13 +302,13 @@ public class LiuChen {
             while(l < u) {
                 int mid = (int) Math.floor((l + u) / 2);
 
-                if(h[mid].x > v.x && v.x >= h[mid + 1].x)
+                if(h[mid].x < v.x && v.x <= h[mid + 1].x)
                     return mid;
 
                 if(h[mid].x < v.x && h[mid + 1].x < v.x)
                     l = mid + 1;
                 else 
-                    u = mid;
+                    u = mid - 1;
             }
             return u;
         }
@@ -325,7 +325,7 @@ public class LiuChen {
                 if(h[mid].x > v.x && h[mid + 1].x > v.x)
                     l = mid + 1;
                 else 
-                    u = mid;
+                    u = mid - 1;
             }
             return u;
         }
