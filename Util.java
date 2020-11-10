@@ -181,19 +181,9 @@ public class Util {
     }
 
 
-    public static boolean below(Point p, Point a, Point b) {
-        // true if a is below b
-        return Util.orientation(p, a, b) < 0;
-    }
 
 
-    public static boolean above(Point p, Point a, Point b) {
-        // true if a is above b
-        return Util.orientation(p, a, b) > 0;
-    }
-
-
-    public static int rightTangent(ArrayList<Point> points, Point p) {
+    public static int rightTangent1(final ArrayList<Point> points, Point p) {
 
         int n = points.size();
 
@@ -202,6 +192,9 @@ public class Util {
 
         int left_prev = orientation(p, points.get(0), points.get(n - 1));
         int left_next = orientation(p, points.get(0), points.get((left + 1) % n));
+
+        if(left_prev != 1 && left_next != 1)
+            return left;
 
         while(left < right) {
 
@@ -229,12 +222,12 @@ public class Util {
             left_prev = -mid_next;
             left_next = orientation(p, points.get(1), points.get((left + 1) % n));
         }
-        return left;
+        return left % n;
     } // rightTangent
 
-    public static int rightTangentBruteForce(Point[] points, Point p) {
+    public static int rightTangentBruteForce(ArrayList<Point> points, Point p) {
 
-        if(points.length <= 1) {
+        if(points.size() <= 1) {
             return 0;
         }
 
@@ -242,15 +235,15 @@ public class Util {
         int right = 0; 
 
         float next;
-        float prev = isLeft(points[0], points[1], p);
+        float prev = isLeft(points.get(0), points.get(1), p);
 
-        for(int i = 1; i < points.length; i++) {
-            next = isLeft(points[i], points[ (i + 1) % points.length ], p);
+        for(int i = 1; i < points.size(); i++) {
+            next = isLeft(points.get(i), points.get( (i + 1) % points.size() ), p);
             if( (prev <= 0) && (next > 0) ) {
                 right = i;
             }
             else if( (prev > 0) && (next <= 0) ) {
-                if( !above(p, points[i], points[left]) ) {
+                if( !above(p, points.get(i), points.get(left)) ) {
                     left = i;
                 }
             }
@@ -261,6 +254,69 @@ public class Util {
 
         return right;
     }
+
+
+    public static int rightTangent(ArrayList<Point> points, Point p) {
+
+        // TODO: if points.size is small, use linear search
+        if(points.size() < 3)
+            return rightTangentBruteForce(points, p);
+
+        int n = points.size();
+        int left = 0;
+        int right = n;
+
+        // Check first point
+        if(below(p, points.get(1), points.get(0)) 
+        && below(p, points.get(n - 1), points.get(0)))
+            return 0;
+
+        while(true) {
+            int mid = (left + right) / 2;
+
+            //points.forEach(System.out::print);
+            //System.out.println(" | " + p + " | " + mid);
+            boolean downC = below(p, points.get((mid + 1) % n), points.get(mid));
+
+            int midPrev = mid - 1;
+            if(midPrev < 0)
+                midPrev += n;
+
+
+            // Check if `mid` is the right tangent
+            if(downC && !above(p, points.get(midPrev), points.get(mid)))
+                return mid;
+
+
+            boolean upA = above(p, points.get((left + 1) % n), points.get(left));
+            if(upA) {
+                if(downC)
+                    right = mid;
+                else {
+                    if(above(p, points.get(left), points.get(mid)))
+                        right = mid;
+                    else 
+                        left = mid;
+                }
+            } // if above
+            else {
+                if(!downC)
+                    left = mid;
+                else {
+                    if(below(p, points.get(left), points.get(mid)))
+                        right = mid;
+                    else
+                        left = mid;
+                }
+            }
+
+
+            if(left == right - 1) 
+                return left;
+
+        } // while true
+
+    } // rightTangent
 
     // linear search for tangents
     public static ArrayList<Point> convexTangents(ArrayList<Point> points, Point p) {
@@ -297,9 +353,20 @@ public class Util {
     }
 
 
-    public static float isLeft(Point a, Point b, Point c) {
-        return (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y);
+    public static float isLeft(Point p0, Point p1, Point p2) {
+        return (p1.x - p0.x) * (p2.y - p0.y) - (p2.x - p0.x) * (p1.y - p0.y);
     }
+
+    public static boolean above(Point p, Point vi, Point vj) {
+        // true if a is above b
+        return isLeft(p, vi, vj) > 0;
+    }
+
+    public static boolean below(Point p, Point vi, Point vj) {
+        // true if a is below b
+        return isLeft(p, vi, vj) < 0;
+    }
+
 
 
     public static Point[] fastMerge(Point[] left, Point[] right) {

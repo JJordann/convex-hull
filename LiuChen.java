@@ -37,8 +37,8 @@ public class LiuChen {
         Q3 = Arrays.copyOf(Q3, n3);
         Q4 = Arrays.copyOf(Q4, n4);
 
-        Util.printSet(Q2);
-        System.out.println("m1: " + M[2] + ", m2: " + M[3]);
+        //Util.printSet(Q2);
+        //System.out.println("m1: " + M[2] + ", m2: " + M[3]);
         //System.out.println("Q1: "); Util.printSet(Q1);
         //System.out.println("Q2: "); Util.printSet(Q2);
         //System.out.println("Q3: "); Util.printSet(Q3);
@@ -443,7 +443,7 @@ public class LiuChen {
         }
         int m = mnt[0], n = mnt[1], t = mnt[2];
 
-        System.out.println("m: " + mnt[0] + ", n: " + mnt[1] + ", t: " + mnt[2]);
+        //System.out.println("m: " + mnt[0] + ", n: " + mnt[1] + ", t: " + mnt[2]);
 
         // Case 2:
         if(m == -1)

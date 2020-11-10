@@ -135,8 +135,13 @@ public class GrahamScan {
             prunedLength++;
         }
 
-        if(prunedLength < 3) 
+        points.subList(prunedLength, points.size()).clear();
+
+        if(prunedLength < 3) {
             return points;
+        }
+
+        
 
         Stack<Point> s = new Stack<Point>();
         s.push(points.get(0));
@@ -156,4 +161,17 @@ public class GrahamScan {
         hull.addAll(s);
         return hull;
     } // grahamScan
+
+
+    public static void main(String[] args) {
+        ArrayList<Point> ps = new ArrayList<Point>();
+        ps.add(new Point(0, 0));
+        ps.add(new Point(0, -1));
+        ps.add(new Point(0, 1));
+        ps.add(new Point(0, -2));
+
+        ArrayList<Point> hull = convexHull_list(ps);
+        hull.forEach(System.out::print);
+        System.out.println();
+    }
 }
