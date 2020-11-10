@@ -43,7 +43,9 @@ public class LiuChen {
         //System.out.println("Q1: "); Util.printSet(Q1);
         //System.out.println("Q2: "); Util.printSet(Q2);
         //System.out.println("Q3: "); Util.printSet(Q3);
-        //System.out.println("Q4: "); Util.printSet(Q4);
+        System.out.println("Q4: "); Util.printSet(Q4);
+
+        System.out.println("m1: " + M[6] + "m2: " + M[7]);
 
         Point[] H1 = ord_chull_pps(M[0], M[1], Q1, 1);
         Point[] H2 = ord_chull_pps(M[2], M[3], Q2, 2);
@@ -53,7 +55,7 @@ public class LiuChen {
         //System.out.println("H1: "); Util.printSet(H1);
         //System.out.println("H2: "); Util.printSet(H2);
         //System.out.println("H3: "); Util.printSet(H3);
-        //System.out.println("H4: "); Util.printSet(H4);
+        System.out.println("H4: "); Util.printSet(H4);
 
         return concatHulls(H1, H2, H3, H4);
     }
@@ -134,7 +136,7 @@ public class LiuChen {
     /*
         Linear search for active region
     */
-    public static int find_sar1(Point v, int l, int u, Point[] hull, int r) {
+    public static int find_sar(Point v, int l, int u, Point[] hull, int r) {
         if(Util.S(hull[0], hull[1], v) >= 0) {
             return 0;
         }
@@ -150,7 +152,9 @@ public class LiuChen {
     /*
         Binary search for active region
     */ 
-    public static int find_sar(Point v, int l, int u, Point[] hull, int r) {
+    public static int find_sar1(Point v, int l, int u, Point[] hull, int r) {
+
+        //System.out.println("Finding SAR");
 
         // special case:
         if(Util.S(hull[0], hull[1], v) >= 0) {
@@ -188,7 +192,7 @@ public class LiuChen {
     /*
         Linear search for inverse active region
     */
-    public static int[] find_isar1(Point v, int l, int u, Point[] h) {
+    public static int[] find_isar(Point v, int l, int u, Point[] h) {
 
         for(int k = l; k <= u; k++) {
             float sf = Util.S(h[k + 1], h[k], v); // forward border
@@ -219,7 +223,8 @@ public class LiuChen {
                 t: 1 if collinear with h[n], h[n+1]
 
     */
-    public static int[] find_isar(Point v, int l, int u, Point[] h) {
+    public static int[] find_isar1(Point v, int l, int u, Point[] h) {
+        //System.out.println("finding ISAR");
 
         while(l <= u) {
             int mid = (int) Math.floor((l + u) / 2);
@@ -252,7 +257,7 @@ public class LiuChen {
     /*
         Linear search
     */
-     public static int findJ1(Point v, Point[] h, int r, int quadrant) {
+     public static int findJ(Point v, Point[] h, int r, int quadrant) {
 
         switch(quadrant) {
             case 1: {
@@ -288,9 +293,9 @@ public class LiuChen {
     /*
         Binary search
     */
-    public static int findJ(Point v, Point[] h, int r, int quadrant) {
+    public static int findJ1(Point v, Point[] h, int r, int quadrant) {
         
-        System.out.println("Searching for J");
+        //System.out.println("Searching for J");
 
         //if(h[0].x > v.x && v.x >= h[1].x)
             //return 0;
@@ -658,7 +663,7 @@ public class LiuChen {
         }
         int m = mnt[0], n = mnt[1], t = mnt[2];
 
-        //System.out.println("m: " + mnt[0] + ", n: " + mnt[1] + ", t: " + mnt[2]);
+        System.out.println("m: " + mnt[0] + ", n: " + mnt[1] + ", t: " + mnt[2]);
 
         // Case 2:
         if(m == -1)
@@ -705,7 +710,8 @@ public class LiuChen {
         else {
             // n > 0
             // Step 5
-            //System.out.println("Second");
+
+            System.out.println(m + ", " + n + ", " + t);
 
             // make space for v
             r++; 
@@ -723,10 +729,9 @@ public class LiuChen {
                     for(int i = n + 1; i <= r; i++)
                         h[i - gap] = h[i];
 
-                r = r - gap;
+                r = r - gap ;
             }
             else {
-
                 // delete up to h[n], excluding h[n]
                 int gap = n - m - 2;
                 if(gap > 0) 
@@ -789,6 +794,7 @@ public class LiuChen {
 
         // Case 2: inserting before the second to last vertex
         else if(j == r - 2) {
+            System.out.println("here");
             n = r - 1;
             if(Util.S(h[r - 1], h[r], v) == 0)
                 t = 1;
@@ -806,6 +812,11 @@ public class LiuChen {
                     // quit
                 }
 
+            } // else step 4
+            else {
+                float S1 = Util.S(h[j - 1], h[j], v);
+                float S2 = Util.S(h[j + 1], h[j + 2], v);
+                return table(S1, S2, j, r, v, h);
             }
         }
 
@@ -814,7 +825,6 @@ public class LiuChen {
             // Step 4
             float S1 = Util.S(h[j - 1], h[j], v);
             float S2 = Util.S(h[j + 1], h[j + 2], v);
-
             return table(S1, S2, j, r, v, h);
         }
 
@@ -830,6 +840,8 @@ public class LiuChen {
     
     */
     public static int[] table(float S1, float S2, int j, int r, Point v, Point[] h) {
+
+        System.out.println("S1" + S1 + ", S2: " + S2);
 
         int m = -1, n = -1, t = -1;
 
@@ -849,7 +861,7 @@ public class LiuChen {
             n = nt[0];
             t = nt[1];
         }
-        else if(S1 < 0 && S2 == 0) {
+        else if(S1 < 0 && S2 == 0) { // <-.--
             m = j;
             n = j + 1;
             t = 1;
@@ -983,38 +995,35 @@ public class LiuChen {
 
     public static void avr_test() {
 
-        int r = 2;
+        int r = 4;
         Point[] points = new Point[r + 1];
 
         int i = 0;
-        points[i++] = new Point(-1, 13); // m1
-        //points[i++] = new Point(12,3);
-        points[i++] = new Point(11,7); // <-- outlier
-        points[i++] = new Point(12,5);
-        //points[i++] = new Point(11,4);
-        //points[i++] = new Point(10,5);
-        //points[i++] = new Point(9,8);
-        //points[i++] = new Point(8,9); // <--- p
-        //points[i++] = new Point(8,11);
-        //points[i++] = new Point(7,7);
-        //points[i++] = new Point(7,9);
-        //points[i++] = new Point(7,11);
-        //points[i++] = new Point(6,11);
-        //points[i++] = new Point(5,10);
-        //points[i++] = new Point(4,11);
-        //points[i++] = new Point(3,11);
+        //points[i++] = new Point(-12,-6);
+        //points[i++] = new Point(-9,-9);
+        //points[i++] = new Point(-2,-12);
+        //points[i++] = new Point(-5,-11);
+        //points[i++] = new Point(-8,-10); // <---
         
-       
-        Point m1 = new Point(-1, 13);
-        Point m2 = new Point(13, 2);
-        Point p =  new Point(8, 9); 
+        points[i++] = new Point(2, -13);
+        points[i++] = new Point(-2, -12);
+        points[i++] = new Point(-5, -11);
+        points[i++] = new Point(-9, -9);
+        points[i++] = new Point(-12, -6);
 
-        //Point[] hull = ord_chull_pps(m1, m2, points, 2);
+        
+       // Hull: (2,-13) (-2,-12) (-5,-11) (-9,-9) (-12,-6) (-13,4)
+       
+        Point m1 = new Point(2, -13);
+        Point m2 = new Point(-13, 4);
+        Point p =  new Point(-8, -10); 
+
+        //Point[] hull = ord_chull_pps(m1, m2, points, 4);
         //Util.printSet(hull);
         //new Plotting(points, hull, true, 0);
         
         Point[] hull2 = Arrays.copyOf(points, r + 5);
-        r = deal_cand_pps(hull2, p, m2, r, 2);
+        r = deal_cand_pps(hull2, p, m2, r, 4);
         r = r + 1;
         hull2[r] = m2;
         hull2 = Arrays.copyOf(hull2, r + 1);
@@ -1024,7 +1033,7 @@ public class LiuChen {
 
     public static void main(String[] args) {
 
-        Point[] points = Testing.testSet14();
+        Point[] points = Testing.testSet15();
         Point[] hull = convexHull(points);
         //Util.printSet(hull);
         new Plotting(points, hull, true, 0);
