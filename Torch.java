@@ -2,37 +2,65 @@ import java.util.Comparator;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Stack;
 
 
+/**
+ * 
+ *  Assuming no 3 points are collinear
+ */
 public class Torch {
 
     public static Point[] convexHull(Point[] points) {
 
-        ArrayList<Point> hull = new ArrayList<Point>();
 
         // Calculate approximate hull
         ArrayList<Point> A = approximateHull(points);
 
-        // Inflate the approximate hull
-        int backtrack = 0;
-        int n = A.size();
-        if(n >= 3) {
-            for(int i = 0; i < n; i++) {
-                Point a = A.get((i - backtrack) % n);
-                Point b = A.get((i + 1) % n);
-                Point c = A.get((i + 2) % n);
+        System.out.println("Approximate hull: ");
+        A.forEach(System.out::print);
+        System.out.println();
 
-                int det = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+        Stack<Point> hull = new Stack<Point>();
+        hull.push(A.get(0));
+        hull.push(A.get(1));
 
-                if(det <= 0) {
-                    backtrack++;
-                }
-                else {
-                    backtrack = 0;
-                    hull.add(b);
-                }
-            }
+        for(int i = 0; i < A.size(); i++) {
+            while(hull.size() >= 2 && Util.orientation(Util.getSecond(hull), hull.peek(), A.get(i)) != -1)
+                hull.pop();
+            hull.push(A.get(i));
         }
+
+        while(Util.orientation(Util.getSecond(hull), hull.peek(), A.get(0)) != -1) {
+            hull.pop();
+        }
+        
+
+        // Inflate the approximate hull
+        //int backtrack = 0;
+        //int n = A.size();
+        //if(n >= 3) {
+            //for(int i = 0; i < n; i++) {
+
+                //int aIndex = i - backtrack;
+                //if(i < 0)
+                    //i += n;
+
+                //Point a = A.get(aIndex);
+                //Point b = A.get((i + 1) % n);
+                //Point c = A.get((i + 2) % n);
+
+                //int det = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+
+                //if(det <= 0) {
+                    //backtrack++;
+                //}
+                //else {
+                    //backtrack = 0;
+                    //hull.add(b);
+                //}
+            //}
+        //}
 
         return hull.toArray(new Point[hull.size()]);
     } // convexHull
