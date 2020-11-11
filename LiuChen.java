@@ -43,9 +43,9 @@ public class LiuChen {
         //System.out.println("Q1: "); Util.printSet(Q1);
         //System.out.println("Q2: "); Util.printSet(Q2);
         //System.out.println("Q3: "); Util.printSet(Q3);
-        System.out.println("Q4: "); Util.printSet(Q4);
+        //System.out.println("Q4: "); Util.printSet(Q4);
 
-        System.out.println("m1: " + M[6] + "m2: " + M[7]);
+        //System.out.println("m1: " + M[6] + "m2: " + M[7]);
 
         Point[] H1 = ord_chull_pps(M[0], M[1], Q1, 1);
         Point[] H2 = ord_chull_pps(M[2], M[3], Q2, 2);
@@ -55,7 +55,7 @@ public class LiuChen {
         //System.out.println("H1: "); Util.printSet(H1);
         //System.out.println("H2: "); Util.printSet(H2);
         //System.out.println("H3: "); Util.printSet(H3);
-        System.out.println("H4: "); Util.printSet(H4);
+        //System.out.println("H4: "); Util.printSet(H4);
 
         return concatHulls(H1, H2, H3, H4);
     }
@@ -663,7 +663,7 @@ public class LiuChen {
         }
         int m = mnt[0], n = mnt[1], t = mnt[2];
 
-        System.out.println("m: " + mnt[0] + ", n: " + mnt[1] + ", t: " + mnt[2]);
+        //System.out.println("m: " + mnt[0] + ", n: " + mnt[1] + ", t: " + mnt[2]);
 
         // Case 2:
         if(m == -1)
@@ -711,7 +711,7 @@ public class LiuChen {
             // n > 0
             // Step 5
 
-            System.out.println(m + ", " + n + ", " + t);
+            //System.out.println(m + ", " + n + ", " + t);
 
             // make space for v
             r++; 
@@ -794,7 +794,7 @@ public class LiuChen {
 
         // Case 2: inserting before the second to last vertex
         else if(j == r - 2) {
-            System.out.println("here");
+            //System.out.println("here");
             n = r - 1;
             if(Util.S(h[r - 1], h[r], v) == 0)
                 t = 1;
@@ -808,7 +808,7 @@ public class LiuChen {
                     // quit
                 }
                 else {
-                    m = find_sar(v, 0, r - 3, h, r);
+                    m = find_sar(v, 1, r - 3, h, r);
                     // quit
                 }
 
@@ -841,7 +841,7 @@ public class LiuChen {
     */
     public static int[] table(float S1, float S2, int j, int r, Point v, Point[] h) {
 
-        System.out.println("S1" + S1 + ", S2: " + S2);
+        //System.out.println("S1" + S1 + ", S2: " + S2);
 
         int m = -1, n = -1, t = -1;
 
@@ -878,17 +878,17 @@ public class LiuChen {
             t = nt[1];
         }
         else if(S1 > 0 && S2 == 0) {
-            m = find_sar(v, 0, j - 1, h, r);
+            m = find_sar(v, 1, j - 1, h, r);
             n = j + 1;
             t = 1;
         }
         else if(S1 > 0 && S2 < 0) {
-            m = find_sar(v, 0, j - 1, h, r);
+            m = find_sar(v, 1, j - 1, h, r);
             n = j + 1;
             t = 0;
         }
         else if(S1 > 0 && S2 > 0) {
-            m = find_sar(v, 0, j - 1, h, r);
+            m = find_sar(v, 1, j - 1, h, r);
             int[] nt = find_isar(v, j + 2, r - 1, h);
             n = nt[0];
             t = nt[1];
@@ -1033,7 +1033,7 @@ public class LiuChen {
 
     public static void main(String[] args) {
 
-        Point[] points = Testing.testSet15();
+        Point[] points = Testing.testSet14();
         Point[] hull = convexHull(points);
         //Util.printSet(hull);
         new Plotting(points, hull, true, 0);

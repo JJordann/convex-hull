@@ -13,7 +13,7 @@ public class Plotting extends javax.swing.JFrame {
 
     public static int thickness = 7;
     public static int zoom = 10;
-    public static int xMin = 14, yMin = 15, xMax = 260, yMax = 250;
+    public static int xMin = 14, yMin = 15, xMax = 560, yMax = 550;
 
     public static int margin = 100;
     
@@ -99,8 +99,8 @@ public class Plotting extends javax.swing.JFrame {
             return new Point(x, y);
         }
 
-        int x = (p.x + xMin) * zoom + thickness / 2;
-        int y = (-p.y + yMin) * zoom + thickness / 2;
+        int x = (p.x + xMin) * zoom + thickness / 2 + xMax/3;
+        int y = (-p.y + yMin) * zoom + thickness / 2 + yMax/4;
 
         return new Point(x, y);
     }
