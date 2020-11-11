@@ -13,19 +13,19 @@ public class Torch {
 
     public static Point[] convexHull(Point[] points) {
 
-
         // Calculate approximate hull
         ArrayList<Point> A = approximateHull(points);
 
         System.out.println("Approximate hull: ");
-        A.forEach(System.out::print);
-        System.out.println();
+        //A.forEach(System.out::print);
+        //System.out.println();
 
+        // Inflate the approximate hull
         Stack<Point> hull = new Stack<Point>();
         hull.push(A.get(0));
         hull.push(A.get(1));
 
-        for(int i = 0; i < A.size(); i++) {
+        for(int i = 2; i < A.size(); i++) {
             while(hull.size() >= 2 && Util.orientation(Util.getSecond(hull), hull.peek(), A.get(i)) != -1)
                 hull.pop();
             hull.push(A.get(i));
@@ -35,33 +35,6 @@ public class Torch {
             hull.pop();
         }
         
-
-        // Inflate the approximate hull
-        //int backtrack = 0;
-        //int n = A.size();
-        //if(n >= 3) {
-            //for(int i = 0; i < n; i++) {
-
-                //int aIndex = i - backtrack;
-                //if(i < 0)
-                    //i += n;
-
-                //Point a = A.get(aIndex);
-                //Point b = A.get((i + 1) % n);
-                //Point c = A.get((i + 2) % n);
-
-                //int det = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
-
-                //if(det <= 0) {
-                    //backtrack++;
-                //}
-                //else {
-                    //backtrack = 0;
-                    //hull.add(b);
-                //}
-            //}
-        //}
-
         return hull.toArray(new Point[hull.size()]);
     } // convexHull
 
