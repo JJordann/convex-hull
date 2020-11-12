@@ -260,14 +260,13 @@ public class Util {
 
         // Check if first point is the right tangent
         if(orientation(p, points.get(1), points.get(0)) > 0 
-        && orientation(p, points.get(n - 1), points.get(0)) >= 0)
+        && orientation(p, points.get(n - 1), points.get(0)) >= 0) {
             return 0;
+        }
 
         do {
             int mid = (left + right) / 2;
 
-            //points.forEach(System.out::print);
-            //System.out.println(" | " + p + " | " + mid);
             int nextMid = orientation(p, points.get((mid + 1) % n), points.get(mid));
 
             int midPrev = mid - 1;
@@ -278,9 +277,8 @@ public class Util {
             if(nextMid > 0 && orientation(p, points.get(midPrev), points.get(mid)) >= 0)
                 return mid;
 
-
             int nextLeft = orientation(p, points.get((left + 1) % n), points.get(left));
-            if(nextLeft < 0) {
+            if(nextLeft <= 0) {
                 if(nextMid > 0)
                     right = mid; // interval := [left, mid]
                 else {
@@ -301,7 +299,7 @@ public class Util {
                 }
             }
 
-        } while(left < right - 1); // while true
+        } while(left < right - 1);
 
         return left;
     } // rightTangent

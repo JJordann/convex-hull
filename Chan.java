@@ -157,12 +157,29 @@ public class Chan {
         System.out.println();
     }
 
+    public static void debug() {
+
+        ArrayList<Point> points = new ArrayList<Point>();
+        points.add(new Point(-4, -2));
+        points.add(new Point(18, 7));
+        points.add(new Point(-14, 21));
+        points.add(new Point(-7, 2));
+
+        Point p = new Point(-26, -11);
+
+        System.out.println(Util.rightTangent(points, p));
+        points.add(p);
+        new Plotting(points, points, true, 0);
+
+    }
 
     public static void main(String[] args) {
 
-        Point[] points = Testing.testSet14();
+        Point[] points = Testing.testSet15();
         Point[] hull = convexHull(points);
         new Plotting(points, hull, true, 0);
+
+        //debug();
 
     }
     
