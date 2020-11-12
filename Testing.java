@@ -1358,10 +1358,10 @@ public class Testing {
 
     public static void main(String[] args) {
 
-        System.out.println("Torch");
-        Point[] points = generateCircle(200, 30);
+        System.out.println("LiuChen");
+        Point[] points = generateCircle(2000, 80);
         Util.printSet(points);
-        Point[] hull = Torch.convexHull(points);
+        Point[] hull = LiuChen.convexHull(points);
         new Plotting(points, hull, true, 0);
 
         //plotAll();
