@@ -15,6 +15,12 @@ public class Util {
             }
     };
 
+    public static Comparator<Point> xComparatorFast = new Comparator<Point>() {
+        public int compare(Point p, Point q) {
+            return p.x - q.x;
+        }
+    };
+
     public static Comparator<Point> xComparatorReverse = new Comparator<Point>() {
             public int compare(Point p, Point q) {
                 if(p.x == q.x)

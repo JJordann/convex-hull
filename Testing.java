@@ -1,6 +1,7 @@
 import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Stack;
 
 
 public class Testing {
@@ -250,46 +251,6 @@ public class Testing {
     }
 
 
-    public static Point[] generateRectangle(int n, int xspan, int yspan) {
-
-        // use set to prevent duplicates
-        HashSet<Point> points = new HashSet<Point>();
-
-        // generate `n` random points
-        while(points.size() < n){
-
-            int x = Util.randomInt(-xspan, xspan);
-            int y = Util.randomInt(-yspan, yspan);
-
-            points.add(new Point(x, y));
-        }
-
-        ArrayList<Point> ar = new ArrayList<Point>(points);
-        Collections.shuffle(ar);
-        return points.toArray(new Point[ar.size()]);
-    }
-
-
-    public static Point[] generateCircle(int n, int radius) {
-
-        // use set to prevent duplicates
-        HashSet<Point> points = new HashSet<Point>();
-
-        while(points.size() < n) {
-
-            double phi = Math.random() * 2 * Math.PI;
-            int r = Util.randomInt(0, radius);
-
-            int x = (int) (r * Math.cos(phi));
-            int y = (int) (r * Math.sin(phi));
-
-            points.add(new Point(x, y));
-        }
-
-        ArrayList<Point> ar = new ArrayList<Point>(points);
-        Collections.shuffle(ar);
-        return ar.toArray(new Point[ar.size()]);
-    }
 
     public static Point[] testSet12() {
 
@@ -1755,13 +1716,93 @@ public class Testing {
         new Plotting(points7, Quickhull.convexHull(points7), true, 6 * dx);
     }
 
+
+    public static Point[] generateRectangle(int n, int xspan, int yspan) {
+
+        // use set to prevent duplicates
+        HashSet<Point> points = new HashSet<Point>();
+
+        // generate `n` random points
+        while(points.size() < n){
+
+            int x = Util.randomInt(-xspan, xspan);
+            int y = Util.randomInt(-yspan, yspan);
+
+            points.add(new Point(x, y));
+        }
+
+        ArrayList<Point> ar = new ArrayList<Point>(points);
+        Collections.shuffle(ar);
+        return points.toArray(new Point[ar.size()]);
+    }
+
+
+    public static Point[] generateCircle(int n, int radius) {
+
+        // use set to prevent duplicates
+        HashSet<Point> points = new HashSet<Point>();
+
+        while(points.size() < n) {
+
+            double phi = Math.random() * 2 * Math.PI;
+            int r = Util.randomInt(0, radius);
+
+            int x = (int) (r * Math.cos(phi));
+            int y = (int) (r * Math.sin(phi));
+
+            points.add(new Point(x, y));
+        }
+
+        ArrayList<Point> ar = new ArrayList<Point>(points);
+        Collections.shuffle(ar);
+        return ar.toArray(new Point[ar.size()]);
+    }
+
+
+    public static void executionTime() {
+
+        int n = 10000; // 1 million
+        int r = 1000; // 10k
+
+        long startTime, endTime, dt;
+        System.out.println("Number of points: " + n);
+        Point[] points = generateRectangle(n, r, r);
+
+        startTime = System.nanoTime();
+        Point[] hull = Quickhull.convexHull(points);
+        endTime = System.nanoTime();
+        dt = endTime - startTime;
+        System.out.println("Quickhull: " + dt + " ns (" + (dt / 1000000) + " ms)");
+
+        startTime = System.nanoTime();
+        Stack<Point> hull2 = Torch.convexHullImproved(points);
+        endTime = System.nanoTime();
+        dt = endTime - startTime;
+        System.out.println("Torch: " + dt + " ns (" + (dt / 1000000) + " ms)");
+
+        startTime = System.nanoTime();
+        Point[] hull4 = Improved.convexHull(points);
+        endTime = System.nanoTime();
+        dt = endTime - startTime;
+        System.out.println("Improved: " + dt + " ns (" + (dt / 1000000) + " ms)");
+
+        startTime = System.nanoTime();
+        Point[] hull5 = LiuChen.convexHull(points);
+        endTime = System.nanoTime();
+        dt = endTime - startTime;
+        System.out.println("LiuChen: " + dt + " ns (" + (dt / 1000000) + " ms)");
+    }
+
     public static void main(String[] args) {
 
-        System.out.println("Chan's");
-        Point[] points = generateCircle(2000, 80);
-        //Util.printSet(points);
-        Point[] hull = Chan.convexHull(points);
-        new Plotting(points, hull, true, 0);
+        executionTime();
+
+        //Point[] points = generateCircle(400, 30);
+        //Point[] hull = Improved.convexHull(points);
+        //new Plotting(points, hull, true, 0);
+
+        //Point[] points = generateCircle(1000000, 10000);
+        //Stack<Point> hull = Torch.convexHull(points);
 
         //plotAll();
 

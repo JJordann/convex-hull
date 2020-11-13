@@ -43,25 +43,51 @@ public class Improved {
         PriorityQueue<Point> botLeft  = new PriorityQueue<Point>(points.length, Util.xComparator);
         PriorityQueue<Point> botRight = new PriorityQueue<Point>(points.length, Util.xComparator);
 
+        //for(int i = 0; i < points.length; i++) {
+            //if( ! Util.isInsideQuadrilateral(points[i], points[leftmost], points[rightmost], points[lowest], points[highest])) {
+
+                //// TODO: dodaj else in ekstremne tocke vstavi loceno
+                //if(points[i].x <= points[highest].x && points[i].y >= points[leftmost].y) {
+                    //topLeft.add(points[i]);
+                //}
+                //else if(points[i].x >= points[highest].x && points[i].y >= points[rightmost].y) {
+                    //topRight.add(points[i]);
+                //}
+                //else if(points[i].x <= points[lowest].x && points[i].y <= points[leftmost].y) {
+                    //botLeft.add(points[i]);
+                //}
+                //else if(points[i].x >= points[lowest].x && points[i].y <= points[rightmost].y){
+                    //botRight.add(points[i]);
+                //}
+            //} // if !inside
+        //} // for
+
+        Point pLeftmost  = points[leftmost];
+        Point pRightmost = points[rightmost];
+        Point pLowest    = points[lowest];
+        Point pHighest   = points[highest];
+
+        topLeft.add(pLeftmost);
+        topRight.add(pHighest);
+        botRight.add(pRightmost);
+        botLeft.add(pLowest);
+
         for(int i = 0; i < points.length; i++) {
-            if( ! Util.isInsideQuadrilateral(points[i], points[leftmost], points[rightmost], points[lowest], points[highest])) {
+            if(Util.orientation(pLeftmost, pHighest, points[i]) < 0)
+                topLeft.add(points[i]);
+            else if(Util.orientation(pHighest, pRightmost, points[i]) < 0)
+                topRight.add(points[i]);
+            else if(Util.orientation(pRightmost, pLowest, points[i]) < 0)
+                botRight.add(points[i]);
+            else if(Util.orientation(pLowest, pLeftmost, points[i]) < 0)
+                botLeft.add(points[i]);
+            // else: point is inside the quadrilatral, discard it
+        }
 
-                // TODO: dodaj else in ekstremne tocke vstavi loceno
-                if(points[i].x <= points[highest].x && points[i].y >= points[leftmost].y) {
-                    topLeft.add(points[i]);
-                }
-                if(points[i].x >= points[highest].x && points[i].y >= points[rightmost].y) {
-                    topRight.add(points[i]);
-                }
-                if(points[i].x <= points[lowest].x && points[i].y <= points[leftmost].y) {
-                    botLeft.add(points[i]);
-                }
-                if(points[i].x >= points[lowest].x && points[i].y <= points[rightmost].y){
-                    botRight.add(points[i]);
-                }
-            } // if !inside
-        } // for
-
+        topLeft.add(pHighest);
+        topRight.add(pRightmost);
+        botRight.add(pLowest);
+        botLeft.add(pLeftmost);
 
         // Construct the hull using the monotone chain method,
         // one region at a time, moving in counter-clockwise direction
@@ -69,6 +95,7 @@ public class Improved {
         Point p = null;
 
         // From leftmost to lowest point
+        // TODO: if != null
         hull.add(botLeft.poll());
         hull.add(botLeft.poll());
         while((p = botLeft.poll()) != null) {

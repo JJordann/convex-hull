@@ -65,7 +65,7 @@ public class LiuChen {
         Concatenates the 4 hulls in clockwise order, omitting duplicates
     */
     public static Point[] concatHulls(final Point[] H1, final Point[] H2, final Point[] H3, final Point[] H4) {
-        Point[] H = new Point[H1.length + H2.length + H3.length + H4.length];
+        Point[] H = new Point[H1.length + H2.length + H3.length + H4.length + 1];
         int r = 0;
 
         // H1 -----------------------------------
