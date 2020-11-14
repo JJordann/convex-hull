@@ -1761,7 +1761,7 @@ public class Testing {
 
     public static void executionTime() {
 
-        int n = 10000; // 1 million
+        int n = 30000; // 1 million
         int r = 1000; // 10k
 
         long startTime, endTime, dt;
@@ -1797,8 +1797,8 @@ public class Testing {
 
         executionTime();
 
-        //Point[] points = generateCircle(400, 30);
-        //Point[] hull = Improved.convexHull(points);
+        //Point[] points = generateCircle(800, 40);
+        //Point[] hull = Quickhull.convexHull(points);
         //new Plotting(points, hull, true, 0);
 
         //Point[] points = generateCircle(1000000, 10000);

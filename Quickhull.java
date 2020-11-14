@@ -28,36 +28,30 @@ public class Quickhull {
 
         Point farthest = points.get(farthestIndex);
 
-
         ArrayList<Point> U = new ArrayList<Point>();
         ArrayList<Point> L = new ArrayList<Point>();
 
         /*  Split the set of points into 3 regions, {S, U, L},
             depending on their position relative to the farthest point, r.
             Points in S are discarded
-            q
+            p
             |\
-            | \   U
+            | \   L
             |  \  
             | S r
             |  /
-            | /   L
+            | /   U
             |/
-            p 
+            q 
         */
         for(int i = 0; i < points.size(); i++) {
             Point pt = points.get(i);
-            float dir = Util.direction(p, farthest, pt);
-            if(!pt.isInTriangle2(p, q, farthest)) {
-                if(dir > 0.0) {
-                    L.add(pt);
-                }
-                else if (dir < 0.0) {
-                    U.add(pt);
-                }
-            }
+            if(Util.orientation(p, farthest, pt) < 0)
+                L.add(pt);
+            else if(Util.orientation(farthest, q, pt) < 0)
+                U.add(pt);
         }
-        
+
         // Recur for both regions separately
         // (p = lowest, q = highest)
         findHull(L, p, farthest); 
