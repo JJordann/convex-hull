@@ -50,6 +50,7 @@ public class Quickhull {
                 L.add(pt);
             else if(Util.orientation(farthest, q, pt) < 0)
                 U.add(pt);
+            // else: point is in S, discard it
         }
 
         // Recur for both regions separately
