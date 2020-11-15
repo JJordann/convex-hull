@@ -1829,7 +1829,6 @@ public class Testing {
 
         long startTime = System.nanoTime();
         Point[] hull = Quickhull.convexHull(points);
-        Util.printSet(hull);
         long runTime   = System.nanoTime() - startTime;
 
         writeResults(filename, runTime);

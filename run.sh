@@ -1,15 +1,17 @@
 #!/bin/bash
 
-repetitions = 10
-filename = "quickhull.txt"
+repetitions=10
+filename="quickhull.txt"
 
-> filename
+> $filename
 
-for exp in 2 3 4 5 6 7
+
+javac Testing.java
+for exp in 2 3 4 5 
 do
-	for iter in 1 .. $repetitions
+	for iter in $(seq 1 $repetitions)
 	do
 		echo $exp.$iter
-		java Testing $filename $exp
+		java Testing "$filename" "$exp"
 	done
 done
