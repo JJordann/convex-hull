@@ -1824,7 +1824,7 @@ public class Testing {
         Point[] points = generateCircle(n, r);
 
         long startTime = System.nanoTime();
-        Stack<Point> hull = Torch.convexHullImproved(points);
+        Point[] hull = Chan.convexHull(points);
         long runTime   = System.nanoTime() - startTime;
 
         writeResults(filename, runTime);

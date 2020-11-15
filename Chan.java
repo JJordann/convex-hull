@@ -140,9 +140,17 @@ public class Chan {
         } while (hull.size() < m);
 
 
+        ArrayList<Point> partialHulls = new ArrayList<Point>();
+        for(int i = 0; i < K.size(); i++) {
+            partialHulls.addAll(K.get(i));
+        }
+
+        Point[] K_flat = partialHulls.toArray(new Point[partialHulls.size()]);
+
         // TODO: exclude points inside mini-hulls in subsequent calls
         // hull is not complete, recur with larger mini-hull size
-        return convexHull(points, t + 1);
+        //return convexHull(points, t + 1);
+        return convexHull(K_flat, t + 1);
     } // convexHull
 
 
@@ -175,7 +183,8 @@ public class Chan {
 
     public static void main(String[] args) {
 
-        Point[] points = Testing.testSet15();
+        //Point[] points = Testing.testSet15();
+        Point[] points = Testing.generateCircle(1000, 40);
         Point[] hull = convexHull(points);
         new Plotting(points, hull, true, 0);
 
