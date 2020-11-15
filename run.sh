@@ -1,17 +1,19 @@
 #!/bin/bash
 
 repetitions=10
-filename="liuchen.txt"
+filename="$1"
 
 > $filename
 
 
 javac Testing.java
-for exp in 2 3 4 5 
+for exp in 2 3 4 5 6 7
 do
+	echo -n "$exp:"
 	for iter in $(seq 1 $repetitions)
 	do
-		echo $exp.$iter
 		java Testing "$filename" "$exp"
+		echo -n ">"
 	done
+	echo "|"
 done

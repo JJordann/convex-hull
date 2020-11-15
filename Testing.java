@@ -1818,12 +1818,13 @@ public class Testing {
     public static void executeAndWrite(String filename, String exp) {
 
         int n = (int) Math.pow(10, Integer.parseInt(exp));
-        int r = (int) Math.sqrt(n) * 10; 
+        int r = 10000;
 
-        Point[] points = generateRectangle(n, r, r);
+        //Point[] points = generateRectangle(n, r, r);
+        Point[] points = generateCircle(n, r);
 
         long startTime = System.nanoTime();
-        Point[] hull = LiuChen.convexHull(points);
+        Stack<Point> hull = Torch.convexHullImproved(points);
         long runTime   = System.nanoTime() - startTime;
 
         writeResults(filename, runTime);
