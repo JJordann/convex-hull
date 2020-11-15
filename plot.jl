@@ -31,10 +31,17 @@ end # func
 
 function main() 
 
-    quickhull = groupAverage("quickhull.txt", 10);
+    x = ["100", "1000", "10000", "100000"]
+
+    quickhull = groupAverage("quickhull.txt", 10) .|> (x -> x / 1000000)
+    liuchen = groupAverage("liuchen.txt", 10) .|> (x -> x / 1000000)
+
+    plot(x, quickhull, label = "Quickhull")
+    plot!(x, liuchen, label = "Ordered hull")
 
 
-    plot(quickhull);
+    xlabel!("number of points")
+    ylabel!("execution time (ms)")
 
 end
 

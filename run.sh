@@ -1,7 +1,7 @@
 #!/bin/bash
 
 repetitions=10
-filename="quickhull.txt"
+filename="liuchen.txt"
 
 > $filename
 

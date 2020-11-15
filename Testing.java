@@ -1820,15 +1820,10 @@ public class Testing {
         int n = (int) Math.pow(10, Integer.parseInt(exp));
         int r = (int) Math.sqrt(n) * 10; 
 
-
-        //System.out.println("n: " + n + ", filename: " + filename);
-
         Point[] points = generateRectangle(n, r, r);
 
-        System.out.println("---");
-
         long startTime = System.nanoTime();
-        Point[] hull = Quickhull.convexHull(points);
+        Point[] hull = LiuChen.convexHull(points);
         long runTime   = System.nanoTime() - startTime;
 
         writeResults(filename, runTime);
