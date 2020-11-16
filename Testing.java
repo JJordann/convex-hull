@@ -1824,7 +1824,7 @@ public class Testing {
         Point[] points = generateCircle(n, r);
 
         long startTime = System.nanoTime();
-        Point[] hull = Chan.convexHull(points);
+        Point[] hull = GrahamScan.convexHull(points);
         long runTime   = System.nanoTime() - startTime;
 
         writeResults(filename, runTime);
