@@ -1,5 +1,6 @@
 import java.util.HashSet;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Collections;
 import java.util.Stack;
 import java.io.File;
@@ -1778,40 +1779,21 @@ public class Testing {
 
     public static void executionTime() {
 
-        int warmupRepetitions = 2000;
-        int repetitions = 1000;
-        int n = 10000; 
+        int n = 2000000; 
         int r = (int) Math.sqrt(n) * 10; 
 
-        int warmupN = 10000;
-        int warmupR = (int) Math.sqrt(warmupN) * 10; 
-
         System.out.println("Number of points: " + n);
-        Point[] points;
-        // -------------------- Warmup -------------------------
-
-        for(int i = 0; i < warmupRepetitions; i++) {
-            points = generateRectangle(warmupN, warmupR, warmupR);
-            Point[] hull = Quickhull.convexHull(points);
-        }
-
         System.out.println("---");
         
-        long startTime, endTime, avgRuntime;
-        long[] measurements = new long[repetitions];
+        long startTime, runTime;
 
         // --------------- Testing ------------------
-        for (int i = 0; i < repetitions; i++) {
-            points = generateRectangle(n, r, r);
-            startTime = System.nanoTime();
-            Point[] hull = Quickhull.convexHull(points);
-            endTime   = System.nanoTime();
+        Point[] points = generateCircle(n, r);
 
-            measurements[i] = endTime - startTime;
-            System.out.println(measurements[i]);
-        }
-        avgRuntime = average(measurements);
-        System.out.println("Quickhull: " + avgRuntime + " (" + ms(avgRuntime) + " ms)");
+        startTime = System.nanoTime();
+        Point[] hull = Jarvis.convexHull(points);
+        runTime   = System.nanoTime() - startTime;
+        System.out.println("Jarvis: " + runTime + " (" + ms(runTime) + " ms)");
 
     }
 
@@ -1848,7 +1830,11 @@ public class Testing {
 
     public static void main(String[] args) {
 
-        executeAndWrite(args[0], args[1]);
+        //executeAndWrite(args[0], args[1]);
+
+
+        executionTime();
+
 
         //Point[] points = generateCircle(800, 40);
         //Point[] hull = Quickhull.convexHull(points);

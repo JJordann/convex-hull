@@ -11,8 +11,8 @@ public class Plotting extends javax.swing.JFrame {
 
     static final long serialVersionUID = 12;
 
-    public static int thickness = 5;
-    public static int zoom = 5;
+    public static int thickness = 4;
+    public static int zoom = 6;
     public static int xMin = 14, yMin = 15, xMax = 560, yMax = 550;
 
     public static int margin = 100;
