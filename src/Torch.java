@@ -13,16 +13,16 @@ public class Torch {
 
     public static Stack<Point> convexHull(Point[] points) {
 
-        long startTime = System.nanoTime();
+        //long startTime = System.nanoTime();
 
         // Calculate approximate hull
         ArrayList<Point> A = approximateHull(points);
 
-        long runTime = System.nanoTime() - startTime;
-        System.out.println("approximate hull took: " + (runTime /  1000000) + " ms");
+        //long runTime = System.nanoTime() - startTime;
+        //System.out.println("approximate hull took: " + (runTime /  1000000) + " ms");
 
 
-        startTime = System.nanoTime();
+        //startTime = System.nanoTime();
         // Inflate the approximate hull
         Stack<Point> hull = new Stack<Point>();
         hull.push(A.get(0));
@@ -39,8 +39,8 @@ public class Torch {
         }
 
 
-        runTime = System.nanoTime() - startTime;
-        System.out.println("inflation took: " + (runTime /  1000000) + " ms");
+        //runTime = System.nanoTime() - startTime;
+        //System.out.println("inflation took: " + (runTime /  1000000) + " ms");
 
         
         return hull;
@@ -55,11 +55,11 @@ public class Torch {
     public static ArrayList<Point> approximateHull(Point[] points) {
 
         // Sort by x coordinate
-        long startTime = System.nanoTime();
+        //long startTime = System.nanoTime();
         Arrays.sort(points, Util.xComparatorFast);
 
-        long runTime = System.nanoTime() - startTime;
-        System.out.println("Sorting took: " + (runTime / 1000000) + " ms");
+        //long runTime = System.nanoTime() - startTime;
+        //System.out.println("Sorting took: " + (runTime / 1000000) + " ms");
         // After sorting by x coordinate, leftmost and rightmost 
         // points are the first and last elements of the array
         int leftmost  = 0;
@@ -69,7 +69,7 @@ public class Torch {
         int lowest  = 0;
         int highest = 0;
 
-        startTime = System.nanoTime();
+        //startTime = System.nanoTime();
         for(int i = 1; i < points.length; i++) {
             if(points[i].y < points[lowest].y)
                 lowest = i;
@@ -128,12 +128,12 @@ public class Torch {
             }
         } // for
 
-        runTime = System.nanoTime() - startTime;
-        System.out.println("Chain construction took: " + (runTime / 1000000) + " ms");
+        //runTime = System.nanoTime() - startTime;
+        //System.out.println("Chain construction took: " + (runTime / 1000000) + " ms");
 
         // Join all 4 lateral hulls to construct 
         // an approximate hull, A
-        startTime = System.nanoTime();
+        //startTime = System.nanoTime();
         ArrayList<Point> A = new ArrayList<Point>();
         A.addAll(HSW);
         Collections.reverse(HSE);
@@ -142,8 +142,8 @@ public class Torch {
         Collections.reverse(HNW);
         A.addAll(HNW);
 
-        runTime = System.nanoTime() - startTime;
-        System.out.println("Concatenation took: " + (runTime / 1000000) + " ms");
+        //runTime = System.nanoTime() - startTime;
+        //System.out.println("Concatenation took: " + (runTime / 1000000) + " ms");
 
 
 

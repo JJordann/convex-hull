@@ -1742,16 +1742,36 @@ public class Testing {
         return points.toArray(new Point[ar.size()]);
     }
 
+    public static Point[] generateUniformCircle(int n, int radius) {
+
+        // use set to prevent duplicates
+        HashSet<Point> points = new HashSet<Point>();
+        
+        while(points.size() < n) {
+
+            int x = Util.randomInt(-radius, radius); // centre biased distribution
+            int y = Util.randomInt(-radius, radius);
+
+            // if point is inside circle, add it, else, generate a new one
+            if(x * x + y * y <= radius * radius)  
+                points.add(new Point(x, y));
+        }
+
+        ArrayList<Point> ar = new ArrayList<Point>(points);
+        Collections.shuffle(ar);
+        return ar.toArray(new Point[ar.size()]);
+    }
 
     public static Point[] generateCircle(int n, int radius) {
 
         // use set to prevent duplicates
         HashSet<Point> points = new HashSet<Point>();
-
+        
         while(points.size() < n) {
 
             double phi = Math.random() * 2 * Math.PI;
-            int r = Util.randomInt(0, radius);
+            int r = Util.randomInt(0, radius); // centre biased distribution
+            //int r = (int) Math.sqrt(2 * Util.randomInt(0, radius)); // uniform distribution
 
             int x = (int) (r * Math.cos(phi));
             int y = (int) (r * Math.sin(phi));
@@ -1788,7 +1808,7 @@ public class Testing {
         long startTime, runTime;
 
         // --------------- Testing ------------------
-        Point[] points = generateCircle(n, r);
+        Point[] points = generateUniformCircle(n, r);
 
         startTime = System.nanoTime();
         Point[] hull = Jarvis.convexHull(points);
@@ -1803,10 +1823,11 @@ public class Testing {
         int r = 10000;
 
         //Point[] points = generateRectangle(n, r, r);
-        Point[] points = generateCircle(n, r);
+        Point[] points = generateRectangle(n, r, r);
 
         long startTime = System.nanoTime();
-        Point[] hull = GrahamScan.convexHull(points);
+        //Stack<Point> hull = Torch.convexHull(points);
+        Point[] hull = Improved.convexHull(points);
         long runTime   = System.nanoTime() - startTime;
 
         writeResults(filename, runTime);
@@ -1830,10 +1851,17 @@ public class Testing {
 
     public static void main(String[] args) {
 
-        //executeAndWrite(args[0], args[1]);
+        executeAndWrite(args[0], args[1]);
 
 
-        executionTime();
+        //executionTime();
+
+        
+        //Point[] points = generateUniformCircle(2000, 40);
+        //System.out.println("generated");
+        ////Point[] hull = GrahamScan.convexHull(points);
+        //Point[] hull = null;
+        //new Plotting(points, hull, true, 0);
 
 
         //Point[] points = generateCircle(800, 40);
