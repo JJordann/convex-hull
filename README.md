@@ -1,5 +1,8 @@
 # convex-hull
+Implementation and benchmarking of several convex hull algorithms, including:
+- Ordered hull (Liu, Chen)
+- TORCH (Gomes)
+- Chan's algorithm
+- Monotone Chain (Andrew)
 
-![100-100k](./images/100-100k.PNG)
-
-![10k-10m](./images/10k-10m.PNG)
+... and several preprocessing techniques based on the Akl-Toussaint heuristic.
