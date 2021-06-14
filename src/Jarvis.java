@@ -125,8 +125,6 @@ public class Jarvis {
 
         new Plotting(points, hull, true, 0);
 
-
-
     }
 
 

@@ -31,11 +31,6 @@ public class Util {
         };
 
     
-    public static float sign(Point p, Point q, Point r) {
-        return (p.x - r.x) * (q.y - r.y) -
-               (q.x - r.x) * (p.y - r.y);
-    }
-
     public static double slope(Point p, Point q) {
         if(p.x == q.x) 
             return 0;
@@ -58,11 +53,6 @@ public class Util {
         }
     }
 
-    // S > 0 => left
-    // S < 0 => right
-    public static float S(Point a, Point b, Point c) {
-        return (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y);
-    }
 
     public static float direction(Point u, Point v, Point p) {
         return (v.x - u.x) * (p.y - u.y) - (v.y - u.y) * (p.x - u.x);
@@ -185,51 +175,6 @@ public class Util {
         return merged.toArray(new Point[merged.size()]);
     }
 
-
-    /*
-    public static int rightTangent1(final ArrayList<Point> points, Point p) {
-
-        int n = points.size();
-
-        int left  = 0;
-        int right = n;
-
-        int left_prev = orientation(p, points.get(0), points.get(n - 1));
-        int left_next = orientation(p, points.get(0), points.get((left + 1) % n));
-
-        if(left_prev != 1 && left_next != 1)
-            return left;
-
-        while(left < right) {
-
-            int mid = (left + right) / 2;
-            int midprevIndex = mid - 1;
-            if(midprevIndex < 0)
-                midprevIndex += n;
-
-            int mid_prev = orientation(p, points.get(mid), points.get(midprevIndex));
-            int mid_next = orientation(p, points.get(mid), points.get((mid + 1) % n));
-            int mid_side = orientation(p, points.get(left), points.get(mid));
-
-            if(mid_prev != 1 && mid_next != 1) {
-                return mid;
-            }
-            else if(mid_side == -1
-                 && (left_next == 1 || left_prev == left_next)
-                 || (mid_side == 1 && mid_prev == 1)) { 
-                     right = mid;
-                 }
-            else {
-                left = mid + 1; // modulo
-            }
-
-            left_prev = -mid_next;
-            left_next = orientation(p, points.get(1), points.get((left + 1) % n));
-        }
-        return left % n;
-    } // rightTangent
-    */
-
     public static int rightTangentLinear(ArrayList<Point> points, Point p) {
 
         if(points.size() <= 1)
@@ -311,10 +256,12 @@ public class Util {
     } // rightTangent
 
 
-    public static Point[] fastMerge(Point[] left, Point[] right) {
-        return null;
-    }
 
+    // S > 0 => left
+    // S < 0 => right
+    public static float S(Point a, Point b, Point c) {
+        return (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y);
+    }
 
 
     public static int randomInt(int min, int max) {
@@ -336,5 +283,12 @@ public class Util {
             System.out.print(h[i]);
         System.out.println();
     }
+
+
+    public static float sign(Point p, Point q, Point r) {
+        return (p.x - r.x) * (q.y - r.y) -
+               (q.x - r.x) * (p.y - r.y);
+    }
+
 
 }

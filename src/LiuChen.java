@@ -40,22 +40,10 @@ public class LiuChen {
         Q3 = Arrays.copyOf(Q3, n3);
         Q4 = Arrays.copyOf(Q4, n4);
 
-        //System.out.println("Q1: "); Util.printSet(Q1);
-        //System.out.println("Q2: "); Util.printSet(Q2);
-        //System.out.println("Q3: "); Util.printSet(Q3);
-        //System.out.println("Q4: "); Util.printSet(Q4);
-
-        //System.out.println("m1: " + M[6] + "m2: " + M[7]);
-
         Point[] H1 = ord_chull_pps(M[0], M[1], Q1, 1);
         Point[] H2 = ord_chull_pps(M[2], M[3], Q2, 2);
         Point[] H3 = ord_chull_pps(M[4], M[5], Q3, 3);
         Point[] H4 = ord_chull_pps(M[6], M[7], Q4, 4);
-
-        //System.out.println("H1: "); Util.printSet(H1);
-        //System.out.println("H2: "); Util.printSet(H2);
-        //System.out.println("H3: "); Util.printSet(H3);
-        //System.out.println("H4: "); Util.printSet(H4);
 
         return concatHulls(H1, H2, H3, H4);
     }
@@ -164,8 +152,6 @@ public class LiuChen {
     */ 
     public static int find_sar(Point v, int l, int u, Point[] hull, int r) {
 
-        //System.out.println("Finding SAR");
-
         // special case:
         if(Util.S(hull[0], hull[1], v) >= 0) {
             return 0;
@@ -237,7 +223,6 @@ public class LiuChen {
 
     */
     public static int[] find_isar(Point v, int l, int u, Point[] h) {
-        //System.out.println("finding ISAR");
 
         while(l <= u) {
             int mid = (int) Math.floor((l + u) / 2);
@@ -337,8 +322,6 @@ public class LiuChen {
         Binary search
     */
     public static int findJ(Point v, Point[] h, int r, int quadrant) {
-        
-        //System.out.println("Searching for J");
 
         if(quadrant == 1) {
             // For quadrants 1 and 2, polygon is ordered from left to right
@@ -410,10 +393,6 @@ public class LiuChen {
             return -2;
         }
 
-        // Did not find such vertex, return -1
-        // (Should never happen)
-        //return -1;
-
     } // findJ
     /*
 
@@ -477,7 +456,6 @@ public class LiuChen {
     public static int[] in_avr_pps2(Point v, Point[] h, Point m2, int r) {
 
         int m = -1, n = -1, t = 0;
-        //System.out.println("v: " + v + ", h[r]: " + h[r]);
 
         // Case 1: new point is directly above/below the last hull vertex
         if(v.y == h[r].y) {                                 
@@ -599,14 +577,14 @@ public class LiuChen {
         // Case 1: new point is directly above/below the last hull vertex
         if(v.y == h[r].y) {
             n = -1;
-            if(v.x < h[r].x) {  // <----------------------------------------------
+            if(v.x < h[r].x) {  
                 // if new point is above, find which active 
                 // region it belongs to. Otherwise, discard it
                 m = find_sar(v, 1, r - 1, h, r);
             }
         }
         // Case 2: new point is to the right of the last hull vertex
-        else if(h[r].y < v.y && v.y < m2.y) { // <--------------------!!!!!!!!!!!!!
+        else if(h[r].y < v.y && v.y < m2.y) { 
             // Step 3
             n = -1;
             if(Util.S(h[r - 1], h[r], v) >= 0) {
@@ -670,8 +648,6 @@ public class LiuChen {
         }
         int m = mnt[0], n = mnt[1], t = mnt[2];
 
-        //System.out.println("m: " + mnt[0] + ", n: " + mnt[1] + ", t: " + mnt[2]);
-
         // Case 2:
         if(m == -1)
             return r;
@@ -697,8 +673,6 @@ public class LiuChen {
             // Step 4
             else if(Util.S(v, m2, h[r]) > 0 ) { 
 
-                //System.out.println("First");
-
                 Point w = h[r];
                 r = m + 1;
                 h[r] = v;
@@ -717,8 +691,6 @@ public class LiuChen {
         else {
             // n > 0
             // Step 5
-
-            //System.out.println(m + ", " + n + ", " + t);
 
             // make space for v
             r++; 
@@ -770,8 +742,6 @@ public class LiuChen {
                 n: index of inverse active region
                 t: 1 if collinear with h[j], h[j+1], otherwise 0
 
-                TODO: binary search
-
     */
     public static int[] find_avr_pps(Point v, int j, Point[] h, int r) {
 
@@ -782,12 +752,12 @@ public class LiuChen {
             m = 0;           
 
             if(Util.S(h[2], h[1], v) == 0) { 
-                n = 1;                         // <-- decrement
+                n = 1;
                 t = 1;
                 // quit
             }
             else if(Util.S(h[2], h[1], v) > 0) { 
-                n = 1;                            // <-- decrement
+                n = 1;
                 t = 0;
                 // quit
             }
@@ -801,7 +771,6 @@ public class LiuChen {
 
         // Case 2: inserting before the second to last vertex
         else if(j == r - 2) {
-            //System.out.println("here");
             n = r - 1;
             if(Util.S(h[r - 1], h[r], v) == 0)
                 t = 1;
@@ -848,8 +817,6 @@ public class LiuChen {
     */
     public static int[] table(float S1, float S2, int j, int r, Point v, Point[] h) {
 
-        //System.out.println("S1" + S1 + ", S2: " + S2);
-
         int m = -1, n = -1, t = -1;
 
         if(S1 == 0 && S2 == 0) {
@@ -868,7 +835,7 @@ public class LiuChen {
             n = nt[0];
             t = nt[1];
         }
-        else if(S1 < 0 && S2 == 0) { // <-.--
+        else if(S1 < 0 && S2 == 0) {
             m = j;
             n = j + 1;
             t = 1;
@@ -999,81 +966,4 @@ public class LiuChen {
 
         return extreme;
     }
-
-    public static void avr_test() {
-
-        int r = 4;
-        Point[] points = new Point[r + 1];
-
-        int i = 0;
-        //points[i++] = new Point(-12,-6);
-        //points[i++] = new Point(-9,-9);
-        //points[i++] = new Point(-2,-12);
-        //points[i++] = new Point(-5,-11);
-        //points[i++] = new Point(-8,-10); // <---
-        
-        points[i++] = new Point(2, -13);
-        points[i++] = new Point(-2, -12);
-        points[i++] = new Point(-5, -11);
-        points[i++] = new Point(-9, -9);
-        points[i++] = new Point(-12, -6);
-
-        
-       // Hull: (2,-13) (-2,-12) (-5,-11) (-9,-9) (-12,-6) (-13,4)
-       
-        Point m1 = new Point(2, -13);
-        Point m2 = new Point(-13, 4);
-        Point p =  new Point(-8, -10); 
-
-        //Point[] hull = ord_chull_pps(m1, m2, points, 4);
-        //Util.printSet(hull);
-        //new Plotting(points, hull, true, 0);
-        
-        Point[] hull2 = Arrays.copyOf(points, r + 5);
-        r = deal_cand_pps(hull2, p, m2, r, 4);
-        r = r + 1;
-        hull2[r] = m2;
-        hull2 = Arrays.copyOf(hull2, r + 1);
-        new Plotting(points, hull2, true, 0);
-
-    }
-
-    public static void debug() {
-    //(1,78)(6,77)(23,73)(31,68)(43,60)(51,54)(66,42)
-    //l: 4, u: 6, v: (27,72), n: 4, t: 1n_res: 5, t_res: 0
-    //, binary: 5, 0, linear: 4, 1
-
-    int r = 6;
-    Point[] h = new Point[r + 1];
-
-    int i = 0;
-    h[i++] = new Point(1, 78);
-    h[i++] = new Point(6, 77);
-    h[i++] = new Point(23, 73);
-    h[i++] = new Point(31, 68);
-    h[i++] = new Point(43, 60);
-    h[i++] = new Point(51, 54);
-    h[i++] = new Point(66, 42);
-
-    Point p = new Point(27, 72);
-
-    int[] nt = find_isar1(p, 4, 6, h);
-
-    System.out.println("n: " + nt[0] + ", t: " + nt[1]);
-
-    }
-
-    public static void main(String[] args) {
-
-        //Point[] points = Testing.testSet14();
-        //Point[] hull = convexHull(points);
-        ////Util.printSet(hull);
-        //new Plotting(points, hull, true, 0);
-
-        //avr_test();
-
-        debug();
-
-        
-    } // main
 }

@@ -50,17 +50,10 @@ public class Chan {
                 h++;
         }
         
-        //K.get(0).forEach(System.out::print);
-        //System.out.println(" (1)");
-
         // compute the hull for each subset using Graham's scan
         for(int i = 0; i < numGroups; i++) {
             K.set(i, GrahamScan.convexHull_list(K.get(i)));
         }
-
-
-        //K.get(0).forEach(System.out::print);
-        //System.out.println(" (2)");
 
         IndexPair currentPoint = new IndexPair(0, 0);
 
@@ -96,7 +89,6 @@ public class Chan {
                     // tangent to the mini-hull can be computed in O(logn) using binary search
 
                     int rTangent = Util.rightTangent(K.get(h), currentPoint.getPoint(K));
-                    //int rTangent = Util.rightTangentLinear(K.get(h), currentPoint.getPoint(K));
                     tangents.add(new IndexPair(h, rTangent));
 
                 }
@@ -145,11 +137,9 @@ public class Chan {
             partialHulls.addAll(K.get(i));
         }
 
-        Point[] K_flat = partialHulls.toArray(new Point[partialHulls.size()]);
 
-        // TODO: exclude points inside mini-hulls in subsequent calls
         // hull is not complete, recur with larger mini-hull size
-        //return convexHull(points, t + 1);
+        Point[] K_flat = partialHulls.toArray(new Point[partialHulls.size()]);
         return convexHull(K_flat, t + 1);
     } // convexHull
 
@@ -165,30 +155,14 @@ public class Chan {
         System.out.println();
     }
 
-    public static void debug() {
 
-        ArrayList<Point> points = new ArrayList<Point>();
-        points.add(new Point(-4, -2));
-        points.add(new Point(18, 7));
-        points.add(new Point(-14, 21));
-        points.add(new Point(-7, 2));
 
-        Point p = new Point(-26, -11);
-
-        System.out.println(Util.rightTangent(points, p));
-        points.add(p);
-        new Plotting(points, points, true, 0);
-
-    }
 
     public static void main(String[] args) {
 
-        //Point[] points = Testing.testSet15();
         Point[] points = Testing.generateCircle(1000, 40);
         Point[] hull = convexHull(points);
         new Plotting(points, hull, true, 0);
-
-        //debug();
 
     }
     

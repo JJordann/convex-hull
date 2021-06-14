@@ -21,14 +21,13 @@ public class Plotting extends javax.swing.JFrame {
         super("Plot");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        //findBounds(points);
-
         JPanel panel = new JPanel() {
             static final long serialVersionUID = 1337;
 
             @Override
             public void paintComponent(Graphics g) {
                 super.paintComponent(g);
+                getContentPane().setBackground(Color.WHITE); 
 
                 Graphics2D g2d = (Graphics2D) g.create();
                 g.setColor(Color.BLACK);

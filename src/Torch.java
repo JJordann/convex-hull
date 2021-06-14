@@ -13,16 +13,9 @@ public class Torch {
 
     public static Stack<Point> convexHull(Point[] points) {
 
-        //long startTime = System.nanoTime();
-
         // Calculate approximate hull
         ArrayList<Point> A = approximateHull(points);
 
-        //long runTime = System.nanoTime() - startTime;
-        //System.out.println("approximate hull took: " + (runTime /  1000000) + " ms");
-
-
-        //startTime = System.nanoTime();
         // Inflate the approximate hull
         Stack<Point> hull = new Stack<Point>();
         hull.push(A.get(0));
@@ -38,13 +31,8 @@ public class Torch {
             hull.pop();
         }
 
-
-        //runTime = System.nanoTime() - startTime;
-        //System.out.println("inflation took: " + (runTime /  1000000) + " ms");
-
         
         return hull;
-        //return hull.toArray(new Point[hull.size()]);
     } // convexHull
 
 
@@ -55,11 +43,8 @@ public class Torch {
     public static ArrayList<Point> approximateHull(Point[] points) {
 
         // Sort by x coordinate
-        //long startTime = System.nanoTime();
         Arrays.sort(points, Util.xComparatorFast);
 
-        //long runTime = System.nanoTime() - startTime;
-        //System.out.println("Sorting took: " + (runTime / 1000000) + " ms");
         // After sorting by x coordinate, leftmost and rightmost 
         // points are the first and last elements of the array
         int leftmost  = 0;
@@ -69,7 +54,6 @@ public class Torch {
         int lowest  = 0;
         int highest = 0;
 
-        //startTime = System.nanoTime();
         for(int i = 1; i < points.length; i++) {
             if(points[i].y < points[lowest].y)
                 lowest = i;
@@ -128,12 +112,8 @@ public class Torch {
             }
         } // for
 
-        //runTime = System.nanoTime() - startTime;
-        //System.out.println("Chain construction took: " + (runTime / 1000000) + " ms");
-
         // Join all 4 lateral hulls to construct 
         // an approximate hull, A
-        //startTime = System.nanoTime();
         ArrayList<Point> A = new ArrayList<Point>();
         A.addAll(HSW);
         Collections.reverse(HSE);
@@ -142,18 +122,13 @@ public class Torch {
         Collections.reverse(HNW);
         A.addAll(HNW);
 
-        //runTime = System.nanoTime() - startTime;
-        //System.out.println("Concatenation took: " + (runTime / 1000000) + " ms");
-
-
-
         return A;
     }
     
 
     /* 
         Improved by merging 4 loops into 2. 
-        Might be slightly more efficient 
+        Is slightly more efficient 
         than the original algorithm. 
     */ 
     public static Stack<Point> convexHullImproved(Point[] points) {
@@ -248,33 +223,10 @@ public class Torch {
             hull.push(HSW.get(i));
         }
 
+        // Inflate the approximate hull
         while(Util.orientation(Util.getSecond(hull), hull.peek(), HSW.get(0)) != -1) {
             hull.pop();
         }
-        // Inflate the approximate hull
-        //ArrayList<Point> hull = new ArrayList<Point>();
-
-        //int backtrack = 0;
-        //int n = HSW.size();
-        //if(n >= 3) {
-            //for(int i = 0; i < n; i++) {
-                //Point a = HSW.get((i - backtrack) % n);
-                //Point b = HSW.get((i + 1) % n);
-                //Point c = HSW.get((i + 2) % n);
-
-                //int det = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
-
-                //if(det <= 0) {
-                    //backtrack++;
-                //}
-                //else {
-                    //backtrack = 0;
-                    //hull.add(b);
-                //}
-            //}
-        //}
-
-        //return hull.toArray(new Point[hull.size()]);
 
         return hull;
     } // convexHullImproved

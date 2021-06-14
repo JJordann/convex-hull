@@ -43,25 +43,6 @@ public class Improved {
         PriorityQueue<Point> botLeft  = new PriorityQueue<Point>(points.length, Util.xComparator);
         PriorityQueue<Point> botRight = new PriorityQueue<Point>(points.length, Util.xComparator);
 
-        //for(int i = 0; i < points.length; i++) {
-            //if( ! Util.isInsideQuadrilateral(points[i], points[leftmost], points[rightmost], points[lowest], points[highest])) {
-
-                //// TODO: dodaj else in ekstremne tocke vstavi loceno
-                //if(points[i].x <= points[highest].x && points[i].y >= points[leftmost].y) {
-                    //topLeft.add(points[i]);
-                //}
-                //else if(points[i].x >= points[highest].x && points[i].y >= points[rightmost].y) {
-                    //topRight.add(points[i]);
-                //}
-                //else if(points[i].x <= points[lowest].x && points[i].y <= points[leftmost].y) {
-                    //botLeft.add(points[i]);
-                //}
-                //else if(points[i].x >= points[lowest].x && points[i].y <= points[rightmost].y){
-                    //botRight.add(points[i]);
-                //}
-            //} // if !inside
-        //} // for
-
         Point pLeftmost  = points[leftmost];
         Point pRightmost = points[rightmost];
         Point pLowest    = points[lowest];
@@ -95,7 +76,6 @@ public class Improved {
         Point p = null;
 
         // From leftmost to lowest point
-        // TODO: if != null
         hull.add(botLeft.poll());
         hull.add(botLeft.poll());
         while((p = botLeft.poll()) != null) {

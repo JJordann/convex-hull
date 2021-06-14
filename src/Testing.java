@@ -1823,11 +1823,11 @@ public class Testing {
         int r = 10000;
 
         //Point[] points = generateRectangle(n, r, r);
-        Point[] points = generateRectangle(n, r, r);
+        Point[] points = generateCircle(n, r);
 
         long startTime = System.nanoTime();
         //Stack<Point> hull = Torch.convexHull(points);
-        Point[] hull = Improved.convexHull(points);
+        Point[] hull = Quickhull.convexHull(points);
         long runTime   = System.nanoTime() - startTime;
 
         writeResults(filename, runTime);
@@ -1851,17 +1851,17 @@ public class Testing {
 
     public static void main(String[] args) {
 
+
+        // za benchmarke:
         executeAndWrite(args[0], args[1]);
 
-
-        //executionTime();
-
         
-        //Point[] points = generateUniformCircle(2000, 40);
-        //System.out.println("generated");
-        ////Point[] hull = GrahamScan.convexHull(points);
-        //Point[] hull = null;
-        //new Plotting(points, hull, true, 0);
+       //Point[] points = generateRectangle(800, 35, 35);
+       //Point[] points = generateUniformCircle(800, 35);
+       //System.out.println("generated");
+       //Point[] hull = GrahamScan.convexHull(points);
+       //Point[] hull = null;
+       //new Plotting(points, hull, true, 0);
 
 
         //Point[] points = generateCircle(800, 40);
